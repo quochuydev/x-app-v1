@@ -26,11 +26,11 @@ jobs:
           EMAIL: ${{ secrets.SSL_EMAIL }}
         run: |
           echo "🚀 Connecting to server $SERVER_IP ..."
-          ssh -o StrictHostKeyChecking=no root@$SERVER_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no ec2-user@ec2-18-141-166-189.ap-southeast-1.compute.amazonaws.com << 'EOF'
             set -e
 
             echo "📦 Downloading latest deployment script..."
-            curl -o ~/deploy.sh https://raw.githubusercontent.com/quochuydev/x-base-app/main/deploy.sh
+            curl -o ~/deploy.sh https://raw.githubusercontent.com/quochuydev/x-app-1/main/deploy.sh
 
             echo "🔧 Applying custom domain and email..."
             sed -i "s/app-v1.quochuy.dev/${DOMAIN_NAME}/g" ~/deploy.sh
