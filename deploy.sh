@@ -98,6 +98,7 @@ sudo rm -f /etc/nginx/sites-enabled/myapp
 sudo systemctl stop nginx
 
 # Obtain SSL certificate using Certbot standalone mode
+echo "Obtaining SSL certificate for $DOMAIN_NAME..."
 sudo apt install certbot -y
 sudo certbot certonly --standalone -d $DOMAIN_NAME --non-interactive --agree-tos -m $EMAIL
 
@@ -111,7 +112,7 @@ if [ ! -f /etc/letsencrypt/ssl-dhparams.pem ]; then
 fi
 
 # Create Nginx config with reverse proxy, SSL support, rate limiting, and streaming support
-sudo cat > /etc/nginx/sites-available/myapp <<EOL
+sudo tee /etc/nginx/sites-available/myapp > /dev/null <<EOL
 limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
 
 server {
