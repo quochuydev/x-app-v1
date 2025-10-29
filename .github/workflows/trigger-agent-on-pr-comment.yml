@@ -26,7 +26,7 @@ jobs:
           client-payload: |
             {
               "repo": "${{ github.repository }}",
-              "comment": "${{ github.event.comment.body }}",
+              "comment": ${{ toJSON(github.event.comment.body) }},
               "user": "${{ github.event.comment.user.login }}",
               "issue_title": ${{ toJSON(github.event.issue.title) }},
               "issue_body": ${{ toJSON(github.event.issue.body) }},
