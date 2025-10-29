@@ -30,7 +30,7 @@ jobs:
             set -e
 
             echo "📦 Downloading latest deployment script..."
-            curl -o ~/deploy.sh https://raw.githubusercontent.com/quochuydev/x-app-1/main/deploy.sh
+            curl -o ~/deploy.sh https://raw.githubusercontent.com/quochuydev/x-app-v1/main/deploy.sh
 
             echo "🔧 Applying custom domain and email..."
             sed -i "s/app-v1.quochuy.dev/${DOMAIN_NAME}/g" ~/deploy.sh
