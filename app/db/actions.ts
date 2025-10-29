@@ -16,3 +16,15 @@ export async function deleteTodoAction(formData: FormData) {
   await db.delete(todos).where(eq(todos.id, Number(id)));
   revalidatePath('/db');
 }
+
+export async function toggleTodoAction(formData: FormData) {
+  const id = formData.get('id') as string;
+  const completed = formData.get('completed') as string;
+
+  await db
+    .update(todos)
+    .set({ completed: completed === 'true' })
+    .where(eq(todos.id, Number(id)));
+
+  revalidatePath('/db');
+}
