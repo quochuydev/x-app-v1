@@ -65,7 +65,7 @@ I've included a Bash script which does the following:
 Once the deployment completes, your Next.js app will be available at:
 
 ```
-http://your-provided-domain.com
+http://app-v1.quochuy.dev
 ```
 
 Both the Next.js app and PostgreSQL database will be up and running in Docker containers. To set up your database, you could install `npm` inside your Postgres container and use the Drizzle scripts, or you can use `psql`:
