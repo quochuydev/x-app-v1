@@ -10,7 +10,7 @@ DOMAIN_NAME="nextselfhost.dev" # replace with your own
 EMAIL="your-email@example.com" # replace with your own
 
 # Script Vars
-REPO_URL="https://github.com/quochuydev/x-base-app.git"
+REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp
 SWAP_SIZE="1G"  # Swap size of 1GB
 

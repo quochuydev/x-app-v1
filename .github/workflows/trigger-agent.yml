@@ -5,19 +5,25 @@ on:
 
 jobs:
   trigger-agent:
-    if: ${{ github.event.comment.body == 'implement' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Log issue details
+        run: |
+          echo "Triggered by issue #${{ github.event.issue.number }}"
+          echo "Comment: ${{ github.event.comment.body }}"
+          echo "Repository: ${{ github.repository }}"
+
       - name: Call Agent Repository
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.AGENT_TRIGGER_TOKEN }}
           repository: quochuydev/x-agent
           event-type: generate-code
-          client-payload: |
+          client-payload: >-
             {
               "repo": "${{ github.repository }}",
-              "issue_title": "${{ github.event.issue.title }}",
-              "issue_body": "${{ github.event.issue.body }}",
-              "issue_number": "${{ github.event.issue.number }}"
+              "issue_title": ${{ toJSON(github.event.issue.title) }},
+              "issue_body": ${{ toJSON(github.event.issue.body) }},
+              "issue_number": ${{ github.event.issue.number }},
+              "comment": ${{ toJSON(github.event.comment.body) }}
             }

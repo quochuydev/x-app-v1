@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script Vars
-REPO_URL="https://github.com/quochuydev/x-base-app.git"
+REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp
 
 # Pull the latest changes from the Git repository

@@ -1,0 +1,43 @@
+name: Deploy to Server
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+
+      - name: Deploy to server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+          EMAIL: ${{ secrets.SSL_EMAIL }}
+        run: |
+          echo "🚀 Connecting to server $SERVER_IP ..."
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-214-149-131.ap-southeast-1.compute.amazonaws.com << 'EOF'
+            set -e
+
+            echo "📦 Downloading latest deployment script..."
+            curl -o ~/deploy.sh https://raw.githubusercontent.com/quochuydev/x-app-v1/main/deploy.sh
+
+            echo "🔧 Applying custom domain and email..."
+            sed -i "s/app-v1.quochuy.dev/${DOMAIN_NAME}/g" ~/deploy.sh
+            sed -i "s/admin@app-v1.quochuy.dev/${EMAIL}/g" ~/deploy.sh
+
+            echo "⚙️ Making deploy script executable..."
+            chmod +x ~/deploy.sh
+
+            echo "🚀 Running deployment..."
+            ./deploy.sh
+
+            echo "✅ Deployment complete for ${DOMAIN_NAME}"
+          EOF
