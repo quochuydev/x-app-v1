@@ -173,10 +173,10 @@ echo "Deployment complete. Your Next.js app and PostgreSQL database are now runn
 Next.js is available at https://$DOMAIN_NAME, and the PostgreSQL database is accessible from the web service.
 
 The .env file has been created with the following values:
-- POSTGRES_USER
-- POSTGRES_PASSWORD (randomly generated)
-- POSTGRES_DB
-- DATABASE_URL
-- DATABASE_URL_EXTERNAL
-- SECRET_KEY
-- NEXT_PUBLIC_SAFE_KEY"
+- POSTGRES_USER: $POSTGRES_USER
+- POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+- POSTGRES_DB: $POSTGRES_DB
+- DATABASE_URL: $DATABASE_URL
+- DATABASE_URL_EXTERNAL: $DATABASE_URL_EXTERNAL
+- SECRET_KEY: $SECRET_KEY
+- NEXT_PUBLIC_SAFE_KEY: $NEXT_PUBLIC_SAFE_KEY"
