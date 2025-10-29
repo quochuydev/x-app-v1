@@ -5,7 +5,6 @@ on:
 
 jobs:
   trigger-agent:
-    if: ${{ github.event.comment.body == 'implement' }}
     runs-on: ubuntu-latest
     steps:
       - name: Call Agent Repository
