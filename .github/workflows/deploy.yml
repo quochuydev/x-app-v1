@@ -23,6 +23,9 @@ jobs:
           EMAIL: ${{ secrets.SSL_EMAIL }}
         run: |
           echo "🚀 Connecting to server $SERVER_IP ..."
+          echo "🚀 Deploying to domain $DOMAIN_NAME ..."
+          echo "🚀 User email $EMAIL ..."
+
           ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-214-149-131.ap-southeast-1.compute.amazonaws.com << 'EOF'
             set -e
 
@@ -30,8 +33,8 @@ jobs:
             curl -o ~/deploy.sh https://raw.githubusercontent.com/quochuydev/x-app-v1/main/deploy.sh
 
             echo "🔧 Applying custom domain and email..."
-            sed -i "s/app-v1.quochuy.dev/${DOMAIN_NAME}/g" ~/deploy.sh
-            sed -i "s/admin@app-v1.quochuy.dev/${EMAIL}/g" ~/deploy.sh
+            sed -i "s/app-v1.quochuy.dev/app-v1.quochuy.dev/g" ~/deploy.sh
+            sed -i "s/admin@app-v1.quochuy.dev/quochuy.dev@gmail.com/g" ~/deploy.sh
 
             echo "⚙️ Making deploy script executable..."
             chmod +x ~/deploy.sh
@@ -39,5 +42,5 @@ jobs:
             echo "🚀 Running deployment..."
             ./deploy.sh
 
-            echo "✅ Deployment complete for ${DOMAIN_NAME}"
+            echo "✅ Deployment complete"
           EOF
