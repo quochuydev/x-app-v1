@@ -19,8 +19,8 @@ jobs:
       - name: Deploy to server
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
-          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
-          EMAIL: ${{ secrets.SSL_EMAIL }}
+          DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+          EMAIL: ${{ vars.SSL_EMAIL }}
         run: |
           echo "🚀 Connecting to server $SERVER_IP ..."
           echo "🚀 Deploying to domain $DOMAIN_NAME ..."
