@@ -3,7 +3,7 @@
 # Script Vars
 REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp
-BRANCH="main"
+BRANCH=${1:-"main"}
 
 echo "Branch: $BRANCH"
 
@@ -11,7 +11,7 @@ echo "Branch: $BRANCH"
 if [ -d "$APP_DIR" ]; then
   echo "Pulling latest changes from the repository..."
   cd $APP_DIR
-  git pull origin main
+  git pull origin $BRANCH
 else
   echo "Cloning repository from $REPO_URL..."
   git clone $REPO_URL $APP_DIR
