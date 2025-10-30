@@ -72,7 +72,9 @@ Both the Next.js app and PostgreSQL database will be up and running in Docker co
 
 ```bash
 docker exec -it myapp-db-1 sh
+
 apk add --no-cache postgresql-client
+
 psql -U myuser -d mydatabase -c '
 CREATE TABLE IF NOT EXISTS "todos" (
   "id" serial PRIMARY KEY NOT NULL,
