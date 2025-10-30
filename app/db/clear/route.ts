@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/app/db/drizzle';
-import { todos } from '@/app/db/schema';
+import { db, todos } from '@/app/db';
 import { revalidatePath } from 'next/cache';
 
 export async function POST() {

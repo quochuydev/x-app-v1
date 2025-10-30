@@ -1,8 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { db } from '@/app/db/drizzle';
-import { todos } from '@/app/db/schema';
+import { db, todos } from '@/app/db';
 import { eq } from 'drizzle-orm';
 
 export async function addTodoAction(formData: FormData) {
@@ -25,7 +24,7 @@ export async function addTodoAction(formData: FormData) {
     console.error('Error adding todo:', error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Failed to add todo'
+      message: error instanceof Error ? error.message : 'Failed to add todo. Please check database connection.'
     };
   }
 }
@@ -46,7 +45,7 @@ export async function deleteTodoAction(formData: FormData) {
     console.error('Error deleting todo:', error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Failed to delete todo'
+      message: error instanceof Error ? error.message : 'Failed to delete todo. Please check database connection.'
     };
   }
 }
@@ -71,7 +70,7 @@ export async function toggleTodoAction(formData: FormData) {
     console.error('Error toggling todo:', error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Failed to toggle todo'
+      message: error instanceof Error ? error.message : 'Failed to toggle todo. Please check database connection.'
     };
   }
 }
@@ -104,7 +103,7 @@ export async function editTodoAction(formData: FormData) {
     console.error('Error editing todo:', error);
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Failed to edit todo'
+      message: error instanceof Error ? error.message : 'Failed to edit todo. Please check database connection.'
     };
   }
 }

@@ -131,6 +131,26 @@ npm run db:studio
 
 **Note**: This project uses npm for package management. Make sure to use `npm` commands instead of `bun` for consistency.
 
+## Building and Troubleshooting
+
+To build the application:
+
+```bash
+npm install
+npm run build
+```
+
+If you encounter build errors related to the database during development, ensure your environment variables are properly configured in `.env.local` or `.env`. The application includes error handling to gracefully handle database connection issues during build time.
+
+### Environment Variables
+
+Copy `.env.example` to `.env.local` and configure:
+
+```bash
+DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+SECRET_KEY=your_secret_key_here
+```
+
 ## Helpful Commands
 
 - `docker-compose ps` – check status of Docker containers

@@ -1,12 +1,16 @@
-import { db } from '@/app/db/drizzle';
-import { todos } from '@/app/db/schema';
-import TodoList from './TodoList';
-import TodoForm from './TodoForm';
+import { db, todos, TodoList, TodoForm } from '@/app/db';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  let todoList = await db.select().from(todos).orderBy(todos.createdAt);
+  let todoList = [];
+
+  try {
+    todoList = await db.select().from(todos).orderBy(todos.createdAt);
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    // Continue with empty todo list for build time
+  }
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
@@ -19,6 +23,8 @@ export default async function Home() {
       {todoList.length === 0 && (
         <div style={{ textAlign: 'center', color: '#666', fontStyle: 'italic', marginTop: '30px' }}>
           No todos yet. Add one above to get started!
+          <br />
+          <small>If the todo functionality is not working, please ensure the database is configured.</small>
         </div>
       )}
     </div>
