@@ -1,0 +1,26 @@
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  deploy:
+    if: contains(github.event.comment.body, 'deploy')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Determine branch
+        id: get_branch
+        run: |
+          echo "🚀 Deploying debug 1: ${{ github.event.issue.pull_request }}
+          
+          "
+          if [[ "${{ github.event.issue.pull_request }}" != "null" ]]; then
+            BRANCH=$(gh api "${{ github.event.issue.pull_request.url }}" --jq '.head.ref')
+          else
+            BRANCH=$(echo "${{ github.event.comment.body }}" | awk '{print $2}')
+            BRANCH=${BRANCH:-main}
+          fi
+          echo "Branch=$BRANCH"
+
+      - name: Deploy
+        run: echo "🚀 Deploying branch: $BRANCH"
