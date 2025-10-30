@@ -34,7 +34,7 @@ jobs:
           echo "🚀 Repository $REPO"
           echo "🚀 Branch $BRANCH"
 
-          ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << 'EOF'
+          ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << EOF
             set -e
 
             echo "📦 Downloading latest update script..."
