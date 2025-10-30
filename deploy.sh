@@ -8,6 +8,7 @@ SECRET_KEY="my-secret" # for the demo app
 NEXT_PUBLIC_SAFE_KEY="safe-key" # for the demo app
 DOMAIN_NAME="app-v1.quochuy.dev" # replace with your own
 EMAIL="quochuy.dev@gmail.com" # replace with your own
+BRANCH=${1:-"main"}
 
 # Script Vars
 REPO_URL="https://github.com/quochuydev/x-app-v1.git"
@@ -69,6 +70,9 @@ else
   git clone $REPO_URL $APP_DIR
   cd $APP_DIR
 fi
+
+git checkout $BRANCH
+git pull
 
 # For Docker internal communication ("db" is the name of Postgres container)
 DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432/$POSTGRES_DB"
