@@ -3,8 +3,8 @@
 # Script Vars
 REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp
-BRANCH=${BRANCH:-main}
 
+BRANCH="${1:-main}"
 echo "Branch: $BRANCH"
 
 # Pull the latest changes from the Git repository

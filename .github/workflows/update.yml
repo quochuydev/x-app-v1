@@ -44,8 +44,7 @@ jobs:
             chmod +x ~/update.sh
 
             echo "🚀 Running update..."
-            export BRANCH=$BRANCH
-            ./update.sh
+            ./update.sh $BRANCH
 
             echo "✅ Deployment complete"
           EOF
