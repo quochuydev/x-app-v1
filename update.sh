@@ -3,7 +3,7 @@
 # Script Vars
 REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp
-BRANCH="main"
+BRANCH=${BRANCH:-main}
 
 echo "Branch: $BRANCH"
 

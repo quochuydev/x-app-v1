@@ -32,7 +32,7 @@ jobs:
           echo "🚀 Deploying to domain $DOMAIN_NAME"
           echo "🚀 User email $EMAIL"
           echo "🚀 Repository $REPO"
-          echo "🚀 Repository $BRANCH"
+          echo "🚀 Branch $BRANCH"
 
           ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << 'EOF'
             set -e
