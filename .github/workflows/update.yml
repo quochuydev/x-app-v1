@@ -1,0 +1,51 @@
+name: Update to Server
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+
+      - name: Log issue details
+        run: echo "Repository: ${{ github.repository }}"
+
+      - name: Deploy to server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+          EMAIL: ${{ vars.SSL_EMAIL }}
+          SSH_CONNECTION: ${{ vars.SSH_CONNECTION }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "🚀 Connecting to server $SERVER_IP ..."
+          echo "🚀 Deploying to domain $DOMAIN_NAME ..."
+          echo "🚀 User email $EMAIL ..."
+
+          ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << 'EOF'
+            set -e
+
+            echo "📦 Downloading latest update script..."
+            curl -o ~/update.sh https://raw.githubusercontent.com/$REPO/main/update.sh
+
+            echo "🔧 Applying custom domain and email..."
+            sed -i "s/$DOMAIN_NAME/$DOMAIN_NAME/g" ~/update.sh
+            sed -i "s/$EMAIL/$EMAIL/g" ~/update.sh
+
+            echo "⚙️ Making update script executable..."
+            chmod +x ~/update.sh
+
+            echo "🚀 Running update..."
+            ./update.sh
+
+            echo "✅ Deployment complete"
+          EOF

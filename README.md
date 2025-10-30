@@ -23,7 +23,7 @@ This repo shows how to deploy a Next.js app and a PostgreSQL database on a Ubunt
 2. **Download the deployment script**:
 
    ```bash
-   curl -o ~/deploy.sh https://raw.githubusercontent.com/quochuydev/x-app-v1/main/deploy.sh
+   curl -o ~/deploy.sh https://raw.githubusercontent.com/organization/repo/main/deploy.sh
    ```
 
    You can then modify the email and domain name variables inside of the script to use your own.
@@ -62,12 +62,6 @@ I've included a Bash script which does the following:
 1. Sets up a cron which clears the database every 10m
 1. Creates a `.env` file with your Postgres database creds
 
-Once the deployment completes, your Next.js app will be available at:
-
-```
-http://app-v1.quochuy.dev
-```
-
 Both the Next.js app and PostgreSQL database will be up and running in Docker containers. To set up your database, you could install `npm` inside your Postgres container and use the Drizzle scripts, or you can use `psql`:
 
 ```bash
@@ -83,6 +77,10 @@ CREATE TABLE IF NOT EXISTS "todos" (
 ```
 
 For pushing subsequent updates, I also provided an `update.sh` script as an example.
+
+```sh
+curl -o ~/update.sh https://raw.githubusercontent.com/organization/repo/main/update.sh
+```
 
 ## Running Locally
 
