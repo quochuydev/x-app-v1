@@ -10,6 +10,8 @@ DOMAIN_NAME="app-v1.quochuy.dev" # replace with your own
 EMAIL="quochuy.dev@gmail.com" # replace with your own
 BRANCH=${1:-"main"}
 
+echo "🚀 Deploying to branch $BRANCH"
+
 # Script Vars
 REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp

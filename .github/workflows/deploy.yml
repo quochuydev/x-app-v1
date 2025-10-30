@@ -42,7 +42,7 @@ jobs:
             chmod +x ~/deploy.sh
 
             echo "🚀 Running deployment..."
-            ./deploy.sh
+            ./deploy.sh $BRANCH
 
             echo "✅ Deployment complete"
           EOF
