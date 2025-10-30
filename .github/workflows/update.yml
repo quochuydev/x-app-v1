@@ -38,10 +38,6 @@ jobs:
             echo "📦 Downloading latest update script..."
             curl -o ~/update.sh https://raw.githubusercontent.com/$REPO/main/update.sh
 
-            echo "🔧 Applying custom domain and email..."
-            sed -i "s/$DOMAIN_NAME/$DOMAIN_NAME/g" ~/update.sh
-            sed -i "s/admin@$DOMAIN_NAME/$EMAIL/g" ~/update.sh
-
             echo "⚙️ Making update script executable..."
             chmod +x ~/update.sh
 
