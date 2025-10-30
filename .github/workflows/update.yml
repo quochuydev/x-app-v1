@@ -30,6 +30,7 @@ jobs:
           echo "🚀 Connecting to server $SERVER_IP ..."
           echo "🚀 Deploying to domain $DOMAIN_NAME ..."
           echo "🚀 User email $EMAIL ..."
+          echo "🚀 Repository $REPO ..."
 
           ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << 'EOF'
             set -e
@@ -39,7 +40,7 @@ jobs:
 
             echo "🔧 Applying custom domain and email..."
             sed -i "s/$DOMAIN_NAME/$DOMAIN_NAME/g" ~/update.sh
-            sed -i "s/$EMAIL/$EMAIL/g" ~/update.sh
+            sed -i "s/admin@$DOMAIN_NAME/$EMAIL/g" ~/update.sh
 
             echo "⚙️ Making update script executable..."
             chmod +x ~/update.sh
