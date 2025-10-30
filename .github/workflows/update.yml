@@ -26,20 +26,18 @@ jobs:
           EMAIL: ${{ vars.SSL_EMAIL }}
           SSH_CONNECTION: ${{ vars.SSH_CONNECTION }}
           REPO: ${{ github.repository }}
+          BRANCH: auto/feature-1
         run: |
           echo "🚀 Connecting to server $SERVER_IP ..."
           echo "🚀 Deploying to domain $DOMAIN_NAME ..."
           echo "🚀 User email $EMAIL ..."
+          echo "🚀 Repository $REPO ..."
 
           ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << 'EOF'
             set -e
 
             echo "📦 Downloading latest update script..."
             curl -o ~/update.sh https://raw.githubusercontent.com/$REPO/main/update.sh
-
-            echo "🔧 Applying custom domain and email..."
-            sed -i "s/$DOMAIN_NAME/$DOMAIN_NAME/g" ~/update.sh
-            sed -i "s/$EMAIL/$EMAIL/g" ~/update.sh
 
             echo "⚙️ Making update script executable..."
             chmod +x ~/update.sh
