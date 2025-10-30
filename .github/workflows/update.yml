@@ -26,7 +26,7 @@ jobs:
           EMAIL: ${{ vars.SSL_EMAIL }}
           SSH_CONNECTION: ${{ vars.SSH_CONNECTION }}
           REPO: ${{ github.repository }}
-          BRANCH: auto/feature-1
+          BRANCH: ${{ github.ref_name }}
         run: |
           echo "🚀 Connecting to server $SERVER_IP"
           echo "🚀 Deploying to domain $DOMAIN_NAME"
@@ -34,7 +34,7 @@ jobs:
           echo "🚀 Repository $REPO"
           echo "🚀 Branch $BRANCH"
 
-          ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << 'EOF'
+          ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << EOF
             set -e
 
             echo "📦 Downloading latest update script..."
@@ -44,7 +44,7 @@ jobs:
             chmod +x ~/update.sh
 
             echo "🚀 Running update..."
-            ./update.sh
+            ./update.sh $BRANCH
 
             echo "✅ Deployment complete"
           EOF
