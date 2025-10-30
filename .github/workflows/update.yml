@@ -28,10 +28,11 @@ jobs:
           REPO: ${{ github.repository }}
           BRANCH: auto/feature-1
         run: |
-          echo "🚀 Connecting to server $SERVER_IP ..."
-          echo "🚀 Deploying to domain $DOMAIN_NAME ..."
-          echo "🚀 User email $EMAIL ..."
-          echo "🚀 Repository $REPO ..."
+          echo "🚀 Connecting to server $SERVER_IP"
+          echo "🚀 Deploying to domain $DOMAIN_NAME"
+          echo "🚀 User email $EMAIL"
+          echo "🚀 Repository $REPO"
+          echo "🚀 Repository $BRANCH"
 
           ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << 'EOF'
             set -e
