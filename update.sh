@@ -5,6 +5,8 @@ REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp
 BRANCH="main"
 
+echo "Branch: $BRANCH"
+
 # Pull the latest changes from the Git repository
 if [ -d "$APP_DIR" ]; then
   echo "Pulling latest changes from the repository..."
