@@ -98,6 +98,7 @@ sudo rm -f /etc/nginx/sites-enabled/myapp
 sudo systemctl stop nginx
 
 # Obtain SSL certificate using Certbot standalone mode
+echo "Obtaining SSL certificate for $DOMAIN_NAME..."
 sudo apt install certbot -y
 sudo certbot certonly --standalone -d $DOMAIN_NAME --non-interactive --agree-tos -m $EMAIL
 
