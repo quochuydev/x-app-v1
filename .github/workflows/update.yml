@@ -37,7 +37,7 @@ jobs:
             set -e
 
             echo "📦 Downloading latest update script..."
-            curl -o ~/update.sh https://raw.githubusercontent.com/$REPO/main/update.sh
+            curl -o ~/update.sh https://raw.githubusercontent.com/quochuydev/x-app-v1/main/update.sh
 
             echo "⚙️ Making update script executable..."
             chmod +x ~/update.sh
