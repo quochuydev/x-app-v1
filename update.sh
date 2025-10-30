@@ -3,6 +3,7 @@
 # Script Vars
 REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp
+BRANCH="main"
 
 # Pull the latest changes from the Git repository
 if [ -d "$APP_DIR" ]; then
@@ -14,6 +15,8 @@ else
   git clone $REPO_URL $APP_DIR
   cd $APP_DIR
 fi
+
+git checkout $BRANCH
 
 # Build and restart the Docker containers from the app directory (~/myapp)
 echo "Rebuilding and restarting Docker containers..."

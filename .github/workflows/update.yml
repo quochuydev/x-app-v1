@@ -26,6 +26,7 @@ jobs:
           EMAIL: ${{ vars.SSL_EMAIL }}
           SSH_CONNECTION: ${{ vars.SSH_CONNECTION }}
           REPO: ${{ github.repository }}
+          BRANCH: auto/feature-1
         run: |
           echo "🚀 Connecting to server $SERVER_IP ..."
           echo "🚀 Deploying to domain $DOMAIN_NAME ..."
