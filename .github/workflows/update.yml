@@ -17,7 +17,7 @@ jobs:
           ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
 
       - name: Log issue details
-        run: echo "Repository: ${{ github.repository }}"
+        run: echo "Repository ${{ github.repository }}"
 
       - name: Deploy to server
         env:
