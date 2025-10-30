@@ -1,8 +1,8 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { db } from './drizzle';
-import { todos } from './schema';
+import { db } from '@/app/db/drizzle';
+import { todos } from '@/app/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function addTodoAction(formData: FormData) {

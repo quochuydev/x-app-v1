@@ -1,5 +1,5 @@
-import { db } from './drizzle';
-import { todos } from './schema';
+import { db } from '@/app/db/drizzle';
+import { todos } from '@/app/db/schema';
 import TodoList from './TodoList';
 import TodoForm from './TodoForm';
 

@@ -41,7 +41,7 @@ This demo tries to showcase many different Next.js features.
 
 - Image Optimization
 - Streaming
-- Talking to a Postgres database
+- Talking to a Postgres database with Todo app
 - Caching
 - Incremental Static Regeneration
 - Reading environment variables
@@ -68,8 +68,35 @@ Once the deployment completes, your Next.js app will be available at:
 http://app-v1.quochuy.dev
 ```
 
-Both the Next.js app and PostgreSQL database will be up and running in Docker containers. To set up your database, you could install `npm` inside your Postgres container and use the Drizzle scripts, or you can use `psql`:
+Both the Next.js app and PostgreSQL database will be up and running in Docker containers.
 
+### Todo App Database Setup
+
+The application includes a fully functional Todo app with the following features:
+- Add new todos
+- Edit existing todos inline
+- Mark todos as complete/incomplete
+- Delete todos
+- Real-time UI updates with Server Actions
+
+The Todo app is accessible at `/db` and includes a simple but functional UI with proper error handling and user feedback.
+
+To set up your database, you can either:
+
+**Option 1: Use Drizzle migrations (Recommended)**
+```bash
+# Enter the Next.js container
+docker exec -it myapp-web-1 sh
+
+# Install dependencies (if needed)
+npm install
+
+# Generate and run database migrations
+npm run db:generate
+npm run db:push
+```
+
+**Option 2: Use psql directly**
 ```bash
 docker exec -it myapp-db-1 sh
 
@@ -99,8 +126,10 @@ This will start both services and make your Next.js app available at `http://loc
 If you want to view the contents of the local database, you can use Drizzle Studio:
 
 ```bash
-bun run db:studio
+npm run db:studio
 ```
+
+**Note**: This project uses npm for package management. Make sure to use `npm` commands instead of `bun` for consistency.
 
 ## Helpful Commands
 
