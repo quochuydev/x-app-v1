@@ -2,6 +2,12 @@ FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
+# Install pnpm globally
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# (Optional) Verify installation
+RUN pnpm --version
+
 # Stage 1: Install dependencies
 FROM base AS deps
 WORKDIR /app
