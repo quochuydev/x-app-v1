@@ -86,6 +86,20 @@ CREATE TABLE IF NOT EXISTS "todos" (
 
 For pushing subsequent updates, I also provided an `update.sh` script as an example.
 
+## Database Migrations
+
+When adding new database tables or columns, run the following command to generate migration files:
+
+```bash
+pnpm run db:generate
+```
+
+Then apply the migration to your database:
+
+```bash
+pnpm run db:push
+```
+
 ## Running Locally
 
 If you want to run this setup locally using Docker, you can follow these steps:
