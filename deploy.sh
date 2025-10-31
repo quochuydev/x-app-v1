@@ -8,9 +8,14 @@ SECRET_KEY="my-secret" # for the demo app
 NEXT_PUBLIC_SAFE_KEY="safe-key" # for the demo app
 DOMAIN_NAME="app-v1.quochuy.dev" # replace with your own
 EMAIL="quochuy.dev@gmail.com" # replace with your own
-BRANCH=${1:-"main"}
+BRANCH=${1}
 
 echo "🚀 Deploying to branch $BRANCH"
+
+if [ -z "$BRANCH" ]; then
+  echo "Branch not specified."
+  BRANCH="main"
+fi
 
 # Script Vars
 REPO_URL="https://github.com/quochuydev/x-app-v1.git"
