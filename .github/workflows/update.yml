@@ -18,9 +18,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
 
-      - name: Log issue details
-        run: echo "Repository ${{ github.repository }}"
-
       - name: Deploy to server
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
@@ -29,12 +26,14 @@ jobs:
           SSH_CONNECTION: ${{ vars.SSH_CONNECTION }}
           REPO: ${{ github.repository }}
           BRANCH: ${{ github.ref_name }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           echo "🚀 Connecting to server $SERVER_IP"
           echo "🚀 Deploying to domain $DOMAIN_NAME"
           echo "🚀 User email $EMAIL"
           echo "🚀 Repository $REPO"
           echo "🚀 Branch $BRANCH"
+          echo "🚀 Issue number $ISSUE_NUMBER"
 
           ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << EOF
             set -e
@@ -46,7 +45,7 @@ jobs:
             chmod +x ~/update.sh
 
             echo "🚀 Running update..."
-            ./update.sh $BRANCH
+            ./update.sh "auto/feature-$ISSUE_NUMBER"
 
             echo "✅ Deployment complete"
           EOF
