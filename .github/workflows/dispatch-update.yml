@@ -1,12 +1,10 @@
-name: Update to Server
+name: Dispatch update to Server
 
 on:
-  issue_comment:
-    types: [created]
+  workflow_dispatch:
 
 jobs:
   update:
-    if: ${{ github.event.comment.body == 'deploy' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +24,6 @@ jobs:
           SSH_CONNECTION: ${{ vars.SSH_CONNECTION }}
           REPO: ${{ github.repository }}
           BRANCH: ${{ github.ref_name }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
           GITHUB_SHA: ${{ github.sha }}
         run: |
           echo "🚀 Connecting to server $SERVER_IP"
@@ -34,7 +31,6 @@ jobs:
           echo "🚀 User email $EMAIL"
           echo "🚀 Repository $REPO"
           echo "🚀 Branch $BRANCH"
-          echo "🚀 Issue number $ISSUE_NUMBER"
           echo "🚀 Commit SHA $GITHUB_SHA"
 
           ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << EOF
@@ -48,7 +44,7 @@ jobs:
 
             echo "🚀 Running update with version info..."
             export GITHUB_SHA="$GITHUB_SHA"
-            ./update.sh "auto/feature-$ISSUE_NUMBER"
+            ./update.sh $BRANCH
 
             echo "✅ Deployment complete"
           EOF
