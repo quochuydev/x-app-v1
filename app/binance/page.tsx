@@ -2,6 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import { KlineData } from '@/lib/binance.service';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale
+);
 
 interface Interval {
   value: string;
@@ -16,15 +39,14 @@ export default function BinancePage() {
   const [limit, setLimit] = useState<number>(100);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [useSavedData, setUseSavedData] = useState<boolean>(false);
-
+  
   useEffect(() => {
     fetchIntervals();
   }, []);
 
   useEffect(() => {
     fetchKlinesData();
-  }, [selectedInterval, symbol, limit, useSavedData]);
+  }, [selectedInterval, symbol, limit]);
 
   const fetchIntervals = async () => {
     try {
@@ -43,18 +65,13 @@ export default function BinancePage() {
     setError('');
 
     try {
-      const endpoint = useSavedData ? '/api/binance/klines/saved' : '/api/binance/klines';
       const params = new URLSearchParams({
         symbol,
         interval: selectedInterval,
         limit: limit.toString(),
       });
 
-      if (!useSavedData) {
-        params.append('save', 'true');
-      }
-
-      const response = await fetch(`${endpoint}?${params.toString()}`);
+      const response = await fetch(`/api/binance/klines?${params.toString()}`);
       const data = await response.json();
 
       if (data.success) {
@@ -76,6 +93,60 @@ export default function BinancePage() {
 
   const formatTime = (timestamp: number) => {
     return new Date(timestamp).toLocaleString();
+  };
+
+  const prepareChartData = () => {
+    if (!klinesData.length) return null;
+
+    const labels = klinesData.map(kline => new Date(kline.openTime));
+    const closingPrices = klinesData.map(kline => parseFloat(kline.close));
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: `${symbol} Price (USDT)`,
+          data: closingPrices,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.1
+        }
+      ]
+    };
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: `${symbol} - ${intervals.find(i => i.value === selectedInterval)?.label} Chart`,
+      },
+    },
+    scales: {
+      x: {
+        type: 'time' as const,
+        time: {
+          displayFormats: {
+            minute: 'HH:mm',
+            hour: 'HH:mm',
+            day: 'MMM dd'
+          }
+        }
+      },
+      y: {
+        type: 'linear' as const,
+        display: true,
+        position: 'left' as const,
+        title: {
+          display: true,
+          text: 'Price (USDT)'
+        }
+      }
+    }
   };
 
   return (
@@ -125,16 +196,6 @@ export default function BinancePage() {
         </div>
 
         <div>
-          <label style={{ marginRight: '10px' }}>
-            <input
-              type="checkbox"
-              checked={useSavedData}
-              onChange={(e) => setUseSavedData(e.target.checked)}
-              style={{ marginRight: '5px' }}
-            />
-            Use saved data from database
-          </label>
-
           <button
             onClick={fetchKlinesData}
             disabled={loading}
@@ -172,8 +233,16 @@ export default function BinancePage() {
       </div>
 
       {klinesData.length > 0 && (
-        <div style={{ overflowX: 'auto' }}>
-          <h3>Recent Klines</h3>
+        <>
+          <div style={{ marginBottom: '30px' }}>
+            <h3>Price Chart</h3>
+            <div style={{ height: '400px', position: 'relative' }}>
+              <Line data={prepareChartData()!} options={chartOptions} />
+            </div>
+          </div>
+
+          <div style={{ overflowX: 'auto' }}>
+            <h3>Recent Klines</h3>
           <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '800px' }}>
             <thead>
               <tr style={{ backgroundColor: '#f5f5f5' }}>
@@ -221,6 +290,7 @@ export default function BinancePage() {
             </p>
           )}
         </div>
+        </>
       )}
 
       {!loading && klinesData.length === 0 && !error && (
@@ -234,9 +304,6 @@ export default function BinancePage() {
         <ul>
           <li>
             <strong>GET /api/binance/klines</strong> - Fetch klines data from Binance
-          </li>
-          <li>
-            <strong>GET /api/binance/klines/saved</strong> - Get saved klines data from database
           </li>
           <li>
             <strong>GET /api/binance/intervals</strong> - Get supported intervals
