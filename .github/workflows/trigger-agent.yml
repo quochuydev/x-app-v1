@@ -5,7 +5,7 @@ on:
 
 jobs:
   trigger-agent:
-    if: ${{ !github.event.issue.pull_request }} && ${{ github.event.comment.body != 'deploy' }}
+    if: ${{ github.event.comment.body != 'deploy' }}
     runs-on: ubuntu-latest
     steps:
       - name: Log issue details
