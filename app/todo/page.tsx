@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface Todo {
   id: number;
@@ -12,93 +12,30 @@ interface Todo {
 export default function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [nextId, setNextId] = useState(1);
 
-  const API_BASE = '/api/todos';
-
-  useEffect(() => {
-    fetchTodos();
-  }, []);
-
-  const fetchTodos = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(API_BASE);
-      if (!response.ok) {
-        throw new Error('Failed to fetch todos');
-      }
-      const data = await response.json();
-      setTodos(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const addTodo = async () => {
+  const addTodo = () => {
     if (inputValue.trim()) {
-      try {
-        const response = await fetch(API_BASE, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ content: inputValue.trim() }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to add todo');
-        }
-
-        const newTodo = await response.json();
-        setTodos([...todos, newTodo]);
-        setInputValue('');
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to add todo');
-      }
+      const newTodo: Todo = {
+        id: nextId,
+        content: inputValue.trim(),
+        completed: false,
+        createdAt: new Date().toISOString(),
+      };
+      setTodos([...todos, newTodo]);
+      setNextId(nextId + 1);
+      setInputValue('');
     }
   };
 
-  const toggleTodo = async (id: number) => {
-    const todo = todos.find(t => t.id === id);
-    if (!todo) return;
-
-    try {
-      const response = await fetch(`${API_BASE}/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ completed: !todo.completed }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update todo');
-      }
-
-      const updatedTodo = await response.json();
-      setTodos(todos.map(t => t.id === id ? updatedTodo : t));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update todo');
-    }
+  const toggleTodo = (id: number) => {
+    setTodos(todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
   };
 
-  const deleteTodo = async (id: number) => {
-    try {
-      const response = await fetch(`${API_BASE}/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete todo');
-      }
-
-      setTodos(todos.filter(todo => todo.id !== id));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete todo');
-    }
+  const deleteTodo = (id: number) => {
+    setTodos(todos.filter(todo => todo.id !== id));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -106,52 +43,16 @@ export default function TodoApp() {
     addTodo();
   };
 
-  const clearCompleted = async () => {
-    const completedTodos = todos.filter(todo => todo.completed);
-
-    try {
-      await Promise.all(
-        completedTodos.map(todo =>
-          fetch(`${API_BASE}/${todo.id}`, { method: 'DELETE' })
-        )
-      );
-      setTodos(todos.filter(todo => !todo.completed));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to clear completed todos');
-    }
+  const clearCompleted = () => {
+    setTodos(todos.filter(todo => !todo.completed));
   };
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
       <h1>Simple Todo App</h1>
       <p style={{ color: '#666', marginBottom: '20px' }}>
-        A todo app with database persistence and API integration
+        A simple todo app using React state only
       </p>
-
-      {error && (
-        <div style={{
-          backgroundColor: '#fee',
-          color: '#c00',
-          padding: '10px',
-          borderRadius: '4px',
-          marginBottom: '20px',
-        }}>
-          Error: {error}
-          <button
-            onClick={() => setError(null)}
-            style={{
-              float: 'right',
-              background: 'none',
-              border: 'none',
-              color: '#c00',
-              cursor: 'pointer',
-              fontSize: '16px',
-            }}
-          >
-            ×
-          </button>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -160,19 +61,17 @@ export default function TodoApp() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="What needs to be done?"
-            disabled={loading}
             style={{
               flex: 1,
               padding: '10px',
               border: '1px solid #ddd',
               borderRadius: '4px',
               fontSize: '16px',
-              opacity: loading ? 0.6 : 1,
             }}
           />
           <button
             type="submit"
-            disabled={loading || !inputValue.trim()}
+            disabled={!inputValue.trim()}
             style={{
               padding: '10px 20px',
               backgroundColor: '#0070f3',
@@ -180,18 +79,16 @@ export default function TodoApp() {
               border: 'none',
               borderRadius: '4px',
               fontSize: '16px',
-              cursor: (loading || !inputValue.trim()) ? 'not-allowed' : 'pointer',
-              opacity: (loading || !inputValue.trim()) ? 0.6 : 1,
+              cursor: !inputValue.trim() ? 'not-allowed' : 'pointer',
+              opacity: !inputValue.trim() ? 0.6 : 1,
             }}
           >
-            {loading ? 'Loading...' : 'Add Todo'}
+            Add Todo
           </button>
         </div>
       </form>
 
-      {loading ? (
-        <p style={{ textAlign: 'center', color: '#999' }}>Loading todos...</p>
-      ) : todos.length === 0 ? (
+      {todos.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#999' }}>No todos yet. Add one above!</p>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0 }}>
@@ -210,8 +107,7 @@ export default function TodoApp() {
                 type="checkbox"
                 checked={todo.completed}
                 onChange={() => toggleTodo(todo.id)}
-                disabled={loading}
-                style={{ cursor: loading ? 'not-allowed' : 'pointer' }}
+                style={{ cursor: 'pointer' }}
               />
               <span
                 style={{
@@ -224,16 +120,14 @@ export default function TodoApp() {
               </span>
               <button
                 onClick={() => deleteTodo(todo.id)}
-                disabled={loading}
                 style={{
                   padding: '5px 10px',
                   backgroundColor: '#ff4444',
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
-                  cursor: loading ? 'not-allowed' : 'pointer',
+                  cursor: 'pointer',
                   fontSize: '12px',
-                  opacity: loading ? 0.6 : 1,
                 }}
               >
                 Delete
@@ -251,16 +145,14 @@ export default function TodoApp() {
           {todos.some(todo => todo.completed) && (
             <button
               onClick={clearCompleted}
-              disabled={loading}
               style={{
                 padding: '8px 16px',
                 backgroundColor: '#666',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: loading ? 'not-allowed' : 'pointer',
+                cursor: 'pointer',
                 fontSize: '14px',
-                opacity: loading ? 0.6 : 1,
               }}
             >
               Clear Completed
