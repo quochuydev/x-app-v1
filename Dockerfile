@@ -17,12 +17,13 @@ RUN bun run build
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3000
 
-ENV HOST=0.0.0.0
-ENV PORT=3000
 CMD ["bun", "run", "server.js"]
