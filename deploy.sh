@@ -68,17 +68,23 @@ fi
 sudo systemctl enable docker
 sudo systemctl start docker
 
-# Clone the Git repository
+# Pull the latest changes from the Git repository
 if [ -d "$APP_DIR" ]; then
-  echo "Directory $APP_DIR already exists. Pulling latest changes..."
-  cd $APP_DIR && git pull
+  echo "🔄 Updating existing app directory..."
+  cd "$APP_DIR"
+
+  git fetch origin $BRANCH
+
+  echo "⚙️ Resetting local branch to remote state..."
+  git reset --hard origin/$BRANCH
+
+  echo "✅ Repository synced to latest remote commit."
 else
   echo "Cloning repository from $REPO_URL..."
   git clone $REPO_URL $APP_DIR
   cd $APP_DIR
 fi
 
-git checkout $BRANCH
 git pull
 
 # For Docker internal communication ("db" is the name of Postgres container)
