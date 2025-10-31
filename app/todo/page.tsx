@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Todo {
   id: number;
@@ -12,30 +12,100 @@ interface Todo {
 export default function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [nextId, setNextId] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const addTodo = () => {
-    if (inputValue.trim()) {
-      const newTodo: Todo = {
-        id: nextId,
-        content: inputValue.trim(),
-        completed: false,
-        createdAt: new Date().toISOString(),
-      };
-      setTodos([...todos, newTodo]);
-      setNextId(nextId + 1);
-      setInputValue('');
+  // Fetch todos from API
+  const fetchTodos = async () => {
+    try {
+      const response = await fetch('/api/todos');
+      if (!response.ok) {
+        throw new Error('Failed to fetch todos');
+      }
+      const data = await response.json();
+      setTodos(data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load todos');
+      console.error('Error fetching todos:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const toggleTodo = (id: number) => {
-    setTodos(todos.map(todo =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ));
+  // Load todos on component mount
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const addTodo = async () => {
+    if (inputValue.trim()) {
+      try {
+        const response = await fetch('/api/todos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content: inputValue.trim() }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to add todo');
+        }
+
+        const newTodo = await response.json();
+        setTodos([...todos, newTodo]);
+        setInputValue('');
+        setError(null);
+      } catch (err) {
+        setError('Failed to add todo');
+        console.error('Error adding todo:', err);
+      }
+    }
   };
 
-  const deleteTodo = (id: number) => {
-    setTodos(todos.filter(todo => todo.id !== id));
+  const toggleTodo = async (id: number) => {
+    const todo = todos.find(t => t.id === id);
+    if (!todo) return;
+
+    try {
+      const response = await fetch(`/api/todos/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completed: !todo.completed }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update todo');
+      }
+
+      const updatedTodo = await response.json();
+      setTodos(todos.map(t => t.id === id ? updatedTodo : t));
+      setError(null);
+    } catch (err) {
+      setError('Failed to update todo');
+      console.error('Error updating todo:', err);
+    }
+  };
+
+  const deleteTodo = async (id: number) => {
+    try {
+      const response = await fetch(`/api/todos/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete todo');
+      }
+
+      setTodos(todos.filter(todo => todo.id !== id));
+      setError(null);
+    } catch (err) {
+      setError('Failed to delete todo');
+      console.error('Error deleting todo:', err);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,16 +113,53 @@ export default function TodoApp() {
     addTodo();
   };
 
-  const clearCompleted = () => {
-    setTodos(todos.filter(todo => !todo.completed));
+  const clearCompleted = async () => {
+    const completedTodos = todos.filter(todo => todo.completed);
+
+    try {
+      // Delete all completed todos
+      await Promise.all(
+        completedTodos.map(todo =>
+          fetch(`/api/todos/${todo.id}`, {
+            method: 'DELETE',
+          })
+        )
+      );
+
+      // Update local state
+      setTodos(todos.filter(todo => !todo.completed));
+      setError(null);
+    } catch (err) {
+      setError('Failed to clear completed todos');
+      console.error('Error clearing completed todos:', err);
+    }
   };
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-      <h1>Simple Todo App</h1>
+      <h1>Todo App with API</h1>
       <p style={{ color: '#666', marginBottom: '20px' }}>
-        A simple todo app using React state only
+        A todo app using fetch API with PostgreSQL database
       </p>
+
+      {/* Error display */}
+      {error && (
+        <div style={{
+          backgroundColor: '#fee',
+          color: '#c33',
+          padding: '10px',
+          borderRadius: '4px',
+          marginBottom: '20px',
+          border: '1px solid #fcc'
+        }}>
+          {error}
+        </div>
+      )}
+
+      {/* Loading state */}
+      {loading && (
+        <p style={{ textAlign: 'center', color: '#666' }}>Loading todos...</p>
+      )}
 
       <form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -88,7 +195,7 @@ export default function TodoApp() {
         </div>
       </form>
 
-      {todos.length === 0 ? (
+      {!loading && todos.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#999' }}>No todos yet. Add one above!</p>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0 }}>
