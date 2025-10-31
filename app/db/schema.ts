@@ -4,6 +4,8 @@ import {
   varchar,
   boolean,
   timestamp,
+  decimal,
+  integer,
 } from 'drizzle-orm/pg-core';
 
 export const todos = pgTable('todos', {
@@ -12,3 +14,4 @@ export const todos = pgTable('todos', {
   completed: boolean('completed').default(false),
   createdAt: timestamp('created_at').defaultNow(),
 });
+

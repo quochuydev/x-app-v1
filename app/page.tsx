@@ -101,6 +101,15 @@ export default async function Home() {
         <a href="/db">View the demo</a>
       </p>
 
+      <h3>Binance Klines API</h3>
+      <p>
+        Fetch BTC/USDT Kline data from Binance API with selectable intervals (1m, 5m, 1h).
+        This feature demonstrates external API integration and data storage in the database.
+      </p>
+      <p>
+        <a href="/binance">View the demo</a>
+      </p>
+
       <h3>Caching / Incremental Static Regeneration</h3>
       <p>
         By default, Next.js ISR uses an <code>lru-cache</code> and stores cached
