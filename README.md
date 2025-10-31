@@ -84,6 +84,26 @@ CREATE TABLE IF NOT EXISTS "todos" (
 );'
 ```
 
+## Database Setup
+
+The todo functionality uses PostgreSQL with Drizzle ORM. To set up the database schema:
+
+1. **Generate database schema**:
+   ```bash
+   bun run db:generate
+   ```
+
+2. **Push schema to database**:
+   ```bash
+   bun run db:push
+   ```
+
+The `todos` table will be created with the following structure:
+- `id` (serial, primary key)
+- `content` (varchar 255, not null)
+- `completed` (boolean, default false)
+- `created_at` (timestamp, default now)
+
 For pushing subsequent updates, I also provided an `update.sh` script as an example.
 
 ## Running Locally

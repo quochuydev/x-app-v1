@@ -87,6 +87,17 @@ export default async function Home() {
         </a>
       </p>
 
+      <h3>Simple Todo App</h3>
+      <p>
+        A simple todo application built with React state only, no database required.
+        This demonstrates client-side state management in Next.js using the
+        <code>use client</code> directive. All todo data is stored in component
+        state and will reset on page refresh.
+      </p>
+      <p>
+        <a href="/todo">View the demo</a>
+      </p>
+
       <h3>Postgres Database</h3>
       <p>
         This route reads and writes to our Postgres database, which is in its
