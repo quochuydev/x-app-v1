@@ -13,6 +13,7 @@ jobs:
           echo "Triggered by issue #${{ github.event.issue.number }}"
           echo "Comment: ${{ github.event.comment.body }}"
           echo "Repository: ${{ github.repository }}"
+          echo "Pull Request: ${{ github.event.issue.pull_request }}"
 
       - name: Call Agent Repository
         uses: peter-evans/repository-dispatch@v3
