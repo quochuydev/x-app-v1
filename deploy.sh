@@ -14,7 +14,7 @@ echo "🚀 Deploying to branch $BRANCH"
 
 if [ -z "$BRANCH" ]; then
   echo "Branch not specified."
-  BRANCH="main"
+  exit 1
 fi
 
 # Script Vars
