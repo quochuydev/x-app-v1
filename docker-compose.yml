@@ -5,6 +5,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - GITHUB_SHA=${GITHUB_SHA}
     depends_on:
       - db
     networks:

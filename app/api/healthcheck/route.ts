@@ -7,7 +7,9 @@ export async function GET() {
         status: "healthy",
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        version: "1.0.0",
+        version: {
+          commit: process.env.GITHUB_SHA || "unknown",
+        },
       },
       {
         status: 200,
