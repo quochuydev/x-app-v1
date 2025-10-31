@@ -1,6 +1,7 @@
 name: Update to Server
 
 on:
+  workflow_dispatch:
   issue_comment:
     types: [created]
 
