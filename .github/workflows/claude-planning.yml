@@ -35,9 +35,9 @@ jobs:
           prompt: |
             REPO: ${{ github.repository }}
             BRANCH: ${{ github.ref_name }}
-            1. Create a new branch and create a pull request for this feature: feat/claude/issue-{number}-yyyymmdd-hhmm
-            2. Use superpower to write coding plan: /write-plan ${{ github.event.client_payload.prompt }}
-            3. Commit and push the plan: read @docs/ecommerce/erd.md  as source of truth, convert to drizzle schema, consistency naming
+            1. Create a new branch: feat/claude/issue-{number}-yyyymmdd-hhmm
+            2. Use superpower to write coding plan: read @docs/ecommerce/erd.md  as source of truth, convert to drizzle schema, consistency naming
+            3. Commit and push code then create a pull request for this feature.
 
           # Optional: Customize the trigger phrase (default: @claude)
           # trigger_phrase: "/claude"
