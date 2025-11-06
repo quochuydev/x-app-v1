@@ -15,7 +15,10 @@ jobs:
       actions: read
     steps:
       - name: Get payload
-        run: echo "${{ github.event.client_payload.prompt }}"
+        run: |
+          echo "repository: ${{ github.repository }}"
+          echo "ref_name: ${{ github.ref_name }}"
+          echo "prompt: ${{ github.event.client_payload.prompt }}"
 
       - name: Checkout repository
         uses: actions/checkout@v5
