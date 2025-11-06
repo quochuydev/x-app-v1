@@ -46,6 +46,8 @@ jobs:
           # assignee_trigger: "claude-bot"
 
           # Optional: Configure Claude's behavior with CLI arguments
+          claude_args: |
+            --dangerously-skip-permissions
           # claude_args: |
           #   --system-prompt "Follow our coding standards. Ensure all new code has tests. Use TypeScript for new files."
           #   --model claude-opus-4-1-20250805
