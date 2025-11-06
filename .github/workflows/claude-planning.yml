@@ -30,7 +30,7 @@ jobs:
         #   ANTHROPIC_BASE_URL: ""
         with:
           claude_code_oauth_token: ${{ secrets.ANTHROPIC_API_KEY }}
-          # prompt: "/write-plan ${github.event.client_payload.prompt}"
+          prompt: "/write-plan ${github.event.client_payload.prompt}"
 
           # Optional: Customize the trigger phrase (default: @claude)
           # trigger_phrase: "/claude"
