@@ -1,0 +1,63 @@
+Style:
+  - Theme: Modern
+  - Typography: Sans-serif
+  - UI Elements: Flat with subtle shadows
+  - Layout: Clean dashboard interface with sidebar navigation
+
+Color Scheme:
+  - Primary: #2563eb (Blue for primary actions)
+  - Secondary: #64748b (Gray for secondary actions)
+  - Neutral: #f8fafc (Light backgrounds)
+  - Accent: #10b981 (Green for success states)
+  - Background: #ffffff (White)
+  - Text: #1e293b (Dark gray for readability)
+
+Main Features:
+  - Feature: Order Management
+    Description: View and manage order statuses with workflow visualization.
+    Components: [orderList, statusDropdown, orderDetails, cancelButton, refundButton, statusWorkflow]
+    DataBinding: GET /api/admin/order.getAll, PUT /api/admin/order.updateStatus, PUT /api/admin/order.cancel
+
+  - Feature: Product Management
+    Description: CRUD operations for products with bulk actions and search.
+    Components: [productList, productForm, searchFilter, bulkActions, deleteButton, productPreview]
+    DataBinding: GET /api/admin/product.getAll, POST /api/admin/product.create, PUT /api/admin/product.update, DELETE /api/admin/product.delete
+
+  - Feature: User Management
+    Description: Manage customer accounts and assign roles with search capabilities.
+    Components: [userList, userForm, roleSelector, searchFilter, deleteUserButton]
+    DataBinding: GET /api/admin/user.getAll, POST /api/admin/user.create, PUT /api/admin/user.update, DELETE /api/admin/user.delete
+
+  - Feature: Admin Dashboard
+    Description: Overview of key metrics and recent activities.
+    Components: [metricsCards, recentOrders, topProducts, quickActions, activityFeed]
+
+Navigation:
+  - Type: Sidebar
+  - Structure:
+      [
+        Dashboard,
+        Orders,
+        Products,
+        Users,
+      ]
+
+Interactions:
+  - Animations: Subtle transitions and state changes
+  - Human-in-the-Loop Inputs:
+      [
+        Order status updates and confirmations,
+        Product creation and editing forms,
+        User role assignments,
+        Bulk operation confirmations,
+      ]
+
+Accessibility:
+  - Compliance: WCAG 2.1 AA
+  - Features:
+      [
+        High contrast mode,
+        Screen reader support,
+        Keyboard navigation,
+        ARIA labels,
+      ]

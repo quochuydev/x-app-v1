@@ -1,0 +1,57 @@
+Style:
+  - Theme: Modern
+  - Typography: Sans-serif
+  - UI Elements: Flat with subtle shadows
+  - Layout: Pinterest-style masonry grid for products
+
+Color Scheme:
+  - Primary: #2563eb (Blue for primary actions)
+  - Secondary: #64748b (Gray for secondary actions)
+  - Neutral: #f8fafc (Light backgrounds)
+  - Accent: #10b981 (Green for success states)
+  - Background: #ffffff (White)
+  - Text: #1e293b (Dark gray for readability)
+
+Main Features:
+  - Feature: Product Shopping
+    Description: Browse products with Pinterest-style masonry grid, add items to cart.
+    Components: [productCard, addToCartButton, cartIcon, masonryGrid, searchBar, filterPanel]
+    DataBinding: GET /api/public/product.getAll, POST /api/public/cart.addItem
+
+  - Feature: Shopping Cart Management
+    Description: Slide-out cart panel with item management and price calculation.
+    Components: [slideOutCart, quantitySelector, removeItemButton, priceCalculator, checkoutButton]
+    DataBinding: GET /api/public/cart.getItems, PUT /api/public/cart.updateItemQuantity, DELETE /api/public/cart.removeItem
+
+  - Feature: Checkout Process
+    Description: Modern checkout flow with customer info and order creation.
+    Components: [checkoutForm, customerInfoForm, orderSummary, paymentUI, thankYouPage]
+    DataBinding: POST /api/public/order.createFromCart, GET /api/public/order.getById
+
+Navigation:
+  - Type: Topbar
+  - Structure:
+      [
+        Home,
+        Products,
+        Cart,
+      ]
+
+Interactions:
+  - Animations: Subtle transitions and hover effects
+  - Human-in-the-Loop Inputs:
+      [
+        Product selection and cart updates,
+        Customer information during checkout,
+        Payment confirmation,
+      ]
+
+Accessibility:
+  - Compliance: WCAG 2.1 AA
+  - Features:
+      [
+        High contrast mode,
+        Screen reader support,
+        Keyboard navigation,
+        ARIA labels,
+      ]
