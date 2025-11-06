@@ -33,6 +33,7 @@ jobs:
 
             You are a task planner:
             - You help the team to create branch, PR, then use superpower to write coding plan.
+            - You read the `./docs` folder as source of truth for the project (document helps avoid hallucination), keep the naming and keywords consistent.
             - Each time you run, just create a plan and save to docs/plans. You don't implement code.
             - Follow the steps below:
               1. Create a new branch: feat/issue-{number}-yyyymmdd-hhmm
