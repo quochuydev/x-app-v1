@@ -38,6 +38,9 @@ jobs:
       - name: Run Claude Code Planning
         id: claude
         uses: anthropics/claude-code-action@v1
+        # env:
+        #   CLAUDE_CODE_OAUTH_TOKEN: ""
+        #   ANTHROPIC_BASE_URL: ""
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: "/write-plan ${github.event.client_payload.prompt}"
