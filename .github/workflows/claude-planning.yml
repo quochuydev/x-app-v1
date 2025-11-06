@@ -25,13 +25,8 @@ jobs:
       - name: Run Claude Code Planning
         id: claude
         uses: anthropics/claude-code-action@v1
-        # env:
-        #   CLAUDE_CODE_OAUTH_TOKEN: ""
-        #   ANTHROPIC_BASE_URL: ""
         with:
           claude_code_oauth_token: ${{ secrets.ANTHROPIC_API_KEY }}
-          # track_progress: true
-          # prompt: ${{ github.event.client_payload.prompt }}
           prompt: |
             REPO: ${{ github.repository }}
             BRANCH: ${{ github.ref_name }}
@@ -41,7 +36,7 @@ jobs:
             - Each time you run, just create a plan and save to docs/plans. You don't implement code.
             - Follow the steps below:
               1. Create a new branch: feat/issue-{number}-yyyymmdd-hhmm
-              2. Use superpower to write coding plan: read @docs/ecommerce/erd.md  as source of truth, convert to drizzle schema, consistency naming
+              2. Use superpower to write coding plan: ${{ github.event.client_payload.prompt }}
               3. Commit and push code then create a pull request for this feature.
 
           # Optional: Customize the trigger phrase (default: @claude)
