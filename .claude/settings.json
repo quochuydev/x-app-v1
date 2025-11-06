@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun run --help:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Skill(superpowers:writing-plans)",
+      "Skill(writing-plans)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
