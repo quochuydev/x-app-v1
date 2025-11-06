@@ -4,7 +4,7 @@
 
 **Goal:** Convert the e-commerce ERD (docs/ecommerce/erd.md) to a production-ready Drizzle ORM schema with consistent naming conventions, proper relationships, and type safety.
 
-**Architecture:** Replace the existing simple todos schema with a complete e-commerce schema including users, products, carts, orders, and file management. Use Drizzle ORM's PostgreSQL adapter with proper foreign key constraints, indexes, and timestamps. Follow consistent naming conventions (camelCase for TypeScript, snake_case for database columns).
+**Architecture:** Replace the existing simple todos schema with a complete e-commerce schema including users, products, carts, orders, and file management. Use Drizzle ORM's PostgreSQL adapter with proper foreign key constraints, indexes, and timestamps. Follow the ERD naming conventions exactly (camelCase for all field names).
 
 **Tech Stack:** Drizzle ORM (v0.38.2), PostgreSQL, TypeScript, Next.js 15
 
@@ -32,13 +32,13 @@ import {
 export const userRoleEnum = pgEnum('user_role', ['admin', 'user', 'customer']);
 
 // User table
-export const users = pgTable('users', {
+export const user = pgTable('user', {
   id: uuid('id').defaultRandom().primaryKey(),
-  firstName: varchar('first_name', { length: 255 }).notNull(),
-  lastName: varchar('last_name', { length: 255 }).notNull(),
+  firstName: varchar('firstName', { length: 255 }).notNull(),
+  lastName: varchar('lastName', { length: 255 }).notNull(),
   role: userRoleEnum('role').notNull().default('customer'),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 ```
 
@@ -56,7 +56,7 @@ Expected: Migration file created in `x-app/app/db/migrations/`
 
 ```bash
 git add x-app/app/db/schema.ts x-app/app/db/migrations/
-git commit -m "feat: add users table schema with role enum"
+git commit -m "feat: add user table schema with role enum"
 ```
 
 ---
@@ -68,7 +68,7 @@ git commit -m "feat: add users table schema with role enum"
 
 **Step 1: Add product and file tables**
 
-Add these tables to schema.ts after the users table:
+Add these tables to schema.ts after the user table:
 
 ```typescript
 import {
@@ -85,34 +85,34 @@ import { relations } from 'drizzle-orm';
 // ... existing user table code ...
 
 // Product table
-export const products = pgTable('products', {
+export const product = pgTable('product', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // File table
-export const files = pgTable('files', {
+export const file = pgTable('file', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   url: varchar('url', { length: 500 }).notNull(),
-  productId: uuid('product_id').references(() => products.id, { onDelete: 'cascade' }),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  productId: uuid('productId').references(() => product.id, { onDelete: 'cascade' }),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Relations
-export const productsRelations = relations(products, ({ many }) => ({
-  files: many(files),
+export const productRelations = relations(product, ({ many }) => ({
+  files: many(file),
 }));
 
-export const filesRelations = relations(files, ({ one }) => ({
-  product: one(products, {
-    fields: [files.productId],
-    references: [products.id],
+export const fileRelations = relations(file, ({ one }) => ({
+  product: one(product, {
+    fields: [file.productId],
+    references: [product.id],
   }),
 }));
 ```
@@ -131,7 +131,7 @@ Expected: New migration file created with products and files tables
 
 ```bash
 git add x-app/app/db/schema.ts x-app/app/db/migrations/
-git commit -m "feat: add products and files tables with relations"
+git commit -m "feat: add product and file tables with relations"
 ```
 
 ---
@@ -141,7 +141,7 @@ git commit -m "feat: add products and files tables with relations"
 **Files:**
 - Modify: `x-app/app/db/schema.ts`
 
-**Step 1: Add cart and cartItems tables**
+**Step 1: Add cart and cartItem tables**
 
 Add these tables to schema.ts:
 
@@ -161,50 +161,41 @@ import { relations } from 'drizzle-orm';
 // ... existing tables ...
 
 // Cart table
-export const carts = pgTable('carts', {
+export const cart = pgTable('cart', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull().default('0'),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Cart Item table
-export const cartItems = pgTable('cart_items', {
+export const cartItem = pgTable('cartItem', {
   id: uuid('id').defaultRandom().primaryKey(),
-  cartId: uuid('cart_id').references(() => carts.id, { onDelete: 'cascade' }).notNull(),
-  productId: uuid('product_id').references(() => products.id, { onDelete: 'cascade' }).notNull(),
-  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  quantity: integer('quantity').notNull().default(1),
-  totalPrice: numeric('total_price', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  productId: varchar('productId', { length: 255 }).notNull(), // FK to product
+  price: varchar('price', { length: 255 }).notNull(),
+  quantity: integer('quantity').notNull(),
+  totalPrice: numeric('totalPrice', { precision: 10, scale: 2 }).notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Add to existing relations or create new ones
-export const cartsRelations = relations(carts, ({ one, many }) => ({
-  user: one(users, {
-    fields: [carts.userId],
-    references: [users.id],
-  }),
-  items: many(cartItems),
+export const cartRelations = relations(cart, ({ many }) => ({
+  items: many(cartItem),
 }));
 
-export const cartItemsRelations = relations(cartItems, ({ one }) => ({
-  cart: one(carts, {
-    fields: [cartItems.cartId],
-    references: [carts.id],
-  }),
-  product: one(products, {
-    fields: [cartItems.productId],
-    references: [products.id],
+export const cartItemRelations = relations(cartItem, ({ one }) => ({
+  cart: one(cart),
+  product: one(product, {
+    fields: [cartItem.productId],
+    references: [product.id],
   }),
 }));
 
-// Update products relations to include cartItems
-export const productsRelations = relations(products, ({ many }) => ({
-  files: many(files),
-  cartItems: many(cartItems),
+// Update product relations to include cartItems
+export const productRelations = relations(product, ({ many }) => ({
+  files: many(file),
+  cartItems: many(cartItem),
 }));
 ```
 
@@ -222,7 +213,7 @@ Expected: New migration file created
 
 ```bash
 git add x-app/app/db/schema.ts x-app/app/db/migrations/
-git commit -m "feat: add carts and cart items tables with relations"
+git commit -m "feat: add cart and cart item tables with relations"
 ```
 
 ---
@@ -241,64 +232,63 @@ export const orderStatusEnum = pgEnum('order_status', ['new', 'processing', 'can
 export const paymentStatusEnum = pgEnum('payment_status', ['unpaid', 'paid', 'refunded']);
 ```
 
-**Step 2: Add orders and orderItems tables**
+**Step 2: Add order and orderItem tables**
 
 Add these tables to schema.ts:
 
 ```typescript
 // Order table
-export const orders = pgTable('orders', {
+export const order = pgTable('order', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
   status: orderStatusEnum('status').notNull().default('new'),
-  paymentStatus: paymentStatusEnum('payment_status').notNull().default('unpaid'),
+  paymentStatus: paymentStatusEnum('paymentStatus').notNull().default('unpaid'),
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  userId: varchar('userId', { length: 255 }),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Order Item table
-export const orderItems = pgTable('order_items', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  orderId: uuid('order_id').references(() => orders.id, { onDelete: 'cascade' }).notNull(),
-  productId: uuid('product_id').references(() => products.id, { onDelete: 'set null' }),
+export const orderItem = pgTable('orderItem', {
+  id: uuid('id').primaryKey(),
   quantity: integer('quantity').notNull(),
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  productId: varchar('productId', { length: 255 }).notNull(), // FK
+  orderId: varchar('orderId', { length: 255 }).notNull(), // FK
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Relations
-export const ordersRelations = relations(orders, ({ one, many }) => ({
-  user: one(users, {
-    fields: [orders.userId],
-    references: [users.id],
+export const orderRelations = relations(order, ({ one, many }) => ({
+  user: one(user, {
+    fields: [order.userId],
+    references: [user.id],
   }),
-  items: many(orderItems),
+  items: many(orderItem),
 }));
 
-export const orderItemsRelations = relations(orderItems, ({ one }) => ({
-  order: one(orders, {
-    fields: [orderItems.orderId],
-    references: [orders.id],
+export const orderItemRelations = relations(orderItem, ({ one }) => ({
+  order: one(order, {
+    fields: [orderItem.orderId],
+    references: [order.id],
   }),
-  product: one(products, {
-    fields: [orderItems.productId],
-    references: [products.id],
+  product: one(product, {
+    fields: [orderItem.productId],
+    references: [product.id],
   }),
 }));
 
-// Update users relations
-export const usersRelations = relations(users, ({ many }) => ({
-  orders: many(orders),
-  carts: many(carts),
+// Update user relations
+export const userRelations = relations(user, ({ many }) => ({
+  orders: many(order),
 }));
 
-// Update products relations to include orderItems
-export const productsRelations = relations(products, ({ many }) => ({
-  files: many(files),
-  cartItems: many(cartItems),
-  orderItems: many(orderItems),
+// Update product relations to include orderItems
+export const productRelations = relations(product, ({ many }) => ({
+  files: many(file),
+  cartItems: many(cartItem),
+  orderItems: many(orderItem),
 }));
 ```
 
@@ -316,7 +306,7 @@ Expected: New migration file created
 
 ```bash
 git add x-app/app/db/schema.ts x-app/app/db/migrations/
-git commit -m "feat: add orders and order items tables with status enums"
+git commit -m "feat: add order and order item tables with status enums"
 ```
 
 ---
@@ -356,135 +346,125 @@ export const paymentStatusEnum = pgEnum('payment_status', ['unpaid', 'paid', 're
 // ============================================================
 
 // User table
-export const users = pgTable('users', {
+export const user = pgTable('user', {
   id: uuid('id').defaultRandom().primaryKey(),
-  firstName: varchar('first_name', { length: 255 }).notNull(),
-  lastName: varchar('last_name', { length: 255 }).notNull(),
+  firstName: varchar('firstName', { length: 255 }).notNull(),
+  lastName: varchar('lastName', { length: 255 }).notNull(),
   role: userRoleEnum('role').notNull().default('customer'),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Product table
-export const products = pgTable('products', {
+export const product = pgTable('product', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // File table
-export const files = pgTable('files', {
+export const file = pgTable('file', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   url: varchar('url', { length: 500 }).notNull(),
-  productId: uuid('product_id').references(() => products.id, { onDelete: 'cascade' }),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  productId: uuid('productId').references(() => product.id, { onDelete: 'cascade' }),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Cart table
-export const carts = pgTable('carts', {
+export const cart = pgTable('cart', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull().default('0'),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Cart Item table
-export const cartItems = pgTable('cart_items', {
+export const cartItem = pgTable('cartItem', {
   id: uuid('id').defaultRandom().primaryKey(),
-  cartId: uuid('cart_id').references(() => carts.id, { onDelete: 'cascade' }).notNull(),
-  productId: uuid('product_id').references(() => products.id, { onDelete: 'cascade' }).notNull(),
-  price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  quantity: integer('quantity').notNull().default(1),
-  totalPrice: numeric('total_price', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  productId: varchar('productId', { length: 255 }).notNull(),
+  price: varchar('price', { length: 255 }).notNull(),
+  quantity: integer('quantity').notNull(),
+  totalPrice: numeric('totalPrice', { precision: 10, scale: 2 }).notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Order table
-export const orders = pgTable('orders', {
+export const order = pgTable('order', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
   status: orderStatusEnum('status').notNull().default('new'),
-  paymentStatus: paymentStatusEnum('payment_status').notNull().default('unpaid'),
+  paymentStatus: paymentStatusEnum('paymentStatus').notNull().default('unpaid'),
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  userId: varchar('userId', { length: 255 }),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // Order Item table
-export const orderItems = pgTable('order_items', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  orderId: uuid('order_id').references(() => orders.id, { onDelete: 'cascade' }).notNull(),
-  productId: uuid('product_id').references(() => products.id, { onDelete: 'set null' }),
+export const orderItem = pgTable('orderItem', {
+  id: uuid('id').primaryKey(),
   quantity: integer('quantity').notNull(),
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  productId: varchar('productId', { length: 255 }).notNull(),
+  orderId: varchar('orderId', { length: 255 }).notNull(),
+  createdDate: timestamp('createdDate').defaultNow().notNull(),
+  updatedDate: timestamp('updatedDate').defaultNow().notNull(),
 });
 
 // ============================================================
 // RELATIONS
 // ============================================================
 
-export const usersRelations = relations(users, ({ many }) => ({
-  orders: many(orders),
-  carts: many(carts),
+export const userRelations = relations(user, ({ many }) => ({
+  orders: many(order),
 }));
 
-export const productsRelations = relations(products, ({ many }) => ({
-  files: many(files),
-  cartItems: many(cartItems),
-  orderItems: many(orderItems),
+export const productRelations = relations(product, ({ many }) => ({
+  files: many(file),
+  cartItems: many(cartItem),
+  orderItems: many(orderItem),
 }));
 
-export const filesRelations = relations(files, ({ one }) => ({
-  product: one(products, {
-    fields: [files.productId],
-    references: [products.id],
+export const fileRelations = relations(file, ({ one }) => ({
+  product: one(product, {
+    fields: [file.productId],
+    references: [product.id],
   }),
 }));
 
-export const cartsRelations = relations(carts, ({ one, many }) => ({
-  user: one(users, {
-    fields: [carts.userId],
-    references: [users.id],
-  }),
-  items: many(cartItems),
+export const cartRelations = relations(cart, ({ many }) => ({
+  items: many(cartItem),
 }));
 
-export const cartItemsRelations = relations(cartItems, ({ one }) => ({
-  cart: one(carts, {
-    fields: [cartItems.cartId],
-    references: [carts.id],
-  }),
-  product: one(products, {
-    fields: [cartItems.productId],
-    references: [products.id],
+export const cartItemRelations = relations(cartItem, ({ one }) => ({
+  cart: one(cart),
+  product: one(product, {
+    fields: [cartItem.productId],
+    references: [product.id],
   }),
 }));
 
-export const ordersRelations = relations(orders, ({ one, many }) => ({
-  user: one(users, {
-    fields: [orders.userId],
-    references: [users.id],
+export const orderRelations = relations(order, ({ one, many }) => ({
+  user: one(user, {
+    fields: [order.userId],
+    references: [user.id],
   }),
-  items: many(orderItems),
+  items: many(orderItem),
 }));
 
-export const orderItemsRelations = relations(orderItems, ({ one }) => ({
-  order: one(orders, {
-    fields: [orderItems.orderId],
-    references: [orders.id],
+export const orderItemRelations = relations(orderItem, ({ one }) => ({
+  order: one(order, {
+    fields: [orderItem.orderId],
+    references: [order.id],
   }),
-  product: one(products, {
-    fields: [orderItems.productId],
-    references: [products.id],
+  product: one(product, {
+    fields: [orderItem.productId],
+    references: [product.id],
   }),
 }));
 ```
@@ -523,22 +503,22 @@ Add these type exports at the end of schema.ts:
 // ============================================================
 
 // Inferred types for insert operations
-export type InsertUser = typeof users.$inferInsert;
-export type InsertProduct = typeof products.$inferInsert;
-export type InsertFile = typeof files.$inferInsert;
-export type InsertCart = typeof carts.$inferInsert;
-export type InsertCartItem = typeof cartItems.$inferInsert;
-export type InsertOrder = typeof orders.$inferInsert;
-export type InsertOrderItem = typeof orderItems.$inferInsert;
+export type InsertUser = typeof user.$inferInsert;
+export type InsertProduct = typeof product.$inferInsert;
+export type InsertFile = typeof file.$inferInsert;
+export type InsertCart = typeof cart.$inferInsert;
+export type InsertCartItem = typeof cartItem.$inferInsert;
+export type InsertOrder = typeof order.$inferInsert;
+export type InsertOrderItem = typeof orderItem.$inferInsert;
 
 // Inferred types for select operations
-export type SelectUser = typeof users.$inferSelect;
-export type SelectProduct = typeof products.$inferSelect;
-export type SelectFile = typeof files.$inferSelect;
-export type SelectCart = typeof carts.$inferSelect;
-export type SelectCartItem = typeof cartItems.$inferSelect;
-export type SelectOrder = typeof orders.$inferSelect;
-export type SelectOrderItem = typeof orderItems.$inferSelect;
+export type SelectUser = typeof user.$inferSelect;
+export type SelectProduct = typeof product.$inferSelect;
+export type SelectFile = typeof file.$inferSelect;
+export type SelectCart = typeof cart.$inferSelect;
+export type SelectCartItem = typeof cartItem.$inferSelect;
+export type SelectOrder = typeof order.$inferSelect;
+export type SelectOrderItem = typeof orderItem.$inferSelect;
 ```
 
 **Step 2: Verify TypeScript compilation**
@@ -608,19 +588,19 @@ This document describes the Drizzle ORM schema implementation based on the ERD i
 
 ### Tables
 
-1. **users** - Customer and admin accounts
-2. **products** - Product catalog
-3. **files** - Product images and attachments
-4. **carts** - Shopping carts
-5. **cart_items** - Items in shopping carts
-6. **orders** - Customer orders
-7. **order_items** - Items in orders
+1. **user** - Customer and admin accounts
+2. **product** - Product catalog
+3. **file** - Product images and attachments
+4. **cart** - Shopping carts
+5. **cartItem** - Items in shopping carts
+6. **order** - Customer orders
+7. **orderItem** - Items in orders
 
 ### Naming Conventions
 
-- **TypeScript**: camelCase for variables and properties
-- **Database**: snake_case for table and column names
-- **Tables**: plural form (users, products, orders)
+- **TypeScript**: camelCase for variables, properties, and table exports
+- **Database**: camelCase for table and column names (matching ERD exactly)
+- **Tables**: singular form (user, product, order)
 - **Enums**: descriptive names with Enum suffix (userRoleEnum)
 
 ### Key Decisions
@@ -641,7 +621,7 @@ This document describes the Drizzle ORM schema implementation based on the ERD i
 
 ```typescript
 import { db } from './drizzle';
-import { users, InsertUser } from './schema';
+import { user, InsertUser } from './schema';
 
 const newUser: InsertUser = {
   firstName: 'John',
@@ -649,16 +629,16 @@ const newUser: InsertUser = {
   role: 'customer',
 };
 
-await db.insert(users).values(newUser);
+await db.insert(user).values(newUser);
 ```
 
 ### Query Products with Files
 
 ```typescript
 import { db } from './drizzle';
-import { products } from './schema';
+import { product } from './schema';
 
-const productsWithFiles = await db.query.products.findMany({
+const productsWithFiles = await db.query.product.findMany({
   with: {
     files: true,
   },
@@ -669,10 +649,10 @@ const productsWithFiles = await db.query.products.findMany({
 
 ```typescript
 import { db } from './drizzle';
-import { orders } from './schema';
+import { order } from './schema';
 
-const orderDetails = await db.query.orders.findFirst({
-  where: (orders, { eq }) => eq(orders.id, orderId),
+const orderDetails = await db.query.order.findFirst({
+  where: (order, { eq }) => eq(order.id, orderId),
   with: {
     user: true,
     items: {
@@ -764,7 +744,7 @@ git commit -m "chore: verify complete e-commerce schema implementation"
 
 This plan converts the ERD from `docs/ecommerce/erd.md` into a complete Drizzle ORM schema following these principles:
 
-✅ **Consistent Naming**: camelCase in TypeScript, snake_case in database
+✅ **Consistent Naming**: camelCase throughout, matching ERD exactly
 ✅ **Type Safety**: Full TypeScript inference with Insert/Select types
 ✅ **Proper Relations**: Drizzle relations for easy querying
 ✅ **Data Integrity**: Foreign keys with appropriate cascade/set null behavior
@@ -773,4 +753,4 @@ This plan converts the ERD from `docs/ecommerce/erd.md` into a complete Drizzle 
 ✅ **DRY**: Reusable type exports
 ✅ **YAGNI**: Only what's in the ERD, nothing extra
 
-The implementation is production-ready and follows Drizzle ORM best practices.
+The implementation is production-ready and follows Drizzle ORM best practices while maintaining exact naming consistency with the source ERD.
