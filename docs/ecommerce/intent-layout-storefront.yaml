@@ -1,57 +1,350 @@
-Style:
-  - Theme: Modern
-  - Typography: Sans-serif
-  - UI Elements: Flat with subtle shadows
-  - Layout: Pinterest-style masonry grid for products
+# Shopify Storefront Clone - 100% UI Match
+# Design System: Shopify Dawn Theme / Modern Storefront
 
-Color Scheme:
-  - Primary: #2563eb (Blue for primary actions)
-  - Secondary: #64748b (Gray for secondary actions)
-  - Neutral: #f8fafc (Light backgrounds)
-  - Accent: #10b981 (Green for success states)
-  - Background: #ffffff (White)
-  - Text: #1e293b (Dark gray for readability)
+Style:
+  - Theme: Shopify Modern Storefront (Dawn theme inspired)
+  - Typography:
+      - Font Family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif
+      - Headings: System font stack (600-700 weight)
+      - Body: System font stack (400 weight)
+      - Font Sizes: 14px (body), 16px (large text), 24-32px (headings)
+  - UI Elements: Clean, minimal design with smooth animations
+  - Layout: Responsive grid system with max-width containers (1400px)
+  - Spacing: Consistent 8px grid system
+
+Color Scheme (Shopify Storefront - Customizable):
+  - Primary: #121212 (Dark text, can be customized to brand color)
+  - Button Primary: #000000 (Black buttons, hover: #333333)
+  - Button Secondary: #FFFFFF (White buttons with border)
+  - Background: #FFFFFF (White background)
+  - Background Secondary: #F7F7F7 (Light gray sections)
+  - Border: #E8E8E1 (Light borders)
+  - Text Primary: #000000 (Black text)
+  - Text Secondary: #6D6D6D (Gray text)
+  - Text Subdued: #969696 (Muted text)
+  - Success: #008060 (Shopify green)
+  - Error: #D72C0D (Red for errors)
+  - Link: #000000 (Black links with underline on hover)
 
 Main Features:
-  - Feature: Product Shopping
-    Description: Browse products with Pinterest-style masonry grid, add items to cart.
-    Components: [productCard, addToCartButton, cartIcon, masonryGrid, searchBar, filterPanel]
-    DataBinding: GET /api/public/product.getAll, POST /api/public/cart.addItem
+  - Feature: Homepage
+    Description: Hero section with featured products, collections, and promotional banners
+    Components (shadcn):
+      - HeroSection (full-width with background image)
+      - Card (collection cards in grid)
+      - ProductCard (featured products in carousel)
+      - ImageWithText (Card + two-column layout)
+      - Form + Input + Button (newsletter signup)
+      - Alert (AnnouncementBar - dismissible)
+      - Footer (multi-column with Separator)
+    Libraries:
+      - Embla Carousel (featured products carousel)
+    Layout: Stacked sections with full-width and contained layouts
+    DataBinding: GET /api/public/homepage.getFeaturedContent
 
-  - Feature: Shopping Cart Management
-    Description: Slide-out cart panel with item management and price calculation.
-    Components: [slideOutCart, quantitySelector, removeItemButton, priceCalculator, checkoutButton]
+  - Feature: Collection/Product Listing
+    Description: Product grid with Shopify-style filtering, sorting, and infinite scroll
+    Components (shadcn):
+      - Custom CollectionHeader
+      - ProductGrid (responsive grid)
+      - ProductCard (Card + Avatar + Badge + Button)
+      - Sheet (FilterDrawer on mobile)
+      - Accordion (filter categories)
+      - Checkbox (filter options)
+      - Badge (active filter pills with X button)
+      - Select (sort dropdown)
+      - Button (load more pagination)
+      - Breadcrumb (navigation)
+    Libraries:
+      - @tanstack/react-query (infinite scroll)
+    Layout: Sidebar filters (desktop) + product grid, mobile Sheet filters
+    DataBinding: GET /api/public/product.getAll, GET /api/public/collection.getProducts
+    Interactions:
+      - Hover effect on product cards (secondary image reveal)
+      - Dialog (quick view modal)
+      - Filter Sheet animations
+      - Grid/list view toggle
+
+  - Feature: Product Detail Page (PDP)
+    Description: Shopify-style product page with gallery, variants, and add to cart
+    Components (shadcn):
+      - ProductGallery (Embla Carousel with thumbnails)
+      - Dialog (image lightbox/zoom)
+      - Card (product info section)
+      - RadioGroup or Button group (variant selector)
+      - Button group (QuantitySelector with - and +)
+      - Button (AddToCart, sticky on mobile)
+      - Accordion (product description sections)
+      - Custom ReviewsSection (Card + ratings)
+      - Embla Carousel (related products, recently viewed)
+      - Badge (product tags)
+      - Separator
+      - Custom StickyAddToCart (mobile only)
+    Libraries:
+      - Embla Carousel (gallery, carousels)
+      - react-medium-image-zoom (image zoom)
+    Layout: Two-column layout (gallery left, info right), single column on mobile
+    DataBinding: GET /api/public/product.getById
+    Interactions:
+      - Image zoom on hover/click
+      - Gallery Dialog lightbox
+      - Variant selection updates price/availability
+      - Quantity increment/decrement
+      - Add to cart with Toast notification
+      - Sticky ATC on scroll (mobile)
+
+  - Feature: Ajax Cart Drawer
+    Description: Shopify-style slide-out cart with live updates and checkout button
+    Components (shadcn):
+      - Sheet (CartDrawer from right)
+      - SheetHeader (title "Cart", close button)
+      - Card (CartLineItem)
+      - Avatar (product images)
+      - Button group (QuantitySelector)
+      - Button (remove item)
+      - Separator
+      - Custom Progress bar (free shipping progress)
+      - Button (checkout CTA)
+      - ProductCard (upsell recommendations)
+      - Textarea (cart note)
+      - Custom EmptyCartState
+    Libraries:
+      - Zustand or TanStack Query (cart state)
+      - Sonner (toast notifications)
+    Layout: Fixed right Sheet (400px width), full height
     DataBinding: GET /api/public/cart.getItems, PUT /api/public/cart.updateItemQuantity, DELETE /api/public/cart.removeItem
+    Interactions:
+      - Smooth slide-in animation (Sheet default)
+      - Line item quantity updates with loading state
+      - AlertDialog (remove item confirmation)
+      - Live subtotal calculation
+      - Add to cart triggers Sheet open
+      - Click outside to close
 
   - Feature: Checkout Process
-    Description: Modern checkout flow with customer info and order creation.
-    Components: [checkoutForm, customerInfoForm, orderSummary, paymentUI, thankYouPage]
-    DataBinding: POST /api/public/order.createFromCart, GET /api/public/order.getById
+    Description: Shopify-style multi-step checkout (contact → shipping → payment)
+    Components (shadcn):
+      - Custom CheckoutHeader (logo, breadcrumb, Badge "secure")
+      - Card (CheckoutSidebar - order summary)
+      - Collapsible (OrderSummaryToggle on mobile)
+      - Form (contact, shipping, payment forms)
+      - Input (form fields)
+      - Select (country, state)
+      - RadioGroup (shipping methods)
+      - Custom payment integration (Stripe Elements)
+      - Button (express checkout buttons)
+      - Collapsible (discount code field)
+      - Badge (trust badges)
+      - Custom progress indicator
+    Libraries:
+      - react-hook-form + zod (form validation)
+      - @stripe/react-stripe-js (payment)
+      - Sonner (toast notifications)
+    Layout: Two-column (form left, Card summary right), single column on mobile
+    DataBinding: POST /api/public/order.createFromCart, PUT /api/public/order.updateShipping, POST /api/public/order.processPayment
+    Steps:
+      1. Contact Information
+      2. Shipping Address
+      3. Shipping Method
+      4. Payment Information
+      5. Order Confirmation
+    Interactions:
+      - Auto-fill address suggestions
+      - Field validation with inline errors
+      - Express checkout one-click
+      - Discount code application
+      - Mobile Collapsible order summary
+      - Progress indicator
+
+  - Feature: Order Confirmation / Thank You Page
+    Description: Post-purchase confirmation with order details
+    Components (shadcn):
+      - Card (ThankYouHeader with checkmark icon)
+      - Badge (order number)
+      - Card (order summary sections)
+      - Separator
+      - Button (continue shopping, print order)
+      - Form (create account option)
+    Layout: Single column centered (max 600px)
+    DataBinding: GET /api/public/order.getById
+    Interactions:
+      - Button (print order)
+      - Form (email signup for account)
+
+  - Feature: Customer Account
+    Description: Customer account dashboard with order history
+    Components (shadcn):
+      - Card (AccountDashboard)
+      - Card (OrderCard in grid)
+      - Badge (order status)
+      - Table (order history)
+      - Tabs (Orders, Addresses, Settings)
+      - Form (address form, account settings)
+      - Input (profile fields)
+      - Button (save, delete, reorder)
+    Layout: Two-column with Tabs navigation
+    DataBinding: GET /api/public/customer.getOrders, GET /api/public/customer.getProfile
+    Interactions:
+      - Button (reorder functionality)
+      - Badge (track order status)
+      - Form (update account info)
 
 Navigation:
-  - Type: Topbar
+  - Type: Sticky header with transparent background (solid on scroll)
   - Structure:
-      [
-        Home,
-        Products,
-        Cart,
-      ]
+      - AnnouncementBar (optional, dismissible top bar)
+      - Header:
+          - Logo (left or center)
+          - Navigation Menu (center or left)
+              - Shop All
+              - Collections
+              - New Arrivals
+              - Sale
+          - Icons (right): Search, Account, Cart (with count bubble)
+      - MegaMenu (dropdown for collections with images)
+      - SearchOverlay (full-screen search with predictive results)
+      - MobileMenu (hamburger menu, slide from left)
+  - Features:
+      - Sticky on scroll with background fade-in
+      - Cart count bubble animation on add
+      - Search autocomplete with product suggestions
+      - Mega menu with featured collections/products
+      - Mobile drawer navigation
+
+Header:
+  - Height: 60-80px
+  - Components:
+      - Logo (SVG or image, max 120px width)
+      - NavigationMenu (horizontal list)
+      - SearchIcon (opens overlay)
+      - AccountIcon (login/account link)
+      - CartIcon (opens drawer, displays item count)
+  - Mobile:
+      - Hamburger menu (left)
+      - Logo (center)
+      - Search + Cart icons (right)
+
+Footer:
+  - Layout: Multi-column (4-5 columns on desktop, stacked on mobile)
+  - Sections:
+      - Shop (links to collections)
+      - Customer Service (shipping, returns, FAQ)
+      - About (our story, contact, careers)
+      - Newsletter (email signup)
+      - Social Media (icon links)
+      - Payment Icons (Visa, Mastercard, PayPal, etc.)
+      - Copyright & Legal (privacy, terms, accessibility)
+  - Style: Dark or light background, centered container
 
 Interactions:
-  - Animations: Subtle transitions and hover effects
+  - Animations:
+      - Smooth page transitions (fade)
+      - Product card hover effects (image swap, quick add button slide)
+      - Cart drawer slide-in (300ms cubic-bezier)
+      - Add to cart success (checkmark animation, cart icon bounce)
+      - Image lazy loading with skeleton
+      - Infinite scroll with loading spinner
+      - Hover zoom on product images
+      - Filter collapse/expand accordion
   - Human-in-the-Loop Inputs:
-      [
-        Product selection and cart updates,
-        Customer information during checkout,
-        Payment confirmation,
-      ]
+      - Product variant selection
+      - Quantity adjustment
+      - Add to cart interactions
+      - Filter and sort selections
+      - Checkout form completion
+      - Account creation/login
+      - Newsletter signup
+      - Product reviews submission
+  - Shopify Patterns:
+      - Ajax cart (no page reload)
+      - Predictive search
+      - Quick view modals
+      - Variant swatches (color, size)
+      - Product image galleries
+      - Recently viewed tracking
+      - Wishlist/favorites (optional)
 
 Accessibility:
   - Compliance: WCAG 2.1 AA
   - Features:
-      [
-        High contrast mode,
-        Screen reader support,
-        Keyboard navigation,
-        ARIA labels,
-      ]
+      - Full keyboard navigation
+      - Screen reader optimized
+      - Focus visible indicators
+      - Skip to content link
+      - ARIA labels on icons
+      - Alt text on all images
+      - Color contrast AA compliant
+      - Form field labels
+      - Error message announcements
+      - Reduced motion support
+
+Performance:
+  - Lazy loading images (native or IntersectionObserver)
+  - Critical CSS inline
+  - Deferred JavaScript loading
+  - CDN for assets
+  - Image optimization (WebP with fallback)
+  - Code splitting by route
+  - Ajax cart (no page reload)
+  - Skeleton loading states
+  - Prefetch on hover
+
+Responsive Design:
+  - Mobile First: 375px base
+  - Breakpoints:
+      - Mobile: 375px - 749px
+      - Tablet: 750px - 989px
+      - Desktop: 990px+
+      - Large Desktop: 1400px+
+  - Grid System:
+      - Mobile: 1-2 columns
+      - Tablet: 2-3 columns
+      - Desktop: 3-4 columns
+  - Touch Targets: Minimum 44x44px
+  - Mobile Navigation: Drawer menu
+  - Mobile Cart: Full screen or drawer
+  - Mobile Filters: Drawer from bottom
+  - Mobile Checkout: Collapsible order summary
+
+Components Library:
+  - Use shadcn/ui components styled to match Shopify storefront design
+  - Build with Radix UI primitives + Tailwind CSS
+  - Core shadcn Components:
+      - Button (variants: default, outline, ghost, link)
+      - Card (CardHeader, CardTitle, CardContent, CardFooter)
+      - Input, Textarea, Label
+      - Select, RadioGroup, Checkbox
+      - Sheet (cart drawer, mobile menu, filter drawer)
+      - Dialog (quick view modal, confirmation dialogs)
+      - Badge (sale, new, out of stock)
+      - Separator
+      - Accordion (product description sections)
+      - Tabs (product details tabs)
+      - Toast (Sonner for notifications)
+      - Form (with react-hook-form + zod)
+      - Skeleton (loading states)
+      - ScrollArea
+      - Command (search overlay)
+      - Avatar (product images)
+  - Custom Components (built on shadcn):
+      - ProductCard (Card + Avatar + Badge + Button)
+      - ProductGrid (responsive grid layout)
+      - ProductGallery (carousel with thumbnails, Embla Carousel)
+      - CartDrawer (Sheet with cart logic)
+      - CartLineItem (Card with quantity controls)
+      - FilterDrawer (Sheet + Accordion + Checkbox groups)
+      - VariantSelector (RadioGroup or Select)
+      - QuantitySelector (Button group with +/-)
+      - Header (sticky nav with Command search)
+      - Footer (multi-column layout)
+      - AnnouncementBar (Alert-style dismissible bar)
+      - HeroSection (full-width section)
+      - ImageWithText (two-column section)
+      - Newsletter (Form + Input + Button)
+  - Libraries:
+      - Embla Carousel (product gallery, carousels)
+      - react-hook-form + zod (forms)
+      - Sonner (toast notifications)
+      - Lucide React (icons)
+      - class-variance-authority (component variants)
+      - tailwind-merge (className merging)
