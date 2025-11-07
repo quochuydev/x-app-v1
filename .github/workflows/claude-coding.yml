@@ -40,7 +40,7 @@ jobs:
             - Each time you run, just implement the plan.
             - Follow the steps below:
               1. Read the plan file in PR.
-              2. Use /execute-plan to implement the plan.
+              2. Use /execute-plans to implement the plan.
               3. Commit and push code to the PR.
 
           claude_args: --dangerously-skip-permissions

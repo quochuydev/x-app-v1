@@ -1,6 +1,14 @@
 ---
+description: Create detailed implementation plan with bite-sized tasks
+---
+
+Use the writing-plans skill exactly as written
+
+---
+
 name: writing-plans
 description: Use when design is complete and you need detailed implementation tasks for engineers with zero codebase context - creates comprehensive implementation plans with exact file paths, complete code examples, and verification steps assuming engineer has minimal domain knowledge
+
 ---
 
 # Writing Plans

@@ -1,6 +1,14 @@
 ---
+description: Execute plan in batches with review checkpoints
+---
+
+Use the executing-plans skill exactly as written
+
+---
+
 name: executing-plans
 description: Use when partner provides a complete implementation plan to execute in controlled batches with review checkpoints - loads plan, reviews critically, executes tasks in batches, reports for review between batches
+
 ---
 
 # Executing Plans
