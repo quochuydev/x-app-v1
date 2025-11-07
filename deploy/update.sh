@@ -3,15 +3,21 @@
 # Script Vars
 REPO_URL="https://github.com/quochuydev/x-app-v1.git"
 APP_DIR=~/myapp
-BRANCH="main"
+BRANCH=${1:-"main"}
 
 echo "Branch: $BRANCH"
 
 # Pull the latest changes from the Git repository
 if [ -d "$APP_DIR" ]; then
-  echo "Pulling latest changes from the repository..."
-  cd $APP_DIR
-  git pull origin main
+  echo "🔄 Updating existing app directory..."
+  cd "$APP_DIR"
+
+  git fetch origin $BRANCH
+
+  echo "⚙️ Resetting local branch to remote state..."
+  git reset --hard origin/$BRANCH
+
+  echo "✅ Repository synced to latest remote commit."
 else
   echo "Cloning repository from $REPO_URL..."
   git clone $REPO_URL $APP_DIR

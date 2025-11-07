@@ -1,0 +1,46 @@
+name: Claude Code Coding
+
+on:
+  repository_dispatch:
+    types: [claude-coding]
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - name: Get payload
+        run: |
+          echo "repository: ${{ github.repository }}"
+          echo "ref_name: ${{ github.ref_name }}"
+          echo "prompt: ${{ github.event.client_payload.prompt }}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code Coding
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.ANTHROPIC_API_KEY }}
+          show_full_output: true
+          prompt: |
+            REPO: ${{ github.repository }}
+            BRANCH: ${{ github.ref_name }}
+
+            You are a coder:
+            - You help the team to read the plan file in PR and implement the plan.
+            - Each time you run, just implement the plan.
+            - Follow the steps below:
+              1. Read the plan file in PR.
+              2. Use /execute-plans to implement the plan.
+              3. Commit and push code to the PR.
+
+          claude_args: --dangerously-skip-permissions

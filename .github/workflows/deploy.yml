@@ -21,13 +21,19 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           EMAIL: ${{ vars.SSL_EMAIL }}
+          BRANCH: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
         run: |
-          echo "🚀 Connecting to server $SERVER_IP ..."
-          echo "🚀 Deploying to domain $DOMAIN_NAME ..."
-          echo "🚀 User email $EMAIL ..."
+          echo "🚀 Connecting to server $SERVER_IP"
+          echo "🚀 Deploying to domain $DOMAIN_NAME"
+          echo "🚀 User email $EMAIL"
+          echo "🚀 Branch debug 1 $BRANCH"
+          echo "🚀 Commit SHA $GITHUB_SHA"
 
-          ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-214-149-131.ap-southeast-1.compute.amazonaws.com << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-214-149-131.ap-southeast-1.compute.amazonaws.com << EOF
             set -e
+
+            echo "🚀 Branch debug 2 $BRANCH"
 
             echo "📦 Downloading latest deployment script..."
             curl -o ~/deploy.sh https://raw.githubusercontent.com/quochuydev/x-app-v1/main/deploy.sh
@@ -40,7 +46,8 @@ jobs:
             chmod +x ~/deploy.sh
 
             echo "🚀 Running deployment..."
-            ./deploy.sh
+            export GITHUB_SHA="$GITHUB_SHA"
+            ./deploy.sh "$BRANCH"
 
             echo "✅ Deployment complete"
           EOF
