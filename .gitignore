@@ -3,3 +3,4 @@
 .env*.local
 
 ignore.md
+node_modules

@@ -1,6 +1,11 @@
 name: Claude Code Planning
 
 on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        required: true
+        type: string
   repository_dispatch:
     types: [claude-planning]
 
