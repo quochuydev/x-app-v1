@@ -4,8 +4,8 @@ config:
   layout: elk
 ---
 flowchart LR
- subgraph s3["Web - Order flow"]
-        n16["Product card UI"]
+ subgraph s3["Web - Main flow"]
+        n16["Product Card UI"]
         n17["User"]
         n18["Update item quality"]
         n19["Cart upserted"]
@@ -17,7 +17,7 @@ flowchart LR
         n73["Cart page"]
         n74@{ label: "<span style=\"color:\">User</span>" }
         n75["product Id"]
-        n76["Cart Item"]
+        n76["Cart user info<br>Cart Item"]
         n77["Checkout page"]
         n78["cart ID"]
         n79["order ID"]
@@ -41,6 +41,11 @@ flowchart LR
         n133["Order payment UI"]
         n134["Thank you UI"]
         n135["order ID"]
+        n140["Product page"]
+        n141["User"]
+        n142["Get product list"]
+        n169["products fetched"]
+        n170@{ label: "<span style=\"color:\">Home page</span>" }
   end
  subgraph s5["Admin - Order management"]
         n63["Order management"]
@@ -84,15 +89,19 @@ flowchart LR
         n35["Product deleted"]
         n36["Get product list"]
         n37["Product fetched"]
-        n39["Create product data"]
+        n39["data for create product"]
         n40["Product ID"]
         n41@{ label: "<span style=\"color:\">Admin</span>" }
-        n42["Update product data"]
+        n42["data for update product"]
         n43["Admin"]
         n44["Admin"]
         n109["Product management"]
         n110["Product management"]
         n111["Product management"]
+        n136@{ label: "<span style=\"color:\">Product management</span>" }
+        n137["Admin"]
+        n138["Upload file"]
+        n139["File uploaded"]
   end
  subgraph s4["Admin - User Management"]
         n45["User management"]
@@ -114,6 +123,32 @@ flowchart LR
         n116["User management"]
         n118["User management"]
         n119["User management"]
+  end
+ subgraph s6["Admin - Promotion management"]
+        n143["Promotion management"]
+        n144["Admin"]
+        n146@{ label: "<span style=\"background-color:\">Update</span>" }
+        n147["Promotion updated"]
+        n148@{ label: "<span style=\"color:\">Get promotion list</span>" }
+        n149["Promotion fetched"]
+        n150["Promotion management"]
+        n151["Admin"]
+        n152["id"]
+        n153["Promotion management"]
+        n154@{ label: "<span style=\"color:\">id</span>" }
+        n155["Admin"]
+        n157@{ label: "<span style=\"color:\">Delete</span>" }
+        n158@{ label: "<span style=\"color:\">Promotion deleted</span>" }
+        n159["Promotion management"]
+        n160["id"]
+        n161["Admin"]
+        n162["Create coupons"]
+        n163@{ label: "<span style=\"color:\">Coupon created</span>" }
+        n164@{ label: "<span style=\"color:\">Promotion management</span>" }
+        n165@{ label: "<span style=\"color:\">Admin</span>" }
+        n166["Create promotion"]
+        n167["Promotion created"]
+        n168["Promotion condition created"]
   end
     RM1 --> n44
     A1 --> C1
@@ -195,6 +230,31 @@ flowchart LR
     n132 --> n81
     n135 --> n131
     n20 --> n72
+    n136 --> n137
+    n137 --> n138
+    n138 --> n139
+    n140 --> n141
+    n141 --> n142
+    n143 --> n144
+    n144 --> n148
+    n146 --> n147
+    n148 --> n149
+    n150 --> n152
+    n152 --> n151
+    n153 --> n154
+    n154 --> n155
+    n155 --> n157
+    n157 --> n158
+    n159 --> n160
+    n160 --> n161
+    n161 --> n162
+    n162 --> n163
+    n151 --> n146
+    n164 --> n165
+    n165 --> n166
+    n166 --> n167 & n168
+    n142 --> n169
+    n170 --> n141
     n19@{ shape: rect}
     n20@{ shape: rect}
     n61@{ shape: rect}
@@ -205,6 +265,7 @@ flowchart LR
     n113@{ shape: rect}
     n115@{ shape: rect}
     n132@{ shape: rect}
+    n170@{ shape: rect}
     n63@{ shape: rect}
     n64@{ shape: rect}
     n65@{ shape: rect}
@@ -221,6 +282,7 @@ flowchart LR
     n104@{ shape: rect}
     n123@{ shape: rect}
     n41@{ shape: rect}
+    n136@{ shape: rect}
     n45@{ shape: rect}
     n46@{ shape: rect}
     n47@{ shape: rect}
@@ -237,6 +299,27 @@ flowchart LR
     n58@{ shape: rect}
     n59@{ shape: rect}
     n60@{ shape: rect}
+    n143@{ shape: rect}
+    n144@{ shape: rect}
+    n146@{ shape: rect}
+    n147@{ shape: rect}
+    n148@{ shape: rect}
+    n149@{ shape: rect}
+    n150@{ shape: rect}
+    n151@{ shape: rect}
+    n152@{ shape: rect}
+    n153@{ shape: rect}
+    n154@{ shape: rect}
+    n155@{ shape: rect}
+    n157@{ shape: rect}
+    n158@{ shape: rect}
+    n159@{ shape: rect}
+    n160@{ shape: rect}
+    n161@{ shape: rect}
+    n162@{ shape: rect}
+    n163@{ shape: rect}
+    n164@{ shape: rect}
+    n165@{ shape: rect}
      n16:::ui
      n17:::actor
      n18:::command
@@ -268,6 +351,11 @@ flowchart LR
      n133:::ui
      n134:::ui
      n135:::read_models
+     n140:::ui
+     n141:::actor
+     n142:::command
+     n169:::event
+     n170:::ui
      n63:::ui
      n64:::actor
      n65:::reaction_policy
@@ -312,6 +400,10 @@ flowchart LR
      n109:::ui
      n110:::ui
      n111:::ui
+     n136:::ui
+     n137:::actor
+     n138:::command
+     n139:::event
      n45:::ui
      n46:::actor
      n47:::command
@@ -331,13 +423,37 @@ flowchart LR
      n116:::ui
      n118:::ui
      n119:::ui
+     n143:::ui
+     n144:::actor
+     n146:::command
+     n147:::event
+     n148:::command
+     n149:::event
+     n150:::ui
+     n151:::actor
+     n152:::read_models
+     n153:::ui
+     n154:::read_models
+     n155:::actor
+     n157:::command
+     n158:::event
+     n159:::ui
+     n160:::read_models
+     n161:::actor
+     n162:::command
+     n163:::event
+     n164:::ui
+     n165:::actor
+     n166:::command
+     n167:::event
+     n168:::event
     classDef external_system fill:#ffb3c5, stroke:#000, stroke-width:1px, color:#000
     classDef policy fill:#da99e6, stroke:#000, stroke-width:1px, color:#000
+    classDef reaction_policy fill:#fef5b2, stroke:#000, stroke-width:1px, color:#000
+    classDef read_models fill:#b0deb3, stroke:#000, stroke-width:1px, color:#000
     classDef event fill:#feae57, stroke:#000, stroke-width:1px, color:#000
     classDef command fill:#a7c5fc, stroke:#000, stroke-width:1px, color:#000
     classDef actor fill:#fee750, stroke:#000, stroke-width:1px, color:#000, border-radius:0
-    classDef reaction_policy fill:#fef5b2, stroke:#000, stroke-width:1px, color:#000
     classDef ui fill:#6adc8b, stroke:#000, stroke-width:1px, color:#000
-    classDef read_models fill:#b0deb3, stroke:#000, stroke-width:1px, color:#000
 
 ```
