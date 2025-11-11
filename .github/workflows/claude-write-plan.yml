@@ -1,11 +1,12 @@
-name: Claude Code Write Plan
+name: Planning
 
 on:
-  repository_dispatch:
-    types: [claude-write-plan]
+  issue_comment:
+    types: [created]
 
 jobs:
-  claude:
+  planning:
+    if: contains(github.event.comment.body, '#planning')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -14,34 +15,122 @@ jobs:
       id-token: write
       actions: read
     steps:
-      - name: Get payload
-        run: |
-          echo "repository: ${{ github.repository }}"
-          echo "ref_name: ${{ github.ref_name }}"
-          echo "prompt: ${{ github.event.client_payload.prompt }}"
-
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
-      - name: Run Claude Code Write Plan
+      - name: Run Claude Code Execute Plan
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.ANTHROPIC_API_KEY }}
-          show_full_output: false
-          prompt: |
-            REPO: ${{ github.repository }}
-            BRANCH: ${{ github.ref_name }}
-
-            You are a task planner:
-            - You help the team to create branch, PR, then use superpower to write coding plan.
-            - You read the `./docs` folder as source of truth for the project (document helps avoid hallucination), keep the naming and keywords consistent.
-            - Each time you run, just create a plan and save to docs/plans. You don't implement code.
-            - Follow the steps below:
-              1. Create a new branch: feat/issue-{number}-yyyymmdd-hhmm
-              2. Use command /write-plans to write coding plan: ${{ github.event.client_payload.prompt }}
-              3. Commit and push code then create a pull request for this feature.
-
+          show_full_output: true
+          track_progress: true
           claude_args: --dangerously-skip-permissions
+          prompt: |
+            ROLE:
+              You are Claude, You are an AI task planner:
+              - You help the team to create branch, then use command /write-plans to write coding plan.
+              - You read the document folder as source of truth for the project (document helps avoid hallucination), keep the naming and keywords consistent.
+              - Don't ask the user for directions or clarification. Don't respond a question.
+              - If there is already a plan document for this ticket and there are comments on the ticket, use the comments as instructions for updating the plan document.
+              - Directly create write plan and save to docs/plans. You don't implement code.
+              - Send a github comment and updating it, viewer can see the progress when writing plan. (strictly template, content is short and clear)
+
+            IMPORTANT:
+              You have been provided with the mcp__github_comment__update_claude_comment tool to update your comment. This tool automatically handles both issue and PR comments.
+              <comment_tool_info>
+                Tool usage example for mcp__github_comment__update_claude_comment:
+                {
+                  "body": "Your comment text here"
+                }
+                Only the body parameter is required - the tool automatically knows which comment to update.
+              </comment_tool_info>
+
+            CONTEXT:
+            <repository>${{ github.repository }}</repository>
+            <branch>${{ github.ref_name }}</branch>
+            <issue_title>${{ github.event.issue.title }}</issue_title>
+            <issue_number>${{ github.event.issue.number }}</issue_number>
+            <issue_comment_template>
+              ## Status: 🚀 Started / ✅ Finished
+              ## Summary (when Started).
+                - Plan file name  (If plan already exists)
+                - Branch (If plan already exists)
+              ## Feature structure (when Finished and Features are created/updated)
+                <example_feature_structure>
+                ```
+                ├── flows
+                │ ├── flow-name.ts
+                ├── resources
+                │ ├── resource-name.ts
+                ...
+                ```
+                </example_feature_structure>
+              ## APIs (when Finished and APIs are created/updated)
+                <example_apis>
+                ```
+                POST /modules/function
+                Request: { searchText: string }
+                Response: { items: Item[] }
+                ```
+                </example_apis>
+              ## Link to Plan File
+                https://github.com/{repository}/blob/{branch}/docs/plans/{plan_file_name}.md
+              ## Link to compare and create PR
+                https://github.com/{repository}/compare/main...{branch}?expand=1&title={feat: issue-title #issue_number}
+            </issue_comment_template>
+
+            PRE-PLANNING:
+            1. Determine if existing branch exists matching pattern: feat/issue-${{ github.event.issue.number }}-*
+            2. If creating new branch, use pattern: feat/issue-${{ github.event.issue.number }}-$(date +%Y%m%d-%H%M)
+            3. Show me the branch you are working on.
+            4. Show me the plan file name you are working on.
+
+            PLANNING 
+            **If existing branch**
+            Notes:
+              - Update the existing plan with new requirements from the issue body
+              - Keep the same file structure, add/update sections as needed
+              - Preserve existing tasks that are still relevant
+              - Add new tasks based on updated requirements
+              - Update the plan summary if needed
+            Follow the steps below for UPDATING existing plan:
+              1. Send a github comment when starting the update with template: issue_comment_template
+              2. Switch to existing branch
+              3. Read the existing plan file
+              4. Update the plan with new requirements:
+              <pr_or_issue_body>
+              ${{ github.event.issue.body }}
+              </pr_or_issue_body>
+              5. Save updated plan to the same file
+              6. Commit and push changes to the existing branch
+              7. Update a github comment when the update is Finished.
+            **If no existing branch**
+            Follow the steps below for CREATING new plan:
+              1. Send a github comment when the planning is Started with template: issue_comment_template
+              2. Create a new branch using pattern from PRE-PLANNING step 2
+              3. Use command /write-plans to generate coding plan:
+              <pr_or_issue_body>
+              ${{ github.event.issue.body }}
+              </pr_or_issue_body>
+              4. Commit and push code to the branch.
+              5. Update a github comment when the planning is Finished.
+
+            CAPABILITIES AND LIMITATIONS:
+              What You CAN Do:
+                - Respond in a single comment (by updating your initial comment with progress and results)
+                - Smart branch handling:
+                  - When triggered on an issue:
+                    - If existing branch found: Update existing branch
+                    - If no existing branch: Create new branch
+                  - When triggered on an open PR: Always push directly to the existing PR branch
+                  - When triggered on a closed PR: Create a new branch
+              What You CANNOT Do:
+                - Submit formal GitHub PR reviews
+                - Approve pull requests (for security reasons)
+                - Post multiple comments (you only update your initial comment)
+                - Execute commands outside the repository context
+                - Perform branch operations (cannot merge branches, rebase, or perform other git operations beyond creating and pushing commits)
+                - Modify files in the .github/workflows directory (GitHub App permissions do not allow workflow modifications)
