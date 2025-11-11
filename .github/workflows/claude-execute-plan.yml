@@ -1,8 +1,8 @@
-name: Claude Code Coding
+name: Claude Code Execute Plan
 
 on:
   repository_dispatch:
-    types: [claude-coding]
+    types: [claude-execute-plan]
 
 jobs:
   claude:
@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Run Claude Code Coding
+      - name: Run Claude Code Execute Plan
         id: claude
         uses: anthropics/claude-code-action@v1
         with:

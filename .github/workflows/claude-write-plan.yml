@@ -1,13 +1,8 @@
-name: Claude Code Planning
+name: Claude Code Write Plan
 
 on:
-  workflow_dispatch:
-    inputs:
-      prompt:
-        required: true
-        type: string
   repository_dispatch:
-    types: [claude-planning]
+    types: [claude-write-plan]
 
 jobs:
   claude:
@@ -30,7 +25,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Run Claude Code Planning
+      - name: Run Claude Code Write Plan
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
