@@ -1,4 +1,6 @@
-import { defineConfig } from 'drizzle-kit'
+import { defineConfig } from 'drizzle-kit';
+
+console.log(`debug:process.env.DATABASE_URL`, process.env.DATABASE_URL);
 
 export default defineConfig({
   dialect: 'postgresql',
@@ -9,4 +11,4 @@ export default defineConfig({
   },
   verbose: true,
   strict: true,
-})
+});
