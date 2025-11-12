@@ -1,0 +1,35 @@
+{
+  "name": "x-app-v1",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Simple Node.js app with Drizzle, Postgres, and Vitest",
+  "scripts": {
+    "dev": "dotenvx run -- tsx watch src/index.ts",
+    "start": "dotenvx run -- tsx src/index.ts",
+    "build": "tsc",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "db:generate": "dotenvx run -- drizzle-kit generate",
+    "db:migrate": "dotenvx run -- drizzle-kit migrate",
+    "db:push": "dotenvx run -- drizzle-kit push",
+    "db:studio": "dotenvx run -- drizzle-kit studio",
+    "db:drop": "dotenvx run -- drizzle-kit drop"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.51.1",
+    "drizzle-orm": "^0.44.7",
+    "fastify": "^5.6.2",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@vitest/ui": "^4.0.8",
+    "drizzle-kit": "^0.31.6",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}

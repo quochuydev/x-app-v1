@@ -1,0 +1,73 @@
+version: '3'
+
+vars:
+  DOTENVX: dotenvx run --
+
+tasks:
+  dev:
+    desc: Start development server with auto-reload
+    cmd: 'pnpm run dev'
+
+  start:
+    desc: Run the application
+    cmd: 'pnpm run start'
+
+  build:
+    desc: Build TypeScript
+    cmd: tsc
+
+  test:
+    desc: Run tests
+    cmd: vitest
+
+  test:ui:
+    desc: Run tests with UI
+    cmd: vitest --ui
+
+  test:watch:
+    desc: Run tests in watch mode
+    cmd: vitest --watch
+
+  db:generate:
+    desc: Generate Drizzle migrations from schema
+    cmd: '{{.DOTENVX}} drizzle-kit generate'
+
+  db:migrate:
+    desc: Run database migrations
+    cmd: '{{.DOTENVX}} drizzle-kit migrate'
+
+  db:push:
+    desc: Push schema changes directly to database (dev only)
+    cmd: '{{.DOTENVX}} drizzle-kit push'
+
+  db:studio:
+    desc: Launch Drizzle Studio
+    cmd: '{{.DOTENVX}} drizzle-kit studio'
+
+  db:drop:
+    desc: Drop database tables
+    cmd: '{{.DOTENVX}} drizzle-kit drop'
+    prompt: This will drop all tables. Are you sure?
+
+  install:
+    desc: Install dependencies
+    cmd: pnpm install
+
+  clean:
+    desc: Clean build artifacts and node_modules
+    cmds:
+      - rm -rf node_modules
+      - rm -rf dist
+      - rm -rf .turbo
+
+  lint:
+    desc: Lint code
+    cmd: echo "Add your linter here (eslint, biome, etc.)"
+
+  format:
+    desc: Format code
+    cmd: echo "Add your formatter here (prettier, biome, etc.)"
+
+  default:
+    desc: Show available tasks
+    cmd: task --list
