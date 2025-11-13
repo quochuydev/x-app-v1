@@ -23,8 +23,8 @@ erDiagram
 		int totalUsageLimit  ""
 		int usagePerUserLimit  ""
 		int currentUsageCount  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 		datetime deletedAt  ""
 	}
 	promotionCondition {
@@ -32,7 +32,7 @@ erDiagram
 		uuid promotionId FK ""
 		string conditionType  "minCartTotal / specificProducts / specificCategories / firstOrder"
 		json conditionValue  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	promotionApplication {
 		uuid id PK ""
@@ -43,7 +43,7 @@ erDiagram
 		float discountAmount  ""
 		float finalAmount  ""
 		json appliedItems  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 
 	%% Coupon System
@@ -57,7 +57,7 @@ erDiagram
 		uuid promotionId FK "optional"
 		datetime startDate  ""
 		datetime expiresAt  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 		datetime deletedAt  ""
 	}
 	couponUser {
@@ -65,7 +65,7 @@ erDiagram
 		uuid userId FK ""
 		uuid couponId FK ""
 		number usedCount  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	%% Relationships
 	promotion||--|{promotionCondition:""

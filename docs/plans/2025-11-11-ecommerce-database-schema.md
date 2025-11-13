@@ -41,8 +41,8 @@ export const user = pgTable('user', {
   lastName: varchar('last_name', { length: 100 }).notNull(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   role: varchar('role', { length: 20 }).notNull().default('customer'), // admin/user/customer
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
+  updatedAt: timestamp('updated_date').defaultNow().notNull(),
 });
 ```
 
@@ -52,7 +52,7 @@ export const user = pgTable('user', {
 export const category = pgTable('category', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 255 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 
@@ -79,8 +79,8 @@ export const file = pgTable('file', {
   url: text('url').notNull(),
   productId: uuid('product_id').references(() => product.id, { onDelete: 'cascade' }),
   blogId: uuid('blog_id').references(() => blog.id, { onDelete: 'cascade' }),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
+  updatedAt: timestamp('updated_date').defaultNow().notNull(),
 });
 ```
 
@@ -93,8 +93,8 @@ export const product = pgTable('product', {
   description: text('description'),
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
   categoryId: uuid('category_id').references(() => category.id, { onDelete: 'set null' }),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
+  updatedAt: timestamp('updated_date').defaultNow().notNull(),
 });
 ```
 
@@ -137,8 +137,8 @@ export const cart = pgTable('cart', {
   userId: uuid('user_id').references(() => user.id, { onDelete: 'cascade' }),
   sessionId: varchar('session_id', { length: 255 }), // for anonymous users
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull().default('0'),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
+  updatedAt: timestamp('updated_date').defaultNow().notNull(),
 });
 ```
 
@@ -152,8 +152,8 @@ export const cartItem = pgTable('cart_item', {
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
   quantity: integer('quantity').notNull().default(1),
   totalPrice: numeric('total_price', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
+  updatedAt: timestamp('updated_date').defaultNow().notNull(),
 });
 ```
 
@@ -180,8 +180,8 @@ export const order = pgTable('order', {
   status: varchar('status', { length: 20 }).notNull().default('new'), // new/processing/cancelled/shipped
   paymentStatus: varchar('payment_status', { length: 20 }).notNull().default('unpaid'), // unpaid/paid/refunded
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
+  updatedAt: timestamp('updated_date').defaultNow().notNull(),
 });
 ```
 
@@ -194,8 +194,8 @@ export const orderItem = pgTable('order_item', {
   productId: uuid('product_id').notNull().references(() => product.id, { onDelete: 'restrict' }),
   quantity: integer('quantity').notNull(),
   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
+  updatedAt: timestamp('updated_date').defaultNow().notNull(),
 });
 ```
 
@@ -207,7 +207,7 @@ export const transaction = pgTable('transaction', {
   orderId: uuid('order_id').notNull().references(() => order.id, { onDelete: 'cascade' }),
   amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
   status: varchar('status', { length: 20 }).notNull().default('processing'), // processing/success/failed
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 
@@ -237,7 +237,7 @@ export const promotion = pgTable('promotion', {
   type: varchar('type', { length: 20 }).notNull(), // percentage/fixedAmount/freeShipping
   value: numeric('value', { precision: 10, scale: 2 }).notNull(),
   autoApply: boolean('auto_apply').notNull().default(false),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 
@@ -249,7 +249,7 @@ export const promotionCondition = pgTable('promotion_condition', {
   promotionId: uuid('promotion_id').notNull().references(() => promotion.id, { onDelete: 'cascade' }),
   conditionType: varchar('condition_type', { length: 50 }).notNull(), // minCartTotal/specificProducts/specificCategories/customerGroup/firstOrder
   conditionValue: json('condition_value').notNull(), // flexible JSON for different condition types
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 
@@ -264,7 +264,7 @@ export const coupon = pgTable('coupon', {
   usageLimitPerUser: integer('usage_limit_per_user'),
   usedCount: integer('used_count').notNull().default(0),
   active: boolean('active').notNull().default(true),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 
@@ -276,7 +276,7 @@ export const couponUser = pgTable('coupon_user', {
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   couponId: uuid('coupon_id').notNull().references(() => coupon.id, { onDelete: 'cascade' }),
   usedCount: integer('used_count').notNull().default(0),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 
 export const promotionApplication = pgTable('promotion_application', {
@@ -285,7 +285,7 @@ export const promotionApplication = pgTable('promotion_application', {
   couponId: uuid('coupon_id').references(() => coupon.id, { onDelete: 'set null' }),
   promotionId: uuid('promotion_id').notNull().references(() => promotion.id, { onDelete: 'cascade' }),
   discountAmount: numeric('discount_amount', { precision: 10, scale: 2 }).notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 
@@ -313,7 +313,7 @@ export const review = pgTable('review', {
   productId: uuid('product_id').notNull().references(() => product.id, { onDelete: 'cascade' }),
   rating: integer('rating').notNull(), // 1-5
   comment: text('comment'),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 
@@ -326,7 +326,7 @@ export const refundRequest = pgTable('refund_request', {
   approverId: uuid('approver_id').references(() => user.id, { onDelete: 'set null' }),
   reason: text('reason'),
   status: varchar('status', { length: 20 }).notNull().default('pending'), // pending/approved/rejected
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 
@@ -339,8 +339,8 @@ export const blog = pgTable('blog', {
   body: text('body').notNull(),
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   thumbnailId: uuid('thumbnail_id').references(() => file.id, { onDelete: 'set null' }),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
-  updatedDate: timestamp('updated_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
+  updatedAt: timestamp('updated_date').defaultNow().notNull(),
 });
 
 export const comment = pgTable('comment', {
@@ -348,7 +348,7 @@ export const comment = pgTable('comment', {
   blogId: uuid('blog_id').notNull().references(() => blog.id, { onDelete: 'cascade' }),
   userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   content: text('content').notNull(),
-  createdDate: timestamp('created_date').defaultNow().notNull(),
+  createdAt: timestamp('created_date').defaultNow().notNull(),
 });
 ```
 

@@ -139,7 +139,7 @@ export async function processPaymentAction(
     await db.update(order)
       .set({
         paymentStatus: 'paid',
-        updatedDate: new Date(),
+        updatedAt: new Date(),
       })
       .where(eq(order.id, orderId));
 

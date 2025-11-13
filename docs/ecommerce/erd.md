@@ -10,8 +10,8 @@ erDiagram
 		string firstName  ""
 		string lastName  ""
 		string role  "admin/user/customer"
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 		datetime deletedAt  ""
 	}
 	cartItem {
@@ -20,15 +20,15 @@ erDiagram
 		string price  ""
 		number quantity  ""
 		float totalPrice  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	cart {
 		uuid id PK ""
 		uuid userId FK ""
 		number amount  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	orderItem {
 		uuid id UK ""
@@ -36,15 +36,15 @@ erDiagram
 		float price  ""
 		string productId FK ""
 		string orderId FK ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	file {
 		uuid id PK ""
 		string name  ""
 		string url  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	order {
 		uuid id PK ""
@@ -52,8 +52,8 @@ erDiagram
 		string paymentStatus  "unpaid/paid/refunded"
 		float amount  ""
 		string userId  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	inventory {
 		uuid id PK ""
@@ -81,12 +81,12 @@ erDiagram
 		uuid id PK ""
 		uuid orderId FK ""
 		uuid approverId FK ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	category {
 		uuid id PK ""
 		string name  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	product {
 		uuid id PK ""
@@ -94,14 +94,14 @@ erDiagram
 		string description  ""
 		float price  ""
 		uuid categoryId  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	transaction {
 		uuid id PK ""
 		uuid orderId FK ""
 		number amount  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 		string status  "processing / success / failed"
 	}
 	blog {
@@ -110,8 +110,8 @@ erDiagram
 		string body  ""
 		uuid userId  ""
 		uuid thumbnailId FK ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 
 	order||--|{orderItem:"  "

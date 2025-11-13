@@ -10,8 +10,8 @@ erDiagram
 		string firstName  ""
 		string lastName  ""
 		string role  "admin/user/customer"
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	cartItem {
 		uuid id PK ""
@@ -19,14 +19,14 @@ erDiagram
 		string price  ""
 		number quantity  ""
 		float totalPrice  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	cart {
 		uuid id PK ""
 		number amount  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	orderItem {
 		uuid id UK ""
@@ -34,15 +34,15 @@ erDiagram
 		float price  ""
 		string productId FK ""
 		string orderId FK ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	file {
 		uuid id PK ""
 		string name  ""
 		string url  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	order {
 		uuid id PK ""
@@ -50,8 +50,8 @@ erDiagram
 		string paymentStatus  "unpaid/paid/refunded"
 		float amount  ""
 		string userId  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	inventory {
 		uuid id PK ""
@@ -79,12 +79,12 @@ erDiagram
 		uuid id PK ""
 		uuid orderId FK ""
 		uuid approverId FK ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	category {
 		uuid id PK ""
 		string name  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	product {
 		uuid id PK ""
@@ -92,14 +92,14 @@ erDiagram
 		string description  ""
 		float price  ""
 		uuid categoryId  ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 	transaction {
 		uuid id PK ""
 		uuid orderId FK ""
 		number amount  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 		string status  "processing / success / failed"
 	}
 	couponUser {
@@ -107,7 +107,7 @@ erDiagram
 		uuid userId FK ""
 		uuid couponId FK ""
 		number usedCount  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	coupon {
 		uuid id PK ""
@@ -117,7 +117,7 @@ erDiagram
 		number usedCount  ""
 		boolean active  ""
 		uuid promotionId  "optional"
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	promotionApplication {
 		uuid id PK ""
@@ -125,12 +125,12 @@ erDiagram
 		uuid couponId FK ""
 		uuid promotionId FK ""
 		number discountAmount  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	promotionCondition {
 		uuid id PK ""
 		uuid promotionId FK ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 		string conditionType  "minCartTotal, specificProducts, specificCategories, customerGroup, firstOrder"
 		json conditionValue  ""
 	}
@@ -142,7 +142,7 @@ erDiagram
 		boolean active  ""
 		string type  "percentage / fixedAmount / freeShipping"
 		boolean autoApply  ""
-		datetime createdDate  ""
+		datetime createdAt  ""
 	}
 	blog {
 		uuid id PK ""
@@ -150,8 +150,8 @@ erDiagram
 		string body  ""
 		uuid userId  ""
 		uuid thumbnailId FK ""
-		datetime createdDate  ""
-		datetime updatedDate  ""
+		datetime createdAt  ""
+		datetime updatedAt  ""
 	}
 
 	order||--|{orderItem:"  "

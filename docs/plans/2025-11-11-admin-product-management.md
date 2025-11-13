@@ -119,7 +119,7 @@ export async function updateProductAction(productId: string, formData: FormData)
       description: validated.description || null,
       price: validated.price,
       categoryId: validated.categoryId || null,
-      updatedDate: new Date(),
+      updatedAt: new Date(),
     })
     .where(eq(product.id, productId));
 
@@ -192,7 +192,7 @@ export default async function ProductManagementPage() {
       name: product.name,
       price: product.price,
       categoryName: category.name,
-      createdDate: product.createdDate,
+      createdAt: product.createdAt,
     })
     .from(product)
     .leftJoin(category, eq(product.categoryId, category.id));
@@ -223,7 +223,7 @@ export default async function ProductManagementPage() {
                   <TableCell className="font-medium">{p.name}</TableCell>
                   <TableCell>{p.categoryName || 'N/A'}</TableCell>
                   <TableCell>${p.price}</TableCell>
-                  <TableCell>{p.createdDate?.toLocaleDateString()}</TableCell>
+                  <TableCell>{p.createdAt?.toLocaleDateString()}</TableCell>
                   <TableCell className="space-x-2">
                     <Link href={`/admin/product/${p.id}`}>
                       <Button variant="outline" size="sm">Edit</Button>

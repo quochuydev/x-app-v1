@@ -38,7 +38,7 @@ export async function updateOrderStatusAction(
   await db.update(order)
     .set({
       status: newStatus,
-      updatedDate: new Date(),
+      updatedAt: new Date(),
     })
     .where(eq(order.id, orderId));
 
@@ -69,7 +69,7 @@ export async function cancelOrderAction(orderId: string) {
       .set({
         status: 'cancelled',
         paymentStatus: 'refunded',
-        updatedDate: new Date(),
+        updatedAt: new Date(),
       })
       .where(eq(order.id, orderId));
 
@@ -84,7 +84,7 @@ export async function cancelOrderAction(orderId: string) {
     await db.update(order)
       .set({
         status: 'cancelled',
-        updatedDate: new Date(),
+        updatedAt: new Date(),
       })
       .where(eq(order.id, orderId));
   }
@@ -135,13 +135,13 @@ export default async function OrderManagementPage() {
       amount: order.amount,
       status: order.status,
       paymentStatus: order.paymentStatus,
-      createdDate: order.createdDate,
+      createdAt: order.createdAt,
       customerName: user.firstName,
       customerEmail: user.email,
     })
     .from(order)
     .leftJoin(user, eq(order.userId, user.id))
-    .orderBy(desc(order.createdDate));
+    .orderBy(desc(order.createdAt));
 
   return (
     <div className="container mx-auto p-6">
@@ -192,7 +192,7 @@ export default async function OrderManagementPage() {
                       {o.paymentStatus}
                     </Badge>
                   </TableCell>
-                  <TableCell>{o.createdDate?.toLocaleDateString()}</TableCell>
+                  <TableCell>{o.createdAt?.toLocaleDateString()}</TableCell>
                   <TableCell>
                     <Link href={`/admin/order/${o.id}`}>
                       <span className="text-sm text-blue-600 hover:underline">
@@ -306,7 +306,7 @@ export default async function OrderDetailPage({
       amount: order.amount,
       status: order.status,
       paymentStatus: order.paymentStatus,
-      createdDate: order.createdDate,
+      createdAt: order.createdAt,
       customerName: user.firstName,
       customerLastName: user.lastName,
       customerEmail: user.email,

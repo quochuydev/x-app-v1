@@ -71,11 +71,11 @@ curl -X POST "https://api.example.com/api/v1/promotions" \
       "conditionValue": {
         "amount": 50.0
       },
-      "createdDate": "2025-01-13T10:00:00Z"
+      "createdAt": "2025-01-13T10:00:00Z"
     }
   ],
-  "createdDate": "2025-01-13T10:00:00Z",
-  "updatedDate": "2025-01-13T10:00:00Z"
+  "createdAt": "2025-01-13T10:00:00Z",
+  "updatedAt": "2025-01-13T10:00:00Z"
 }
 ```
 
@@ -108,8 +108,8 @@ curl -X GET "https://api.example.com/api/v1/promotions/uuid-123" \
   "currentUsageCount": 150,
   "active": true,
   "conditions": [...],
-  "createdDate": "2025-01-13T10:00:00Z",
-  "updatedDate": "2025-01-13T10:00:00Z"
+  "createdAt": "2025-01-13T10:00:00Z",
+  "updatedAt": "2025-01-13T10:00:00Z"
 }
 ```
 
@@ -124,7 +124,7 @@ Get all promotions with filtering and pagination.
 - `active` (boolean, optional)
 - `type` (string, optional: percentage|fixedAmount|freeShipping)
 - `search` (string, optional: search by name)
-- `sortBy` (string, default: createdDate)
+- `sortBy` (string, default: createdAt)
 - `sortOrder` (string, default: desc)
 
 ```bash
@@ -147,7 +147,7 @@ curl -X GET "https://api.example.com/api/v1/promotions?active=true&page=1&limit=
       "endDate": "2025-08-31T23:59:59Z",
       "currentUsageCount": 150,
       "totalUsageLimit": 1000,
-      "createdDate": "2025-01-13T10:00:00Z"
+      "createdAt": "2025-01-13T10:00:00Z"
     }
   ],
   "pagination": {
@@ -183,7 +183,7 @@ curl -X PUT "https://api.example.com/api/v1/promotions/uuid-123" \
   "description": "Updated description",
   "active": false,
   "endDate": "2025-09-30T23:59:59Z",
-  "updatedDate": "2025-01-13T11:00:00Z",
+  "updatedAt": "2025-01-13T11:00:00Z",
   ...
 }
 ```
@@ -219,7 +219,7 @@ curl -X PATCH "https://api.example.com/api/v1/promotions/uuid-123/status" \
 {
   "id": "uuid-123",
   "active": true,
-  "updatedDate": "2025-01-13T11:00:00Z"
+  "updatedAt": "2025-01-13T11:00:00Z"
 }
 ```
 
@@ -251,7 +251,7 @@ curl -X POST "https://api.example.com/api/v1/promotions/uuid-123/conditions" \
   "conditionValue": {
     "productIds": ["prod-1", "prod-2", "prod-3"]
   },
-  "createdDate": "2025-01-13T10:00:00Z"
+  "createdAt": "2025-01-13T10:00:00Z"
 }
 ```
 
@@ -319,7 +319,7 @@ curl -X POST "https://api.example.com/api/v1/coupons" \
   "startDate": "2025-06-01T00:00:00Z",
   "expiresAt": "2025-08-31T23:59:59Z",
   "active": true,
-  "createdDate": "2025-01-13T10:00:00Z"
+  "createdAt": "2025-01-13T10:00:00Z"
 }
 ```
 
@@ -701,7 +701,7 @@ curl -X POST "https://api.example.com/api/v1/promotions/applications" \
   "discountAmount": 40.0,
   "finalAmount": 160.0,
   "appliedItems": [...],
-  "createdDate": "2025-01-13T10:00:00Z"
+  "createdAt": "2025-01-13T10:00:00Z"
 }
 ```
 
