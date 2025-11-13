@@ -1,0 +1,1158 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+# File Summary
+
+## Purpose
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+## File Format
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  a. A header with the file path (## File: path/to/file)
+  b. The full contents of the file in a code block
+
+## Usage Guidelines
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+## Notes
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+# Directory Structure
+```
+.claude/
+  settings.local.json
+db/
+  index.ts
+  schema.ts
+drizzle/
+  meta/
+    _journal.json
+    0000_snapshot.json
+  0000_simple_daredevil.sql
+middlewares/
+  auth.ts
+  README.md
+routes/
+  README.md
+tests/
+  example.test.ts
+  utils.test.ts
+utils/
+  index.ts
+.env.example
+.prettierrc
+config.ts
+drizzle.config.ts
+index.ts
+nixpacks.toml
+package.json
+repomix-output.md
+tsconfig.json
+vitest.config.ts
+```
+
+# Files
+
+## File: .claude/settings.local.json
+````json
+{
+  "permissions": {
+    "allow": [
+      "Bash(repomix)",
+      "Bash(repomix:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
+````
+
+## File: db/index.ts
+````typescript
+import postgres from 'postgres'
+import { drizzle } from 'drizzle-orm/postgres-js'
+import * as schema from './schema'
+
+const connectionString = process.env.DATABASE_URL
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL is not set')
+}
+
+export const client = postgres(connectionString)
+export const db = drizzle(client, { schema })
+````
+
+## File: db/schema.ts
+````typescript
+import { pgTable, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core'
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+````
+
+## File: drizzle/meta/_journal.json
+````json
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1762940807737,
+      "tag": "0000_simple_daredevil",
+      "breakpoints": true
+    }
+  ]
+}
+````
+
+## File: drizzle/meta/0000_snapshot.json
+````json
+{
+  "id": "605f6148-4c0c-4abf-a1a8-cf64a8312cd8",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
+````
+
+## File: drizzle/0000_simple_daredevil.sql
+````sql
+CREATE TABLE "users" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"email" text NOT NULL,
+	"active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_email_unique" UNIQUE("email")
+);
+````
+
+## File: tests/example.test.ts
+````typescript
+import { describe, it, expect } from 'vitest'
+
+describe('Example Test Suite', () => {
+  it('should pass a basic test', () => {
+    expect(1 + 1).toBe(2)
+  })
+
+  it('should work with async/await', async () => {
+    const result = await Promise.resolve('Hello, Vitest!')
+    expect(result).toBe('Hello, Vitest!')
+  })
+
+  it('should handle objects', () => {
+    const user = { name: 'John', age: 30 }
+    expect(user).toHaveProperty('name')
+    expect(user.name).toBe('John')
+  })
+})
+````
+
+## File: tests/utils.test.ts
+````typescript
+import { describe, it, expect } from 'vitest'
+import { capitalize, formatDate, wait } from '../utils'
+
+describe('Utils', () => {
+  describe('capitalize', () => {
+    it('should capitalize first letter', () => {
+      expect(capitalize('hello')).toBe('Hello')
+    })
+
+    it('should handle empty string', () => {
+      expect(capitalize('')).toBe('')
+    })
+  })
+
+  describe('formatDate', () => {
+    it('should format date correctly', () => {
+      const date = new Date('2024-01-15T12:00:00Z')
+      expect(formatDate(date)).toBe('2024-01-15')
+    })
+  })
+
+  describe('wait', () => {
+    it('should wait for specified time', async () => {
+      const start = Date.now()
+      await wait(100)
+      const elapsed = Date.now() - start
+      expect(elapsed).toBeGreaterThanOrEqual(95)
+    })
+  })
+})
+````
+
+## File: utils/index.ts
+````typescript
+/**
+ * Utility functions
+ */
+
+export function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0]
+}
+
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+````
+
+## File: .env.example
+````
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+
+# Application
+NODE_ENV=development
+PORT=3030
+````
+
+## File: .prettierrc
+````
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "arrowParens": "always"
+}
+````
+
+## File: drizzle.config.ts
+````typescript
+import { defineConfig } from 'drizzle-kit';
+
+console.log(`debug:process.env.DATABASE_URL`, process.env.DATABASE_URL);
+
+export default defineConfig({
+  dialect: 'postgresql',
+  schema: './db/schema.ts',
+  out: './drizzle',
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+  verbose: true,
+  strict: true,
+});
+````
+
+## File: index.ts
+````typescript
+import '@dotenvx/dotenvx/config';
+import Fastify from 'fastify';
+import { db } from './db';
+import { users } from './db/schema';
+import { eq } from 'drizzle-orm';
+
+const fastify = Fastify({
+  logger: true,
+});
+
+const PORT = Number(process.env.PORT) || 3030;
+
+// Health check endpoints
+fastify.get('/', async () => {
+  try {
+    await db.execute('SELECT 1');
+    return { status: 'healthy', database: 'connected' };
+  } catch (error: any) {
+    return {
+      status: 'unhealthy',
+      database: 'disconnected',
+      error: error.message,
+    };
+  }
+});
+
+fastify.get('/api/healthcheck', async () => {
+  try {
+    await db.execute('SELECT 1');
+    return {
+      status: 'healthy',
+      database: 'connected',
+      timestamp: new Date().toISOString(),
+    };
+  } catch (error: any) {
+    return {
+      status: 'unhealthy',
+      database: 'disconnected',
+      timestamp: new Date().toISOString(),
+      error: error.message,
+    };
+  }
+});
+
+// Get all users
+fastify.get('/users', async () => {
+  const allUsers = await db.select().from(users);
+  return { users: allUsers };
+});
+
+// Get user by ID
+fastify.get<{ Params: { id: string } }>(
+  '/users/:id',
+  async (request, reply) => {
+    const { id } = request.params;
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, Number(id)));
+
+    if (user.length === 0) {
+      reply.code(404);
+      return { error: 'User not found' };
+    }
+
+    return { user: user[0] };
+  },
+);
+
+// Create user
+fastify.post<{ Body: { name: string; email: string } }>(
+  '/users',
+  async (request, reply) => {
+    const { name, email } = request.body;
+
+    const newUser = await db.insert(users).values({ name, email }).returning();
+
+    reply.code(201);
+    return { user: newUser[0] };
+  },
+);
+
+// Update user
+fastify.put<{
+  Params: { id: string };
+  Body: { name?: string; email?: string };
+}>('/users/:id', async (request, reply) => {
+  const { id } = request.params;
+  const { name, email } = request.body;
+
+  const updated = await db
+    .update(users)
+    .set({ name, email, updatedAt: new Date() })
+    .where(eq(users.id, Number(id)))
+    .returning();
+
+  if (updated.length === 0) {
+    reply.code(404);
+    return { error: 'User not found' };
+  }
+
+  return { user: updated[0] };
+});
+
+// Delete user
+fastify.delete<{ Params: { id: string } }>(
+  '/users/:id',
+  async (request, reply) => {
+    const { id } = request.params;
+
+    const deleted = await db
+      .delete(users)
+      .where(eq(users.id, Number(id)))
+      .returning();
+
+    if (deleted.length === 0) {
+      reply.code(404);
+      return { error: 'User not found' };
+    }
+
+    reply.code(204);
+    return;
+  },
+);
+
+// Start server
+async function start() {
+  try {
+    await fastify.listen({ port: PORT, host: '0.0.0.0' });
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+}
+
+start();
+````
+
+## File: nixpacks.toml
+````toml
+[phases.setup]
+nixPkgs = ["nodejs_20", "postgresql"]
+
+[phases.install]
+cmds = ["npm install"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm run db:generate && npm run db:migrate && npm start"
+````
+
+## File: package.json
+````json
+{
+  "name": "x-base-app",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Simple Node.js app with Drizzle, Postgres, and Vitest",
+  "scripts": {
+    "dev": "dotenvx run -- tsx watch index.ts",
+    "start": "dotenvx run -- tsx index.ts",
+    "build": "tsc",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "db:generate": "dotenvx run -- drizzle-kit generate",
+    "db:migrate": "dotenvx run -- drizzle-kit migrate",
+    "db:push": "dotenvx run -- drizzle-kit push",
+    "db:studio": "dotenvx run -- drizzle-kit studio",
+    "db:drop": "dotenvx run -- drizzle-kit drop"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.51.1",
+    "drizzle-orm": "^0.44.7",
+    "fastify": "^5.6.2",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@vitest/ui": "^4.0.8",
+    "drizzle-kit": "^0.31.6",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}
+````
+
+## File: repomix-output.md
+````markdown
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+# File Summary
+
+## Purpose
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+## File Format
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  a. A header with the file path (## File: path/to/file)
+  b. The full contents of the file in a code block
+
+## Usage Guidelines
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+## Notes
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+# Directory Structure
+```
+.claude/
+  settings.local.json
+drizzle/
+  meta/
+    _journal.json
+    0000_snapshot.json
+  0000_simple_daredevil.sql
+src/
+  __tests__/
+    example.test.ts
+    utils.test.ts
+  db/
+    index.ts
+    schema.ts
+  utils/
+    index.ts
+  index.ts
+.env.example
+.prettierrc
+drizzle.config.ts
+nixpacks.toml
+package.json
+tsconfig.json
+vitest.config.ts
+```
+
+# Files
+
+## File: .claude/settings.local.json
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(repomix)",
+      "Bash(repomix:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
+```
+
+## File: drizzle/meta/_journal.json
+```json
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1762940807737,
+      "tag": "0000_simple_daredevil",
+      "breakpoints": true
+    }
+  ]
+}
+```
+
+## File: drizzle/meta/0000_snapshot.json
+```json
+{
+  "id": "605f6148-4c0c-4abf-a1a8-cf64a8312cd8",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
+```
+
+## File: drizzle/0000_simple_daredevil.sql
+```sql
+CREATE TABLE "users" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"email" text NOT NULL,
+	"active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_email_unique" UNIQUE("email")
+);
+```
+
+## File: src/__tests__/example.test.ts
+```typescript
+import { describe, it, expect } from 'vitest'
+
+describe('Example Test Suite', () => {
+  it('should pass a basic test', () => {
+    expect(1 + 1).toBe(2)
+  })
+
+  it('should work with async/await', async () => {
+    const result = await Promise.resolve('Hello, Vitest!')
+    expect(result).toBe('Hello, Vitest!')
+  })
+
+  it('should handle objects', () => {
+    const user = { name: 'John', age: 30 }
+    expect(user).toHaveProperty('name')
+    expect(user.name).toBe('John')
+  })
+})
+```
+
+## File: src/__tests__/utils.test.ts
+```typescript
+import { describe, it, expect } from 'vitest'
+import { capitalize, formatDate, wait } from '../utils'
+
+describe('Utils', () => {
+  describe('capitalize', () => {
+    it('should capitalize first letter', () => {
+      expect(capitalize('hello')).toBe('Hello')
+    })
+
+    it('should handle empty string', () => {
+      expect(capitalize('')).toBe('')
+    })
+  })
+
+  describe('formatDate', () => {
+    it('should format date correctly', () => {
+      const date = new Date('2024-01-15T12:00:00Z')
+      expect(formatDate(date)).toBe('2024-01-15')
+    })
+  })
+
+  describe('wait', () => {
+    it('should wait for specified time', async () => {
+      const start = Date.now()
+      await wait(100)
+      const elapsed = Date.now() - start
+      expect(elapsed).toBeGreaterThanOrEqual(95)
+    })
+  })
+})
+```
+
+## File: src/db/index.ts
+```typescript
+import postgres from 'postgres'
+import { drizzle } from 'drizzle-orm/postgres-js'
+import * as schema from './schema'
+
+const connectionString = process.env.DATABASE_URL
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL is not set')
+}
+
+export const client = postgres(connectionString)
+export const db = drizzle(client, { schema })
+```
+
+## File: src/db/schema.ts
+```typescript
+import { pgTable, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core'
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+```
+
+## File: src/utils/index.ts
+```typescript
+/**
+ * Utility functions
+ */
+
+export function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0]
+}
+
+export function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+```
+
+## File: src/index.ts
+```typescript
+import '@dotenvx/dotenvx/config';
+import Fastify from 'fastify';
+import { db } from './db';
+import { users } from './db/schema';
+import { eq } from 'drizzle-orm';
+
+const fastify = Fastify({
+  logger: true,
+});
+
+const PORT = Number(process.env.PORT) || 3030;
+
+// Health check endpoints
+fastify.get('/', async () => {
+  try {
+    await db.execute('SELECT 1');
+    return { status: 'healthy', database: 'connected' };
+  } catch (error: any) {
+    return {
+      status: 'unhealthy',
+      database: 'disconnected',
+      error: error.message,
+    };
+  }
+});
+
+fastify.get('/api/healthcheck', async () => {
+  try {
+    await db.execute('SELECT 1');
+    return {
+      status: 'healthy',
+      database: 'connected',
+      timestamp: new Date().toISOString(),
+    };
+  } catch (error: any) {
+    return {
+      status: 'unhealthy',
+      database: 'disconnected',
+      timestamp: new Date().toISOString(),
+      error: error.message,
+    };
+  }
+});
+
+// Get all users
+fastify.get('/users', async () => {
+  const allUsers = await db.select().from(users);
+  return { users: allUsers };
+});
+
+// Get user by ID
+fastify.get<{ Params: { id: string } }>(
+  '/users/:id',
+  async (request, reply) => {
+    const { id } = request.params;
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, Number(id)));
+
+    if (user.length === 0) {
+      reply.code(404);
+      return { error: 'User not found' };
+    }
+
+    return { user: user[0] };
+  },
+);
+
+// Create user
+fastify.post<{ Body: { name: string; email: string } }>(
+  '/users',
+  async (request, reply) => {
+    const { name, email } = request.body;
+
+    const newUser = await db.insert(users).values({ name, email }).returning();
+
+    reply.code(201);
+    return { user: newUser[0] };
+  },
+);
+
+// Update user
+fastify.put<{
+  Params: { id: string };
+  Body: { name?: string; email?: string };
+}>('/users/:id', async (request, reply) => {
+  const { id } = request.params;
+  const { name, email } = request.body;
+
+  const updated = await db
+    .update(users)
+    .set({ name, email, updatedAt: new Date() })
+    .where(eq(users.id, Number(id)))
+    .returning();
+
+  if (updated.length === 0) {
+    reply.code(404);
+    return { error: 'User not found' };
+  }
+
+  return { user: updated[0] };
+});
+
+// Delete user
+fastify.delete<{ Params: { id: string } }>(
+  '/users/:id',
+  async (request, reply) => {
+    const { id } = request.params;
+
+    const deleted = await db
+      .delete(users)
+      .where(eq(users.id, Number(id)))
+      .returning();
+
+    if (deleted.length === 0) {
+      reply.code(404);
+      return { error: 'User not found' };
+    }
+
+    reply.code(204);
+    return;
+  },
+);
+
+// Start server
+async function start() {
+  try {
+    await fastify.listen({ port: PORT, host: '0.0.0.0' });
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+}
+
+start();
+```
+
+## File: .env.example
+```
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+
+# Application
+NODE_ENV=development
+PORT=3030
+```
+
+## File: .prettierrc
+```
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "arrowParens": "always"
+}
+```
+
+## File: drizzle.config.ts
+```typescript
+import { defineConfig } from 'drizzle-kit';
+
+console.log(`debug:process.env.DATABASE_URL`, process.env.DATABASE_URL);
+
+export default defineConfig({
+  dialect: 'postgresql',
+  schema: './src/db/schema.ts',
+  out: './drizzle',
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+  verbose: true,
+  strict: true,
+});
+```
+
+## File: nixpacks.toml
+```toml
+[phases.setup]
+nixPkgs = ["nodejs_20", "postgresql"]
+
+[phases.install]
+cmds = ["npm install"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npm run db:generate && npm run db:migrate && npm start"
+```
+
+## File: package.json
+```json
+{
+  "name": "x-base-app",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Simple Node.js app with Drizzle, Postgres, and Vitest",
+  "scripts": {
+    "dev": "dotenvx run -- tsx watch src/index.ts",
+    "start": "dotenvx run -- tsx src/index.ts",
+    "build": "tsc",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "db:generate": "dotenvx run -- drizzle-kit generate",
+    "db:migrate": "dotenvx run -- drizzle-kit migrate",
+    "db:push": "dotenvx run -- drizzle-kit push",
+    "db:studio": "dotenvx run -- drizzle-kit studio",
+    "db:drop": "dotenvx run -- drizzle-kit drop"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.51.1",
+    "drizzle-orm": "^0.44.7",
+    "fastify": "^5.6.2",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@vitest/ui": "^4.0.8",
+    "drizzle-kit": "^0.31.6",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}
+```
+
+## File: tsconfig.json
+```json
+{
+  "include": ["**/*.ts", "**/*.tsx", "ultracite.config.js"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+## File: vitest.config.ts
+```typescript
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+    },
+  },
+})
+```
+````
+
+## File: tsconfig.json
+````json
+{
+  "include": ["**/*.ts", "**/*.tsx", "ultracite.config.js"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+````
+
+## File: vitest.config.ts
+````typescript
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+    },
+  },
+})
+````

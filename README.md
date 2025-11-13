@@ -18,3 +18,47 @@ Project board:
 - Change issue status - Done
   -> Merge PR
   -> Close issue
+
+## Source structure
+
+x-base-app/
+├── be/
+│ ├── index.ts
+│ ├── package.json
+│ ├── tsconfig.json
+│ ├── .env # Environment variables
+│ ├── .env.example
+│ ├── config.ts
+│ ├── routes/ # All API routes and controllers
+│ │ ├── admin.users.ts
+│ │ └── admin.products.ts
+│ │
+│ ├── services/ # Business logic / services layer
+│ │ ├── admin.user.service.ts
+│ │ └── admin.product.service.ts
+│ │ └── public.user.service.ts
+│ │ └── public.product.service.ts
+│ │
+│ ├── db/ # Database models (Drizzle)
+│ │
+│ ├── drizzle/ # Database models (Drizzle)
+│ │
+│ ├── middlewares/
+│ │ ├── auth.ts
+│ │ ├── logger.ts
+│ │ └── errorHandler.ts
+│ │
+│ ├── utils/ # Helper functions, constants
+│ │ ├── validation.ts
+│ │ └── logger.ts
+│ │
+│ ├── tests/ # Unit & integration tests
+│ │
+│ ├── types/ # Type definitions
+│ │ └── index.ts
+
+## Command
+
+```sh
+(cd be && repomix --style markdown)
+```

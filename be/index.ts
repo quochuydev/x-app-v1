@@ -1,8 +1,8 @@
 import '@dotenvx/dotenvx/config';
+import { eq } from 'drizzle-orm';
 import Fastify from 'fastify';
 import { db } from './db';
 import { users } from './db/schema';
-import { eq } from 'drizzle-orm';
 
 const fastify = Fastify({
   logger: true,

@@ -4,8 +4,8 @@
   "type": "module",
   "description": "Simple Node.js app with Drizzle, Postgres, and Vitest",
   "scripts": {
-    "dev": "dotenvx run -- tsx watch src/index.ts",
-    "start": "dotenvx run -- tsx src/index.ts",
+    "dev": "dotenvx run -- tsx watch index.ts",
+    "start": "dotenvx run -- tsx index.ts",
     "build": "tsc",
     "test": "vitest",
     "test:ui": "vitest --ui",
