@@ -1,5 +1,5 @@
 import type { IncomingHttpHeaders } from 'node:http';
-import type { AuthUser } from '../../types';
+import type { AuthUser } from '../types';
 
 /**
  * Extract user information from request headers.

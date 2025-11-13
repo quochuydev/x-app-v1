@@ -1,39 +1,45 @@
 This file is a merged representation of the entire codebase, combined into a single document by Repomix.
 
-# File Summary
+<file_summary>
+This section contains a summary of this file.
 
-## Purpose
+<purpose>
 This file contains a packed representation of the entire repository's contents.
 It is designed to be easily consumable by AI systems for analysis, code review,
 or other automated processes.
+</purpose>
 
-## File Format
+<file_format>
 The content is organized as follows:
 1. This summary section
 2. Repository information
 3. Directory structure
 4. Repository files (if enabled)
 5. Multiple file entries, each consisting of:
-  a. A header with the file path (## File: path/to/file)
-  b. The full contents of the file in a code block
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
 
-## Usage Guidelines
+<usage_guidelines>
 - This file should be treated as read-only. Any changes should be made to the
   original repository files, not this packed version.
 - When processing this file, use the file path to distinguish
   between different files in the repository.
 - Be aware that this file may contain sensitive information. Handle it with
   the same level of security as you would the original repository.
+</usage_guidelines>
 
-## Notes
+<notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
 
-# Directory Structure
-```
+</file_summary>
+
+<directory_structure>
 .claude/
   settings.local.json
 db/
@@ -47,17 +53,13 @@ drizzle/
 middlewares/
   api.admin.auth.adapt.ts
   config.ts
-  README.md
 routes/
   api.admin.users.create.ts
   api.admin.users.delete.ts
   api.admin.users.getById.ts
   api.admin.users.getList.ts
   api.admin.users.update.ts
-  api.public.health.check.ts
-services/
-  auth/
-    getUserInfo.ts
+  api.healthcheck.ts
 tests/
   api.admin.users.create.fixture.ts
   api.admin.users.create.spec.ts
@@ -74,9 +76,10 @@ tests/
 types/
   index.ts
 utils/
-  index.ts
+  getUserInfo.ts
 .env.example
 .prettierrc
+CLAUDE.md
 config.ts
 drizzle.config.ts
 index.ts
@@ -84,12 +87,12 @@ nixpacks.toml
 package.json
 tsconfig.json
 vitest.config.ts
-```
+</directory_structure>
 
-# Files
+<files>
+This section contains the contents of the repository's files.
 
-## File: .claude/settings.local.json
-```json
+<file path=".claude/settings.local.json">
 {
   "permissions": {
     "allow": [
@@ -100,10 +103,9 @@ vitest.config.ts
     "ask": []
   }
 }
-```
+</file>
 
-## File: db/index.ts
-```typescript
+<file path="db/index.ts">
 import postgres from 'postgres'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import * as schema from './schema'
@@ -116,10 +118,9 @@ if (!connectionString) {
 
 export const client = postgres(connectionString)
 export const db = drizzle(client, { schema })
-```
+</file>
 
-## File: db/schema.ts
-```typescript
+<file path="db/schema.ts">
 import { pgTable, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
@@ -130,10 +131,9 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
-```
+</file>
 
-## File: drizzle/meta/_journal.json
-```json
+<file path="drizzle/meta/_journal.json">
 {
   "version": "7",
   "dialect": "postgresql",
@@ -147,10 +147,9 @@ export const users = pgTable('users', {
     }
   ]
 }
-```
+</file>
 
-## File: drizzle/meta/0000_snapshot.json
-```json
+<file path="drizzle/meta/0000_snapshot.json">
 {
   "id": "605f6148-4c0c-4abf-a1a8-cf64a8312cd8",
   "prevId": "00000000-0000-0000-0000-000000000000",
@@ -230,10 +229,9 @@ export const users = pgTable('users', {
     "tables": {}
   }
 }
-```
+</file>
 
-## File: drizzle/0000_simple_daredevil.sql
-```sql
+<file path="drizzle/0000_simple_daredevil.sql">
 CREATE TABLE "users" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
@@ -243,70 +241,29 @@ CREATE TABLE "users" (
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
-```
+</file>
 
-## File: middlewares/api.admin.auth.adapt.ts
-```typescript
+<file path="middlewares/api.admin.auth.adapt.ts">
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { AuthUser } from '../types';
 
-// Simple authentication middleware
-// In production, you would validate JWT tokens or sessions
-export async function authMiddleware(
-  request: FastifyRequest,
-  reply: FastifyReply
-): Promise<void> {
-  try {
-    const authHeader = request.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      reply.code(401).send({ error: 'Unauthorized - Missing or invalid token' });
-      return;
-    }
-
-    const token = authHeader.substring(7);
-
-    // In production, validate the JWT token here
-    // For now, we'll do a simple check
-    if (!token || token === '') {
-      reply.code(401).send({ error: 'Unauthorized - Invalid token' });
-      return;
-    }
-
-    // Mock user extraction from token
-    // In production, decode and verify JWT
-    const user: AuthUser = {
-      id: 1,
-      email: 'admin@example.com',
-      name: 'Admin User',
-    };
-
-    // Attach user to request
-    (request as any).user = user;
-  } catch (error) {
-    reply.code(401).send({ error: 'Unauthorized - Token validation failed' });
-  }
-}
-
-// Optional: Admin check middleware
 export async function adminMiddleware(
   request: FastifyRequest,
-  reply: FastifyReply
+  _: FastifyReply,
 ): Promise<void> {
-  const user = (request as any).user as AuthUser | undefined;
+  const user: AuthUser = {
+    id: 1,
+    email: 'admin@example.com',
+    name: 'Admin User',
+  };
 
-  if (!user) {
-    reply.code(403).send({ error: 'Forbidden - User not authenticated' });
-    return;
-  }
+  (request as any).user = user;
 
-  // In production, check if user has admin role
-  // For now, we'll allow all authenticated users
+  console.log(`debug:user`, user);
 }
-```
+</file>
 
-## File: middlewares/config.ts
-```typescript
+<file path="middlewares/config.ts">
 import type { MiddlewareConfig } from '../types';
 
 /**
@@ -330,10 +287,9 @@ export const middlewareConfig: MiddlewareConfig = {
   '/api/public/*': [],
   '/api/*': [],
 };
-```
+</file>
 
-## File: routes/api.admin.users.create.ts
-```typescript
+<file path="routes/api.admin.users.create.ts">
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { db } from '../db';
 import { users } from '../db/schema';
@@ -387,10 +343,9 @@ export default async function usersCreateRoute(fastify: FastifyInstance) {
     }
   );
 }
-```
+</file>
 
-## File: routes/api.admin.users.delete.ts
-```typescript
+<file path="routes/api.admin.users.delete.ts">
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { eq } from 'drizzle-orm';
 import { db } from '../db';
@@ -450,10 +405,9 @@ export default async function usersDeleteRoute(fastify: FastifyInstance) {
     }
   );
 }
-```
+</file>
 
-## File: routes/api.admin.users.getById.ts
-```typescript
+<file path="routes/api.admin.users.getById.ts">
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { eq } from 'drizzle-orm';
 import { db } from '../db';
@@ -523,10 +477,9 @@ export default async function usersGetByIdRoute(fastify: FastifyInstance) {
     }
   );
 }
-```
+</file>
 
-## File: routes/api.admin.users.getList.ts
-```typescript
+<file path="routes/api.admin.users.getList.ts">
 import type { FastifyInstance } from 'fastify';
 import { db } from '../db';
 import { users } from '../db/schema';
@@ -564,10 +517,9 @@ export default async function usersGetListRoute(fastify: FastifyInstance) {
     return { users: allUsers };
   });
 }
-```
+</file>
 
-## File: routes/api.admin.users.update.ts
-```typescript
+<file path="routes/api.admin.users.update.ts">
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { eq } from 'drizzle-orm';
 import { db } from '../db';
@@ -645,94 +597,56 @@ export default async function usersUpdateRoute(fastify: FastifyInstance) {
     }
   );
 }
-```
+</file>
 
-## File: routes/api.public.health.check.ts
-```typescript
+<file path="routes/api.healthcheck.ts">
 import type { FastifyInstance } from 'fastify';
 import { db } from '../db';
 import type { HealthCheckResponse } from '../types';
 
 export default async function healthCheckRoute(fastify: FastifyInstance) {
   // API health check
-  fastify.get('/api/public/health/check', {
-    schema: {
-      tags: ['public'],
-      description: 'API health check endpoint',
-      response: {
-        200: {
-          type: 'object',
-          properties: {
-            status: { type: 'string', enum: ['healthy', 'unhealthy'] },
-            database: { type: 'string', enum: ['connected', 'disconnected'] },
-            timestamp: { type: 'string', format: 'date-time' },
-            error: { type: 'string' },
+  fastify.get(
+    '/api/healthcheck',
+    {
+      schema: {
+        tags: ['public'],
+        description: 'API health check endpoint',
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              status: { type: 'string', enum: ['healthy', 'unhealthy'] },
+              database: { type: 'string', enum: ['connected', 'disconnected'] },
+              timestamp: { type: 'string', format: 'date-time' },
+              error: { type: 'string' },
+            },
           },
         },
       },
     },
-  }, async (): Promise<HealthCheckResponse> => {
-    try {
-      await db.execute('SELECT 1');
-      return {
-        status: 'healthy',
-        database: 'connected',
-        timestamp: new Date().toISOString(),
-      };
-    } catch (error: any) {
-      return {
-        status: 'unhealthy',
-        database: 'disconnected',
-        timestamp: new Date().toISOString(),
-        error: error.message,
-      };
-    }
-  });
+    async (): Promise<HealthCheckResponse> => {
+      try {
+        await db.execute('SELECT 1');
+        return {
+          status: 'healthy',
+          database: 'connected',
+          timestamp: new Date().toISOString(),
+        };
+      } catch (error: any) {
+        return {
+          status: 'unhealthy',
+          database: 'disconnected',
+          timestamp: new Date().toISOString(),
+          error: error.message,
+        };
+      }
+    },
+  );
 }
-```
+</file>
 
-## File: services/auth/getUserInfo.ts
-```typescript
-import type { IncomingHttpHeaders } from 'node:http';
-import type { AuthUser } from '../../types';
-
-/**
- * Extract user information from request headers.
- *
- * In production:
- * - Validate JWT from Authorization header or cookie
- * - Decode token and extract user claims
- * - Verify token signature and expiration
- *
- * For now: Mock implementation for development
- */
-export function getUserInfo(headers: IncomingHttpHeaders): AuthUser {
-  const authHeader = headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new Error('Unauthorized - Missing or invalid token');
-  }
-
-  const token = authHeader.substring(7);
-
-  if (!token || token === '') {
-    throw new Error('Unauthorized - Invalid token');
-  }
-
-  // Mock user extraction from token
-  // In production: decode and verify JWT
-  const user: AuthUser = {
-    id: 1,
-    email: 'admin@example.com',
-    name: 'Admin User',
-  };
-
-  return user;
-}
-```
-
-## File: tests/api.admin.users.create.fixture.ts
-```typescript
+<file path="tests/api.admin.users.create.fixture.ts">
 import type { CreateUserRequest, User, UserResponse } from '../types';
 
 export const createUserRequest: CreateUserRequest = {
@@ -757,10 +671,9 @@ export const createdUser: User = {
 export const createUserResponse: UserResponse = {
   user: createdUser,
 };
-```
+</file>
 
-## File: tests/api.admin.users.create.spec.ts
-```typescript
+<file path="tests/api.admin.users.create.spec.ts">
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import Fastify, { FastifyInstance } from 'fastify';
 import usersCreateRoute from '../routes/api.admin.users.create';
@@ -820,19 +733,17 @@ describe('Users Create Route', () => {
     });
   });
 });
-```
+</file>
 
-## File: tests/api.admin.users.delete.fixture.ts
-```typescript
+<file path="tests/api.admin.users.delete.fixture.ts">
 import type { ErrorResponse } from '../types';
 
 export const userNotFoundError: ErrorResponse = {
   error: 'User not found',
 };
-```
+</file>
 
-## File: tests/api.admin.users.delete.spec.ts
-```typescript
+<file path="tests/api.admin.users.delete.spec.ts">
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import Fastify, { FastifyInstance } from 'fastify';
 import usersDeleteRoute from '../routes/api.admin.users.delete';
@@ -874,10 +785,9 @@ describe('Users Delete Route', () => {
     });
   });
 });
-```
+</file>
 
-## File: tests/api.admin.users.getById.fixture.ts
-```typescript
+<file path="tests/api.admin.users.getById.fixture.ts">
 import type { User, UserResponse, ErrorResponse } from '../types';
 
 export const mockUser: User = {
@@ -896,10 +806,9 @@ export const userResponse: UserResponse = {
 export const userNotFoundError: ErrorResponse = {
   error: 'User not found',
 };
-```
+</file>
 
-## File: tests/api.admin.users.getById.spec.ts
-```typescript
+<file path="tests/api.admin.users.getById.spec.ts">
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import Fastify, { FastifyInstance } from 'fastify';
 import usersGetByIdRoute from '../routes/api.admin.users.getById';
@@ -947,10 +856,9 @@ describe('Users GetById Route', () => {
     });
   });
 });
-```
+</file>
 
-## File: tests/api.admin.users.getList.fixture.ts
-```typescript
+<file path="tests/api.admin.users.getList.fixture.ts">
 import type { User, UsersListResponse } from '../types';
 
 export const mockUser1: User = {
@@ -978,10 +886,9 @@ export const mockUsersList: UsersListResponse = {
 export const emptyUsersList: UsersListResponse = {
   users: [],
 };
-```
+</file>
 
-## File: tests/api.admin.users.getList.spec.ts
-```typescript
+<file path="tests/api.admin.users.getList.spec.ts">
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import Fastify, { FastifyInstance } from 'fastify';
 import usersGetListRoute from '../routes/api.admin.users.getList';
@@ -1030,10 +937,9 @@ describe('Users GetList Route', () => {
     });
   });
 });
-```
+</file>
 
-## File: tests/api.admin.users.update.fixture.ts
-```typescript
+<file path="tests/api.admin.users.update.fixture.ts">
 import type { UpdateUserRequest, User, UserResponse, ErrorResponse } from '../types';
 
 export const updateUserRequest: UpdateUserRequest = {
@@ -1061,10 +967,9 @@ export const updateUserResponse: UserResponse = {
 export const userNotFoundError: ErrorResponse = {
   error: 'User not found',
 };
-```
+</file>
 
-## File: tests/api.admin.users.update.spec.ts
-```typescript
+<file path="tests/api.admin.users.update.spec.ts">
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import Fastify, { FastifyInstance } from 'fastify';
 import usersUpdateRoute from '../routes/api.admin.users.update';
@@ -1121,10 +1026,9 @@ describe('Users Update Route', () => {
     });
   });
 });
-```
+</file>
 
-## File: tests/api.public.health.check.fixture.ts
-```typescript
+<file path="tests/api.public.health.check.fixture.ts">
 import type { HealthCheckResponse } from '../types';
 
 export const healthyResponse: HealthCheckResponse = {
@@ -1150,13 +1054,12 @@ export const unhealthyResponseWithTimestamp: HealthCheckResponse = {
   timestamp: '2024-01-01T00:00:00.000Z',
   error: 'Database connection failed',
 };
-```
+</file>
 
-## File: tests/api.public.health.check.spec.ts
-```typescript
+<file path="tests/api.public.health.check.spec.ts">
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import Fastify, { FastifyInstance } from 'fastify';
-import healthCheckRoute from '../routes/api.public.health.check';
+import healthCheckRoute from '../routes/api.healthcheck';
 
 describe('Health Check Routes', () => {
   let fastify: FastifyInstance;
@@ -1204,10 +1107,9 @@ describe('Health Check Routes', () => {
     });
   });
 });
-```
+</file>
 
-## File: types/index.ts
-```typescript
+<file path="types/index.ts">
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
 import type { users } from '../db/schema';
 import type { FastifyRequest, FastifyReply } from 'fastify';
@@ -1284,53 +1186,197 @@ export type SimpleRouteHandler = (
   request: FastifyRequest,
   reply: FastifyReply
 ) => Promise<any>;
-```
+</file>
 
-## File: utils/index.ts
-```typescript
+<file path="utils/getUserInfo.ts">
+import type { IncomingHttpHeaders } from 'node:http';
+import type { AuthUser } from '../types';
+
 /**
- * Utility functions
+ * Extract user information from request headers.
+ *
+ * In production:
+ * - Validate JWT from Authorization header or cookie
+ * - Decode token and extract user claims
+ * - Verify token signature and expiration
+ *
+ * For now: Mock implementation for development
  */
+export function getUserInfo(headers: IncomingHttpHeaders): AuthUser {
+  const authHeader = headers.authorization;
 
-export function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0]
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new Error('Unauthorized - Missing or invalid token');
+  }
+
+  const token = authHeader.substring(7);
+
+  if (!token || token === '') {
+    throw new Error('Unauthorized - Invalid token');
+  }
+
+  // Mock user extraction from token
+  // In production: decode and verify JWT
+  const user: AuthUser = {
+    id: 1,
+    email: 'admin@example.com',
+    name: 'Admin User',
+  };
+
+  return user;
 }
+</file>
 
-export function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
-export function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-```
-
-## File: .env.example
-```
+<file path=".env.example">
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 
 # Application
 NODE_ENV=development
 PORT=3033
-```
+API_URL=http://localhost:3033
+</file>
 
-## File: .prettierrc
-```
+<file path=".prettierrc">
 {
   "singleQuote": true,
   "trailingComma": "all",
   "arrowParens": "always"
 }
-```
+</file>
 
-## File: config.ts
-```typescript
-export const config = {};
-```
+<file path="CLAUDE.md">
+# CLAUDE.md
 
-## File: drizzle.config.ts
-```typescript
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+This is a Node.js backend application built with Fastify, Drizzle ORM, and PostgreSQL. It follows a file-based routing pattern where routes and middlewares are automatically loaded from their respective directories.
+
+## Environment Setup
+
+Copy `.env.example` to `.env` and configure:
+
+- `DATABASE_URL` - PostgreSQL connection string (required)
+- `PORT` - Server port (default: 3033)
+- `API_URL` - Public API URL for Swagger docs
+
+All commands use `dotenvx` for environment variable management.
+
+## Architecture
+
+### Auto-Loading System
+
+The application uses a dynamic auto-loading pattern in `index.ts`:
+
+1. **Routes** (`/routes` directory): All route files are automatically registered at startup. Each route file exports a default function that registers Fastify routes.
+
+2. **Middlewares** (`/middlewares` directory): All middleware files are automatically registered. Each middleware exports a default function that registers as a Fastify plugin.
+
+### Middleware Configuration
+
+Middlewares are conditionally applied based on route patterns defined in `middlewares/config.ts`:
+
+- Uses glob-style pattern matching (`*` for wildcards)
+- More specific patterns take precedence
+- Middleware subjects reference files in the `/middlewares` directory
+- Pattern: `/api/admin/*` applies `service.admin.auth.adapt` middleware
+
+Current configuration:
+
+- `/api/admin/*` routes require authentication (mock implementation)
+- `/api/public/*` routes have no middleware
+- `/api/*` base routes have no middleware
+
+### Database Layer
+
+- **ORM**: Drizzle ORM with PostgreSQL
+- **Schema**: Defined in `db/schema.ts` using Drizzle's schema builder
+- **Connection**: Single client instance exported from `db/index.ts`
+- **Migrations**: Stored in `/drizzle` directory, managed via `drizzle-kit`
+
+### Type System
+
+- All types centralized in `types/index.ts`
+- Uses Drizzle's `InferSelectModel` and `InferInsertModel` for type safety
+- Includes API request/response types, auth types, and middleware types
+- Path alias `@/*` maps to repository root
+
+### Route Structure
+
+Routes follow the naming convention: `api.<scope>.<resource>.<action>.ts`
+
+Examples:
+
+- `api.admin.users.create.ts` → POST `/api/admin/users/create`
+- `api.admin.users.getList.ts` → GET `/api/admin/users/list`
+- `api.healthcheck.ts` → GET `/api/healthcheck`
+
+Each route file:
+
+1. Exports a default async function accepting `FastifyInstance`
+2. Registers one or more routes with OpenAPI schema
+3. Implements handler logic with proper typing from `types/index.ts`
+
+### Test Structure
+
+Tests use Vitest and follow the pattern:
+
+- Test files: `api.<scope>.<resource>.<action>.spec.ts`
+- Fixture files: `api.<scope>.<resource>.<action>.fixture.ts`
+- Each test creates a standalone Fastify instance
+- Uses Fastify's `inject()` method for HTTP testing
+- Cleanup with `beforeAll`/`afterAll` hooks
+
+### Authentication (Current State)
+
+Authentication is currently a mock implementation:
+
+- `middlewares/api.admin.auth.adapt.ts` sets mock admin user on requests
+- Ready for production implementation: replace mock logic with JWT validation
+
+## API Documentation
+
+Swagger UI available at `http://localhost:3033/docs` when server is running.
+
+## Adding New Features
+
+### Adding a Route
+
+1. Create file in `/routes` following naming convention: `api.<scope>.<resource>.<action>.ts`
+2. Export default function that registers Fastify route(s)
+3. Define OpenAPI schema in route options
+4. Import and use types from `types/index.ts`
+5. Route is automatically loaded at startup
+
+### Adding a Middleware
+
+1. Create file in `/middlewares` with descriptive name
+2. Export default function that registers Fastify plugin
+3. Update `middlewares/config.ts` to apply middleware to specific route patterns
+4. Middleware is automatically loaded at startup
+
+### Adding Tests
+
+1. Create spec file: `tests/api.<scope>.<resource>.<action>.spec.ts`
+2. Optionally create fixture file for shared test data
+3. Import route handler and create standalone Fastify instance
+4. Use `fastify.inject()` for HTTP assertions
+5. Run with `npm test` or `vitest <file>`
+</file>
+
+<file path="config.ts">
+import '@dotenvx/dotenvx/config';
+
+export const config = {
+  apiUrl: process.env.API_URL || 'http://localhost:3033',
+};
+
+console.log(`config`, JSON.stringify(config, null, 2));
+</file>
+
+<file path="drizzle.config.ts">
 import { defineConfig } from 'drizzle-kit';
 
 console.log(`debug:process.env.DATABASE_URL`, process.env.DATABASE_URL);
@@ -1345,10 +1391,9 @@ export default defineConfig({
   verbose: true,
   strict: true,
 });
-```
+</file>
 
-## File: index.ts
-```typescript
+<file path="index.ts">
 import '@dotenvx/dotenvx/config';
 import Fastify from 'fastify';
 import swagger from '@fastify/swagger';
@@ -1356,6 +1401,7 @@ import swaggerUi from '@fastify/swagger-ui';
 import { readdirSync } from 'fs';
 import { join } from 'path';
 import { pathToFileURL } from 'url';
+import { config } from './config';
 
 const fastify = Fastify({
   logger: true,
@@ -1417,8 +1463,12 @@ async function start() {
         },
         servers: [
           {
+            url: config.apiUrl,
+            description: 'Production server',
+          },
+          {
             url: `http://localhost:${PORT}`,
-            description: 'Development server',
+            description: 'Local server',
           },
         ],
         tags: [
@@ -1450,10 +1500,9 @@ async function start() {
 }
 
 start();
-```
+</file>
 
-## File: nixpacks.toml
-```toml
+<file path="nixpacks.toml">
 [phases.setup]
 nixPkgs = ["nodejs_20", "postgresql"]
 
@@ -1465,10 +1514,9 @@ cmds = ["npm run build"]
 
 [start]
 cmd = "npm run db:generate && npm run db:migrate && npm start"
-```
+</file>
 
-## File: package.json
-```json
+<file path="package.json">
 {
   "name": "x-base-app",
   "version": "1.0.0",
@@ -1506,10 +1554,9 @@ cmd = "npm run db:generate && npm run db:migrate && npm start"
     "vitest": "^4.0.8"
   }
 }
-```
+</file>
 
-## File: tsconfig.json
-```json
+<file path="tsconfig.json">
 {
   "include": ["**/*.ts", "**/*.tsx", "ultracite.config.js"],
   "compilerOptions": {
@@ -1537,10 +1584,9 @@ cmd = "npm run db:generate && npm run db:migrate && npm start"
     }
   }
 }
-```
+</file>
 
-## File: vitest.config.ts
-```typescript
+<file path="vitest.config.ts">
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -1565,4 +1611,6 @@ export default defineConfig({
     reporters: process.env.CI ? ['verbose', 'json', 'html'] : ['verbose'],
   },
 })
-```
+</file>
+
+</files>

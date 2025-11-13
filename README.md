@@ -33,9 +33,11 @@ x-base-app/
 │ ├── index.ts
 │ ├── config.ts
 │ │
+│ ├── middlewares/
+│ │ ├── api.admin.auth.adapt.ts
+│ │
 │ ├── routes/ # All API routes && middleware
 │ │ └── api.{area}.{resource}.{action}.ts
-│ │ ├── api.admin.auth.adapt.ts
 │ │
 │ ├── tests/
 │ │ ├── api.admin.auth.spec.ts

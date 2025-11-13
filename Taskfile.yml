@@ -37,26 +37,26 @@ tasks:
   db:generate:
     desc: Generate Drizzle migrations from schema
     dir: be
-    cmd: "{{.DOTENVX}} drizzle-kit generate"
+    cmd: "pnpm run db:generate"
 
   db:migrate:
     desc: Run database migrations
     dir: be
-    cmd: "{{.DOTENVX}} drizzle-kit migrate"
+    cmd: "pnpm run db:migrate"
 
   db:push:
     desc: Push schema changes directly to database (dev only)
     dir: be
-    cmd: "{{.DOTENVX}} drizzle-kit push"
+    cmd: "pnpm run db:push"
 
   db:studio:
     desc: Launch Drizzle Studio
     dir: be
-    cmd: "{{.DOTENVX}} drizzle-kit studio"
+    cmd: "pnpm run db:studio"
 
   db:drop:
     desc: Drop database tables
-    cmd: "{{.DOTENVX}} drizzle-kit drop"
+    cmd: "pnpm run db:drop"
     prompt: This will drop all tables. Are you sure?
 
   install:

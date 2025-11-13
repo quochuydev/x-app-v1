@@ -85,7 +85,6 @@ Tests use Vitest and follow the pattern:
 
 Authentication is currently a mock implementation:
 
-- `services/auth/getUserInfo.ts` extracts user from Bearer token but returns hardcoded user
 - `middlewares/api.admin.auth.adapt.ts` sets mock admin user on requests
 - Ready for production implementation: replace mock logic with JWT validation
 
