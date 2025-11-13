@@ -58,5 +58,6 @@ x-base-app/
 ## Command
 
 ```sh
+# v4
 (cd be && repomix --style markdown)
 ```
