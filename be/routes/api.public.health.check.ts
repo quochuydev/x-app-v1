@@ -3,22 +3,24 @@ import { db } from '../db';
 import type { HealthCheckResponse } from '../types';
 
 export default async function healthCheckRoute(fastify: FastifyInstance) {
-  // Root health check
-  fastify.get('/', async (): Promise<HealthCheckResponse> => {
-    try {
-      await db.execute('SELECT 1');
-      return { status: 'healthy', database: 'connected' };
-    } catch (error: any) {
-      return {
-        status: 'unhealthy',
-        database: 'disconnected',
-        error: error.message,
-      };
-    }
-  });
-
-  // API health check with timestamp
-  fastify.get('/api/healthcheck', async (): Promise<HealthCheckResponse> => {
+  // API health check
+  fastify.get('/api/public/health/check', {
+    schema: {
+      tags: ['public'],
+      description: 'API health check endpoint',
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            status: { type: 'string', enum: ['healthy', 'unhealthy'] },
+            database: { type: 'string', enum: ['connected', 'disconnected'] },
+            timestamp: { type: 'string', format: 'date-time' },
+            error: { type: 'string' },
+          },
+        },
+      },
+    },
+  }, async (): Promise<HealthCheckResponse> => {
     try {
       await db.execute('SELECT 1');
       return {

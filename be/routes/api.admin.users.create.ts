@@ -5,7 +5,39 @@ import type { CreateUserRequest, UserResponse } from '../types';
 
 export default async function usersCreateRoute(fastify: FastifyInstance) {
   fastify.post<{ Body: CreateUserRequest }>(
-    '/users',
+    '/api/admin/users/create',
+    {
+      schema: {
+        tags: ['admin'],
+        description: 'Create a new user',
+        body: {
+          type: 'object',
+          required: ['name', 'email'],
+          properties: {
+            name: { type: 'string', description: 'User full name' },
+            email: { type: 'string', format: 'email', description: 'User email address' },
+          },
+        },
+        response: {
+          201: {
+            type: 'object',
+            properties: {
+              user: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number' },
+                  name: { type: 'string' },
+                  email: { type: 'string' },
+                  active: { type: 'boolean' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     async (
       request: FastifyRequest<{ Body: CreateUserRequest }>,
       reply: FastifyReply

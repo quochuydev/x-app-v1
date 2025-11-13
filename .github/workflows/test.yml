@@ -4,13 +4,13 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'be/**'
-      - '.github/workflows/test.yml'
+      - "be/**"
+      - ".github/workflows/test.yml"
   pull_request:
     branches: [main, develop]
     paths:
-      - 'be/**'
-      - '.github/workflows/test.yml'
+      - "be/**"
+      - ".github/workflows/test.yml"
 
 jobs:
   test:
@@ -35,7 +35,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://testuser:testpassword@localhost:5432/testdb
       NODE_ENV: test
-      PORT: 3030
+      PORT: 3033
 
     steps:
       - name: Checkout code
@@ -49,8 +49,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
           cache-dependency-path: be/pnpm-lock.yaml
 
       - name: Install dependencies

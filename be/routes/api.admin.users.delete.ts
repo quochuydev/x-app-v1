@@ -4,22 +4,47 @@ import { db } from '../db';
 import { users } from '../db/schema';
 import type { ErrorResponse } from '../types';
 
-interface DeleteParams {
-  id: string;
+interface DeleteUserBody {
+  id: number;
 }
 
 export default async function usersDeleteRoute(fastify: FastifyInstance) {
-  fastify.delete<{ Params: DeleteParams }>(
-    '/users/:id',
+  fastify.post<{ Body: DeleteUserBody }>(
+    '/api/admin/users/delete',
+    {
+      schema: {
+        tags: ['admin'],
+        description: 'Delete user by ID',
+        body: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number', description: 'User ID' },
+          },
+        },
+        response: {
+          204: {
+            type: 'null',
+            description: 'User successfully deleted',
+          },
+          404: {
+            type: 'object',
+            properties: {
+              error: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
     async (
-      request: FastifyRequest<{ Params: DeleteParams }>,
+      request: FastifyRequest<{ Body: DeleteUserBody }>,
       reply: FastifyReply
     ): Promise<void | ErrorResponse> => {
-      const { id } = request.params;
+      const { id } = request.body;
 
       const deleted = await db
         .delete(users)
-        .where(eq(users.id, Number(id)))
+        .where(eq(users.id, id))
         .returning();
 
       if (deleted.length === 0) {

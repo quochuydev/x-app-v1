@@ -45,13 +45,34 @@ drizzle/
     0000_snapshot.json
   0000_simple_daredevil.sql
 middlewares/
-  auth.ts
+  api.admin.auth.adapt.ts
+  config.ts
   README.md
 routes/
-  README.md
+  api.admin.users.create.ts
+  api.admin.users.delete.ts
+  api.admin.users.getById.ts
+  api.admin.users.getList.ts
+  api.admin.users.update.ts
+  api.public.health.check.ts
+services/
+  auth/
+    getUserInfo.ts
 tests/
-  example.test.ts
-  utils.test.ts
+  api.admin.users.create.fixture.ts
+  api.admin.users.create.spec.ts
+  api.admin.users.delete.fixture.ts
+  api.admin.users.delete.spec.ts
+  api.admin.users.getById.fixture.ts
+  api.admin.users.getById.spec.ts
+  api.admin.users.getList.fixture.ts
+  api.admin.users.getList.spec.ts
+  api.admin.users.update.fixture.ts
+  api.admin.users.update.spec.ts
+  api.public.health.check.fixture.ts
+  api.public.health.check.spec.ts
+types/
+  index.ts
 utils/
   index.ts
 .env.example
@@ -59,537 +80,6 @@ utils/
 config.ts
 drizzle.config.ts
 index.ts
-nixpacks.toml
-package.json
-repomix-output.md
-tsconfig.json
-vitest.config.ts
-```
-
-# Files
-
-## File: .claude/settings.local.json
-````json
-{
-  "permissions": {
-    "allow": [
-      "Bash(repomix)",
-      "Bash(repomix:*)"
-    ],
-    "deny": [],
-    "ask": []
-  }
-}
-````
-
-## File: db/index.ts
-````typescript
-import postgres from 'postgres'
-import { drizzle } from 'drizzle-orm/postgres-js'
-import * as schema from './schema'
-
-const connectionString = process.env.DATABASE_URL
-
-if (!connectionString) {
-  throw new Error('DATABASE_URL is not set')
-}
-
-export const client = postgres(connectionString)
-export const db = drizzle(client, { schema })
-````
-
-## File: db/schema.ts
-````typescript
-import { pgTable, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core'
-
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  email: text('email').notNull().unique(),
-  active: boolean('active').default(true),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
-````
-
-## File: drizzle/meta/_journal.json
-````json
-{
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1762940807737,
-      "tag": "0000_simple_daredevil",
-      "breakpoints": true
-    }
-  ]
-}
-````
-
-## File: drizzle/meta/0000_snapshot.json
-````json
-{
-  "id": "605f6148-4c0c-4abf-a1a8-cf64a8312cd8",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "7",
-  "dialect": "postgresql",
-  "tables": {
-    "public.users": {
-      "name": "users",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "active": {
-          "name": "active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "users_email_unique": {
-          "name": "users_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    }
-  },
-  "enums": {},
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
-  "_meta": {
-    "columns": {},
-    "schemas": {},
-    "tables": {}
-  }
-}
-````
-
-## File: drizzle/0000_simple_daredevil.sql
-````sql
-CREATE TABLE "users" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"name" text NOT NULL,
-	"email" text NOT NULL,
-	"active" boolean DEFAULT true,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "users_email_unique" UNIQUE("email")
-);
-````
-
-## File: tests/example.test.ts
-````typescript
-import { describe, it, expect } from 'vitest'
-
-describe('Example Test Suite', () => {
-  it('should pass a basic test', () => {
-    expect(1 + 1).toBe(2)
-  })
-
-  it('should work with async/await', async () => {
-    const result = await Promise.resolve('Hello, Vitest!')
-    expect(result).toBe('Hello, Vitest!')
-  })
-
-  it('should handle objects', () => {
-    const user = { name: 'John', age: 30 }
-    expect(user).toHaveProperty('name')
-    expect(user.name).toBe('John')
-  })
-})
-````
-
-## File: tests/utils.test.ts
-````typescript
-import { describe, it, expect } from 'vitest'
-import { capitalize, formatDate, wait } from '../utils'
-
-describe('Utils', () => {
-  describe('capitalize', () => {
-    it('should capitalize first letter', () => {
-      expect(capitalize('hello')).toBe('Hello')
-    })
-
-    it('should handle empty string', () => {
-      expect(capitalize('')).toBe('')
-    })
-  })
-
-  describe('formatDate', () => {
-    it('should format date correctly', () => {
-      const date = new Date('2024-01-15T12:00:00Z')
-      expect(formatDate(date)).toBe('2024-01-15')
-    })
-  })
-
-  describe('wait', () => {
-    it('should wait for specified time', async () => {
-      const start = Date.now()
-      await wait(100)
-      const elapsed = Date.now() - start
-      expect(elapsed).toBeGreaterThanOrEqual(95)
-    })
-  })
-})
-````
-
-## File: utils/index.ts
-````typescript
-/**
- * Utility functions
- */
-
-export function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0]
-}
-
-export function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
-export function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-````
-
-## File: .env.example
-````
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/dbname
-
-# Application
-NODE_ENV=development
-PORT=3030
-````
-
-## File: .prettierrc
-````
-{
-  "singleQuote": true,
-  "trailingComma": "all",
-  "arrowParens": "always"
-}
-````
-
-## File: drizzle.config.ts
-````typescript
-import { defineConfig } from 'drizzle-kit';
-
-console.log(`debug:process.env.DATABASE_URL`, process.env.DATABASE_URL);
-
-export default defineConfig({
-  dialect: 'postgresql',
-  schema: './db/schema.ts',
-  out: './drizzle',
-  dbCredentials: {
-    url: process.env.DATABASE_URL!,
-  },
-  verbose: true,
-  strict: true,
-});
-````
-
-## File: index.ts
-````typescript
-import '@dotenvx/dotenvx/config';
-import Fastify from 'fastify';
-import { db } from './db';
-import { users } from './db/schema';
-import { eq } from 'drizzle-orm';
-
-const fastify = Fastify({
-  logger: true,
-});
-
-const PORT = Number(process.env.PORT) || 3030;
-
-// Health check endpoints
-fastify.get('/', async () => {
-  try {
-    await db.execute('SELECT 1');
-    return { status: 'healthy', database: 'connected' };
-  } catch (error: any) {
-    return {
-      status: 'unhealthy',
-      database: 'disconnected',
-      error: error.message,
-    };
-  }
-});
-
-fastify.get('/api/healthcheck', async () => {
-  try {
-    await db.execute('SELECT 1');
-    return {
-      status: 'healthy',
-      database: 'connected',
-      timestamp: new Date().toISOString(),
-    };
-  } catch (error: any) {
-    return {
-      status: 'unhealthy',
-      database: 'disconnected',
-      timestamp: new Date().toISOString(),
-      error: error.message,
-    };
-  }
-});
-
-// Get all users
-fastify.get('/users', async () => {
-  const allUsers = await db.select().from(users);
-  return { users: allUsers };
-});
-
-// Get user by ID
-fastify.get<{ Params: { id: string } }>(
-  '/users/:id',
-  async (request, reply) => {
-    const { id } = request.params;
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, Number(id)));
-
-    if (user.length === 0) {
-      reply.code(404);
-      return { error: 'User not found' };
-    }
-
-    return { user: user[0] };
-  },
-);
-
-// Create user
-fastify.post<{ Body: { name: string; email: string } }>(
-  '/users',
-  async (request, reply) => {
-    const { name, email } = request.body;
-
-    const newUser = await db.insert(users).values({ name, email }).returning();
-
-    reply.code(201);
-    return { user: newUser[0] };
-  },
-);
-
-// Update user
-fastify.put<{
-  Params: { id: string };
-  Body: { name?: string; email?: string };
-}>('/users/:id', async (request, reply) => {
-  const { id } = request.params;
-  const { name, email } = request.body;
-
-  const updated = await db
-    .update(users)
-    .set({ name, email, updatedAt: new Date() })
-    .where(eq(users.id, Number(id)))
-    .returning();
-
-  if (updated.length === 0) {
-    reply.code(404);
-    return { error: 'User not found' };
-  }
-
-  return { user: updated[0] };
-});
-
-// Delete user
-fastify.delete<{ Params: { id: string } }>(
-  '/users/:id',
-  async (request, reply) => {
-    const { id } = request.params;
-
-    const deleted = await db
-      .delete(users)
-      .where(eq(users.id, Number(id)))
-      .returning();
-
-    if (deleted.length === 0) {
-      reply.code(404);
-      return { error: 'User not found' };
-    }
-
-    reply.code(204);
-    return;
-  },
-);
-
-// Start server
-async function start() {
-  try {
-    await fastify.listen({ port: PORT, host: '0.0.0.0' });
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-}
-
-start();
-````
-
-## File: nixpacks.toml
-````toml
-[phases.setup]
-nixPkgs = ["nodejs_20", "postgresql"]
-
-[phases.install]
-cmds = ["npm install"]
-
-[phases.build]
-cmds = ["npm run build"]
-
-[start]
-cmd = "npm run db:generate && npm run db:migrate && npm start"
-````
-
-## File: package.json
-````json
-{
-  "name": "x-base-app",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "Simple Node.js app with Drizzle, Postgres, and Vitest",
-  "scripts": {
-    "dev": "dotenvx run -- tsx watch index.ts",
-    "start": "dotenvx run -- tsx index.ts",
-    "build": "tsc",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "db:generate": "dotenvx run -- drizzle-kit generate",
-    "db:migrate": "dotenvx run -- drizzle-kit migrate",
-    "db:push": "dotenvx run -- drizzle-kit push",
-    "db:studio": "dotenvx run -- drizzle-kit studio",
-    "db:drop": "dotenvx run -- drizzle-kit drop"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@dotenvx/dotenvx": "^1.51.1",
-    "drizzle-orm": "^0.44.7",
-    "fastify": "^5.6.2",
-    "postgres": "^3.4.7"
-  },
-  "devDependencies": {
-    "@types/node": "^24.10.1",
-    "@vitest/ui": "^4.0.8",
-    "drizzle-kit": "^0.31.6",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.8"
-  }
-}
-````
-
-## File: repomix-output.md
-````markdown
-This file is a merged representation of the entire codebase, combined into a single document by Repomix.
-
-# File Summary
-
-## Purpose
-This file contains a packed representation of the entire repository's contents.
-It is designed to be easily consumable by AI systems for analysis, code review,
-or other automated processes.
-
-## File Format
-The content is organized as follows:
-1. This summary section
-2. Repository information
-3. Directory structure
-4. Repository files (if enabled)
-5. Multiple file entries, each consisting of:
-  a. A header with the file path (## File: path/to/file)
-  b. The full contents of the file in a code block
-
-## Usage Guidelines
-- This file should be treated as read-only. Any changes should be made to the
-  original repository files, not this packed version.
-- When processing this file, use the file path to distinguish
-  between different files in the repository.
-- Be aware that this file may contain sensitive information. Handle it with
-  the same level of security as you would the original repository.
-
-## Notes
-- Some files may have been excluded based on .gitignore rules and Repomix's configuration
-- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Files matching patterns in .gitignore are excluded
-- Files matching default ignore patterns are excluded
-- Files are sorted by Git change count (files with more changes are at the bottom)
-
-# Directory Structure
-```
-.claude/
-  settings.local.json
-drizzle/
-  meta/
-    _journal.json
-    0000_snapshot.json
-  0000_simple_daredevil.sql
-src/
-  __tests__/
-    example.test.ts
-    utils.test.ts
-  db/
-    index.ts
-    schema.ts
-  utils/
-    index.ts
-  index.ts
-.env.example
-.prettierrc
-drizzle.config.ts
 nixpacks.toml
 package.json
 tsconfig.json
@@ -610,6 +100,36 @@ vitest.config.ts
     "ask": []
   }
 }
+```
+
+## File: db/index.ts
+```typescript
+import postgres from 'postgres'
+import { drizzle } from 'drizzle-orm/postgres-js'
+import * as schema from './schema'
+
+const connectionString = process.env.DATABASE_URL
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL is not set')
+}
+
+export const client = postgres(connectionString)
+export const db = drizzle(client, { schema })
+```
+
+## File: db/schema.ts
+```typescript
+import { pgTable, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core'
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
 ```
 
 ## File: drizzle/meta/_journal.json
@@ -725,93 +245,1048 @@ CREATE TABLE "users" (
 );
 ```
 
-## File: src/__tests__/example.test.ts
+## File: middlewares/api.admin.auth.adapt.ts
 ```typescript
-import { describe, it, expect } from 'vitest'
+import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { AuthUser } from '../types';
 
-describe('Example Test Suite', () => {
-  it('should pass a basic test', () => {
-    expect(1 + 1).toBe(2)
-  })
+// Simple authentication middleware
+// In production, you would validate JWT tokens or sessions
+export async function authMiddleware(
+  request: FastifyRequest,
+  reply: FastifyReply
+): Promise<void> {
+  try {
+    const authHeader = request.headers.authorization;
 
-  it('should work with async/await', async () => {
-    const result = await Promise.resolve('Hello, Vitest!')
-    expect(result).toBe('Hello, Vitest!')
-  })
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      reply.code(401).send({ error: 'Unauthorized - Missing or invalid token' });
+      return;
+    }
 
-  it('should handle objects', () => {
-    const user = { name: 'John', age: 30 }
-    expect(user).toHaveProperty('name')
-    expect(user.name).toBe('John')
-  })
-})
-```
+    const token = authHeader.substring(7);
 
-## File: src/__tests__/utils.test.ts
-```typescript
-import { describe, it, expect } from 'vitest'
-import { capitalize, formatDate, wait } from '../utils'
+    // In production, validate the JWT token here
+    // For now, we'll do a simple check
+    if (!token || token === '') {
+      reply.code(401).send({ error: 'Unauthorized - Invalid token' });
+      return;
+    }
 
-describe('Utils', () => {
-  describe('capitalize', () => {
-    it('should capitalize first letter', () => {
-      expect(capitalize('hello')).toBe('Hello')
-    })
+    // Mock user extraction from token
+    // In production, decode and verify JWT
+    const user: AuthUser = {
+      id: 1,
+      email: 'admin@example.com',
+      name: 'Admin User',
+    };
 
-    it('should handle empty string', () => {
-      expect(capitalize('')).toBe('')
-    })
-  })
-
-  describe('formatDate', () => {
-    it('should format date correctly', () => {
-      const date = new Date('2024-01-15T12:00:00Z')
-      expect(formatDate(date)).toBe('2024-01-15')
-    })
-  })
-
-  describe('wait', () => {
-    it('should wait for specified time', async () => {
-      const start = Date.now()
-      await wait(100)
-      const elapsed = Date.now() - start
-      expect(elapsed).toBeGreaterThanOrEqual(95)
-    })
-  })
-})
-```
-
-## File: src/db/index.ts
-```typescript
-import postgres from 'postgres'
-import { drizzle } from 'drizzle-orm/postgres-js'
-import * as schema from './schema'
-
-const connectionString = process.env.DATABASE_URL
-
-if (!connectionString) {
-  throw new Error('DATABASE_URL is not set')
+    // Attach user to request
+    (request as any).user = user;
+  } catch (error) {
+    reply.code(401).send({ error: 'Unauthorized - Token validation failed' });
+  }
 }
 
-export const client = postgres(connectionString)
-export const db = drizzle(client, { schema })
+// Optional: Admin check middleware
+export async function adminMiddleware(
+  request: FastifyRequest,
+  reply: FastifyReply
+): Promise<void> {
+  const user = (request as any).user as AuthUser | undefined;
+
+  if (!user) {
+    reply.code(403).send({ error: 'Forbidden - User not authenticated' });
+    return;
+  }
+
+  // In production, check if user has admin role
+  // For now, we'll allow all authenticated users
+}
 ```
 
-## File: src/db/schema.ts
+## File: middlewares/config.ts
 ```typescript
-import { pgTable, serial, text, timestamp, boolean } from 'drizzle-orm/pg-core'
+import type { MiddlewareConfig } from '../types';
 
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  email: text('email').notNull().unique(),
-  active: boolean('active').default(true),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
+/**
+ * Middleware configuration maps route patterns to middleware subjects.
+ *
+ * Pattern matching:
+ * - Uses glob-style patterns (* for wildcards)
+ * - More specific patterns take precedence
+ * - Middleware applied in array order
+ * - Matches are merged (most specific first)
+ *
+ * Example:
+ * Route: /api/admin/users/create
+ * Matches: ['/api/*', '/api/admin/*']
+ * Applied: ['service.api.tracing.adapt', 'service.admin.auth.adapt']
+ */
+export const middlewareConfig: MiddlewareConfig = {
+  '/api/admin/*': [
+    'service.admin.auth.adapt',
+  ],
+  '/api/public/*': [],
+  '/api/*': [],
+};
 ```
 
-## File: src/utils/index.ts
+## File: routes/api.admin.users.create.ts
+```typescript
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { db } from '../db';
+import { users } from '../db/schema';
+import type { CreateUserRequest, UserResponse } from '../types';
+
+export default async function usersCreateRoute(fastify: FastifyInstance) {
+  fastify.post<{ Body: CreateUserRequest }>(
+    '/api/admin/users/create',
+    {
+      schema: {
+        tags: ['admin'],
+        description: 'Create a new user',
+        body: {
+          type: 'object',
+          required: ['name', 'email'],
+          properties: {
+            name: { type: 'string', description: 'User full name' },
+            email: { type: 'string', format: 'email', description: 'User email address' },
+          },
+        },
+        response: {
+          201: {
+            type: 'object',
+            properties: {
+              user: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number' },
+                  name: { type: 'string' },
+                  email: { type: 'string' },
+                  active: { type: 'boolean' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    async (
+      request: FastifyRequest<{ Body: CreateUserRequest }>,
+      reply: FastifyReply
+    ): Promise<UserResponse> => {
+      const { name, email } = request.body;
+
+      const newUser = await db.insert(users).values({ name, email }).returning();
+
+      reply.code(201);
+      return { user: newUser[0] };
+    }
+  );
+}
+```
+
+## File: routes/api.admin.users.delete.ts
+```typescript
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { eq } from 'drizzle-orm';
+import { db } from '../db';
+import { users } from '../db/schema';
+import type { ErrorResponse } from '../types';
+
+interface DeleteUserBody {
+  id: number;
+}
+
+export default async function usersDeleteRoute(fastify: FastifyInstance) {
+  fastify.post<{ Body: DeleteUserBody }>(
+    '/api/admin/users/delete',
+    {
+      schema: {
+        tags: ['admin'],
+        description: 'Delete user by ID',
+        body: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number', description: 'User ID' },
+          },
+        },
+        response: {
+          204: {
+            type: 'null',
+            description: 'User successfully deleted',
+          },
+          404: {
+            type: 'object',
+            properties: {
+              error: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+    async (
+      request: FastifyRequest<{ Body: DeleteUserBody }>,
+      reply: FastifyReply
+    ): Promise<void | ErrorResponse> => {
+      const { id } = request.body;
+
+      const deleted = await db
+        .delete(users)
+        .where(eq(users.id, id))
+        .returning();
+
+      if (deleted.length === 0) {
+        reply.code(404);
+        return { error: 'User not found' };
+      }
+
+      reply.code(204);
+      return;
+    }
+  );
+}
+```
+
+## File: routes/api.admin.users.getById.ts
+```typescript
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { eq } from 'drizzle-orm';
+import { db } from '../db';
+import { users } from '../db/schema';
+import type { UserResponse, ErrorResponse } from '../types';
+
+interface GetByIdBody {
+  id: number;
+}
+
+export default async function usersGetByIdRoute(fastify: FastifyInstance) {
+  fastify.post<{ Body: GetByIdBody }>(
+    '/api/admin/users/getById',
+    {
+      schema: {
+        tags: ['admin'],
+        description: 'Get user by ID',
+        body: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number', description: 'User ID' },
+          },
+        },
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              user: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number' },
+                  name: { type: 'string' },
+                  email: { type: 'string' },
+                  active: { type: 'boolean' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+          404: {
+            type: 'object',
+            properties: {
+              error: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+    async (
+      request: FastifyRequest<{ Body: GetByIdBody }>,
+      reply: FastifyReply
+    ): Promise<UserResponse | ErrorResponse> => {
+      const { id } = request.body;
+      const user = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, id));
+
+      if (user.length === 0) {
+        reply.code(404);
+        return { error: 'User not found' };
+      }
+
+      return { user: user[0] };
+    }
+  );
+}
+```
+
+## File: routes/api.admin.users.getList.ts
+```typescript
+import type { FastifyInstance } from 'fastify';
+import { db } from '../db';
+import { users } from '../db/schema';
+import type { UsersListResponse } from '../types';
+
+export default async function usersGetListRoute(fastify: FastifyInstance) {
+  fastify.post('/api/admin/users/getList', {
+    schema: {
+      tags: ['admin'],
+      description: 'Get list of all users',
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            users: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number' },
+                  name: { type: 'string' },
+                  email: { type: 'string' },
+                  active: { type: 'boolean' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  }, async (): Promise<UsersListResponse> => {
+    const allUsers = await db.select().from(users);
+    return { users: allUsers };
+  });
+}
+```
+
+## File: routes/api.admin.users.update.ts
+```typescript
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { eq } from 'drizzle-orm';
+import { db } from '../db';
+import { users } from '../db/schema';
+import type { UserResponse, ErrorResponse } from '../types';
+
+interface UpdateUserBody {
+  id: number;
+  name?: string;
+  email?: string;
+  active?: boolean;
+}
+
+export default async function usersUpdateRoute(fastify: FastifyInstance) {
+  fastify.post<{ Body: UpdateUserBody }>(
+    '/api/admin/users/update',
+    {
+      schema: {
+        tags: ['admin'],
+        description: 'Update user by ID',
+        body: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: { type: 'number', description: 'User ID' },
+            name: { type: 'string', description: 'User full name' },
+            email: { type: 'string', format: 'email', description: 'User email address' },
+            active: { type: 'boolean', description: 'User active status' },
+          },
+        },
+        response: {
+          200: {
+            type: 'object',
+            properties: {
+              user: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number' },
+                  name: { type: 'string' },
+                  email: { type: 'string' },
+                  active: { type: 'boolean' },
+                  createdAt: { type: 'string', format: 'date-time' },
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+          404: {
+            type: 'object',
+            properties: {
+              error: { type: 'string' },
+            },
+          },
+        },
+      },
+    },
+    async (
+      request: FastifyRequest<{ Body: UpdateUserBody }>,
+      reply: FastifyReply
+    ): Promise<UserResponse | ErrorResponse> => {
+      const { id, name, email, active } = request.body;
+
+      const updated = await db
+        .update(users)
+        .set({ name, email, active, updatedAt: new Date() })
+        .where(eq(users.id, id))
+        .returning();
+
+      if (updated.length === 0) {
+        reply.code(404);
+        return { error: 'User not found' };
+      }
+
+      return { user: updated[0] };
+    }
+  );
+}
+```
+
+## File: routes/api.public.health.check.ts
+```typescript
+import type { FastifyInstance } from 'fastify';
+import { db } from '../db';
+import type { HealthCheckResponse } from '../types';
+
+export default async function healthCheckRoute(fastify: FastifyInstance) {
+  // API health check
+  fastify.get('/api/public/health/check', {
+    schema: {
+      tags: ['public'],
+      description: 'API health check endpoint',
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            status: { type: 'string', enum: ['healthy', 'unhealthy'] },
+            database: { type: 'string', enum: ['connected', 'disconnected'] },
+            timestamp: { type: 'string', format: 'date-time' },
+            error: { type: 'string' },
+          },
+        },
+      },
+    },
+  }, async (): Promise<HealthCheckResponse> => {
+    try {
+      await db.execute('SELECT 1');
+      return {
+        status: 'healthy',
+        database: 'connected',
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error: any) {
+      return {
+        status: 'unhealthy',
+        database: 'disconnected',
+        timestamp: new Date().toISOString(),
+        error: error.message,
+      };
+    }
+  });
+}
+```
+
+## File: services/auth/getUserInfo.ts
+```typescript
+import type { IncomingHttpHeaders } from 'node:http';
+import type { AuthUser } from '../../types';
+
+/**
+ * Extract user information from request headers.
+ *
+ * In production:
+ * - Validate JWT from Authorization header or cookie
+ * - Decode token and extract user claims
+ * - Verify token signature and expiration
+ *
+ * For now: Mock implementation for development
+ */
+export function getUserInfo(headers: IncomingHttpHeaders): AuthUser {
+  const authHeader = headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new Error('Unauthorized - Missing or invalid token');
+  }
+
+  const token = authHeader.substring(7);
+
+  if (!token || token === '') {
+    throw new Error('Unauthorized - Invalid token');
+  }
+
+  // Mock user extraction from token
+  // In production: decode and verify JWT
+  const user: AuthUser = {
+    id: 1,
+    email: 'admin@example.com',
+    name: 'Admin User',
+  };
+
+  return user;
+}
+```
+
+## File: tests/api.admin.users.create.fixture.ts
+```typescript
+import type { CreateUserRequest, User, UserResponse } from '../types';
+
+export const createUserRequest: CreateUserRequest = {
+  name: 'John Doe',
+  email: 'john@example.com',
+};
+
+export const invalidCreateUserRequest: Partial<CreateUserRequest> = {
+  name: 'John Doe',
+  // Missing email
+};
+
+export const createdUser: User = {
+  id: 1,
+  name: 'John Doe',
+  email: 'john@example.com',
+  active: true,
+  createdAt: new Date('2024-01-01T00:00:00.000Z'),
+  updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+};
+
+export const createUserResponse: UserResponse = {
+  user: createdUser,
+};
+```
+
+## File: tests/api.admin.users.create.spec.ts
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import Fastify, { FastifyInstance } from 'fastify';
+import usersCreateRoute from '../routes/api.admin.users.create';
+
+describe('Users Create Route', () => {
+  let fastify: FastifyInstance;
+
+  beforeAll(async () => {
+    fastify = Fastify();
+    await fastify.register(usersCreateRoute);
+  });
+
+  afterAll(async () => {
+    await fastify.close();
+  });
+
+  describe('POST /users', () => {
+    it('should create a new user and return 201', async () => {
+      const newUser = {
+        name: 'Test User',
+        email: `test-${Date.now()}@example.com`,
+      };
+
+      const response = await fastify.inject({
+        method: 'POST',
+        url: '/users',
+        payload: newUser,
+      });
+
+      expect(response.statusCode).toBe(201);
+      const body = JSON.parse(response.body);
+      expect(body).toHaveProperty('user');
+      expect(body.user).toHaveProperty('id');
+      expect(body.user.name).toBe(newUser.name);
+      expect(body.user.email).toBe(newUser.email);
+    });
+
+    it('should return user with all required fields', async () => {
+      const newUser = {
+        name: 'Another User',
+        email: `another-${Date.now()}@example.com`,
+      };
+
+      const response = await fastify.inject({
+        method: 'POST',
+        url: '/users',
+        payload: newUser,
+      });
+
+      const body = JSON.parse(response.body);
+      expect(body.user).toHaveProperty('id');
+      expect(body.user).toHaveProperty('name');
+      expect(body.user).toHaveProperty('email');
+      expect(body.user).toHaveProperty('active');
+      expect(body.user).toHaveProperty('createdAt');
+      expect(body.user).toHaveProperty('updatedAt');
+    });
+  });
+});
+```
+
+## File: tests/api.admin.users.delete.fixture.ts
+```typescript
+import type { ErrorResponse } from '../types';
+
+export const userNotFoundError: ErrorResponse = {
+  error: 'User not found',
+};
+```
+
+## File: tests/api.admin.users.delete.spec.ts
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import Fastify, { FastifyInstance } from 'fastify';
+import usersDeleteRoute from '../routes/api.admin.users.delete';
+
+describe('Users Delete Route', () => {
+  let fastify: FastifyInstance;
+
+  beforeAll(async () => {
+    fastify = Fastify();
+    await fastify.register(usersDeleteRoute);
+  });
+
+  afterAll(async () => {
+    await fastify.close();
+  });
+
+  describe('DELETE /users/:id', () => {
+    it('should return 404 for non-existent user', async () => {
+      const response = await fastify.inject({
+        method: 'DELETE',
+        url: '/users/99999',
+      });
+
+      expect(response.statusCode).toBe(404);
+      const body = JSON.parse(response.body);
+      expect(body).toHaveProperty('error');
+      expect(body.error).toBe('User not found');
+    });
+
+    it('should return 204 when user is successfully deleted', async () => {
+      // Note: This test would need a real user ID from the database
+      const response = await fastify.inject({
+        method: 'DELETE',
+        url: '/users/1',
+      });
+
+      // Either 204 (success) or 404 (not found) are valid
+      expect([204, 404]).toContain(response.statusCode);
+    });
+  });
+});
+```
+
+## File: tests/api.admin.users.getById.fixture.ts
+```typescript
+import type { User, UserResponse, ErrorResponse } from '../types';
+
+export const mockUser: User = {
+  id: 1,
+  name: 'John Doe',
+  email: 'john@example.com',
+  active: true,
+  createdAt: new Date('2024-01-01T00:00:00.000Z'),
+  updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+};
+
+export const userResponse: UserResponse = {
+  user: mockUser,
+};
+
+export const userNotFoundError: ErrorResponse = {
+  error: 'User not found',
+};
+```
+
+## File: tests/api.admin.users.getById.spec.ts
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import Fastify, { FastifyInstance } from 'fastify';
+import usersGetByIdRoute from '../routes/api.admin.users.getById';
+
+describe('Users GetById Route', () => {
+  let fastify: FastifyInstance;
+
+  beforeAll(async () => {
+    fastify = Fastify();
+    await fastify.register(usersGetByIdRoute);
+  });
+
+  afterAll(async () => {
+    await fastify.close();
+  });
+
+  describe('GET /users/:id', () => {
+    it('should return 404 for non-existent user', async () => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: '/users/99999',
+      });
+
+      expect(response.statusCode).toBe(404);
+      const body = JSON.parse(response.body);
+      expect(body).toHaveProperty('error');
+      expect(body.error).toBe('User not found');
+    });
+
+    it('should return user with correct structure when found', async () => {
+      // Note: This test would need a real user ID from the database
+      // For now, we're testing the structure with a mock scenario
+      const response = await fastify.inject({
+        method: 'GET',
+        url: '/users/1',
+      });
+
+      const body = JSON.parse(response.body);
+      if (response.statusCode === 200) {
+        expect(body).toHaveProperty('user');
+        expect(body.user).toHaveProperty('id');
+        expect(body.user).toHaveProperty('name');
+        expect(body.user).toHaveProperty('email');
+      }
+    });
+  });
+});
+```
+
+## File: tests/api.admin.users.getList.fixture.ts
+```typescript
+import type { User, UsersListResponse } from '../types';
+
+export const mockUser1: User = {
+  id: 1,
+  name: 'John Doe',
+  email: 'john@example.com',
+  active: true,
+  createdAt: new Date('2024-01-01T00:00:00.000Z'),
+  updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+};
+
+export const mockUser2: User = {
+  id: 2,
+  name: 'Jane Smith',
+  email: 'jane@example.com',
+  active: true,
+  createdAt: new Date('2024-01-02T00:00:00.000Z'),
+  updatedAt: new Date('2024-01-02T00:00:00.000Z'),
+};
+
+export const mockUsersList: UsersListResponse = {
+  users: [mockUser1, mockUser2],
+};
+
+export const emptyUsersList: UsersListResponse = {
+  users: [],
+};
+```
+
+## File: tests/api.admin.users.getList.spec.ts
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import Fastify, { FastifyInstance } from 'fastify';
+import usersGetListRoute from '../routes/api.admin.users.getList';
+
+describe('Users GetList Route', () => {
+  let fastify: FastifyInstance;
+
+  beforeAll(async () => {
+    fastify = Fastify();
+    await fastify.register(usersGetListRoute);
+  });
+
+  afterAll(async () => {
+    await fastify.close();
+  });
+
+  describe('GET /users', () => {
+    it('should return a list of users', async () => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: '/users',
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body).toHaveProperty('users');
+      expect(Array.isArray(body.users)).toBe(true);
+    });
+
+    it('should return users with correct structure', async () => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: '/users',
+      });
+
+      const body = JSON.parse(response.body);
+      if (body.users.length > 0) {
+        const user = body.users[0];
+        expect(user).toHaveProperty('id');
+        expect(user).toHaveProperty('name');
+        expect(user).toHaveProperty('email');
+        expect(user).toHaveProperty('active');
+        expect(user).toHaveProperty('createdAt');
+        expect(user).toHaveProperty('updatedAt');
+      }
+    });
+  });
+});
+```
+
+## File: tests/api.admin.users.update.fixture.ts
+```typescript
+import type { UpdateUserRequest, User, UserResponse, ErrorResponse } from '../types';
+
+export const updateUserRequest: UpdateUserRequest = {
+  name: 'John Updated',
+  email: 'john.updated@example.com',
+};
+
+export const partialUpdateUserRequest: UpdateUserRequest = {
+  name: 'John Partial',
+};
+
+export const updatedUser: User = {
+  id: 1,
+  name: 'John Updated',
+  email: 'john.updated@example.com',
+  active: true,
+  createdAt: new Date('2024-01-01T00:00:00.000Z'),
+  updatedAt: new Date('2024-01-02T00:00:00.000Z'),
+};
+
+export const updateUserResponse: UserResponse = {
+  user: updatedUser,
+};
+
+export const userNotFoundError: ErrorResponse = {
+  error: 'User not found',
+};
+```
+
+## File: tests/api.admin.users.update.spec.ts
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import Fastify, { FastifyInstance } from 'fastify';
+import usersUpdateRoute from '../routes/api.admin.users.update';
+
+describe('Users Update Route', () => {
+  let fastify: FastifyInstance;
+
+  beforeAll(async () => {
+    fastify = Fastify();
+    await fastify.register(usersUpdateRoute);
+  });
+
+  afterAll(async () => {
+    await fastify.close();
+  });
+
+  describe('PUT /users/:id', () => {
+    it('should return 404 for non-existent user', async () => {
+      const updateData = {
+        name: 'Updated Name',
+        email: 'updated@example.com',
+      };
+
+      const response = await fastify.inject({
+        method: 'PUT',
+        url: '/users/99999',
+        payload: updateData,
+      });
+
+      expect(response.statusCode).toBe(404);
+      const body = JSON.parse(response.body);
+      expect(body).toHaveProperty('error');
+      expect(body.error).toBe('User not found');
+    });
+
+    it('should update user when found', async () => {
+      // Note: This test would need a real user ID from the database
+      const updateData = {
+        name: 'Updated Name',
+        email: 'updated@example.com',
+      };
+
+      const response = await fastify.inject({
+        method: 'PUT',
+        url: '/users/1',
+        payload: updateData,
+      });
+
+      const body = JSON.parse(response.body);
+      if (response.statusCode === 200) {
+        expect(body).toHaveProperty('user');
+        expect(body.user).toHaveProperty('updatedAt');
+      }
+    });
+  });
+});
+```
+
+## File: tests/api.public.health.check.fixture.ts
+```typescript
+import type { HealthCheckResponse } from '../types';
+
+export const healthyResponse: HealthCheckResponse = {
+  status: 'healthy',
+  database: 'connected',
+};
+
+export const healthyResponseWithTimestamp: HealthCheckResponse = {
+  status: 'healthy',
+  database: 'connected',
+  timestamp: '2024-01-01T00:00:00.000Z',
+};
+
+export const unhealthyResponse: HealthCheckResponse = {
+  status: 'unhealthy',
+  database: 'disconnected',
+  error: 'Database connection failed',
+};
+
+export const unhealthyResponseWithTimestamp: HealthCheckResponse = {
+  status: 'unhealthy',
+  database: 'disconnected',
+  timestamp: '2024-01-01T00:00:00.000Z',
+  error: 'Database connection failed',
+};
+```
+
+## File: tests/api.public.health.check.spec.ts
+```typescript
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import Fastify, { FastifyInstance } from 'fastify';
+import healthCheckRoute from '../routes/api.public.health.check';
+
+describe('Health Check Routes', () => {
+  let fastify: FastifyInstance;
+
+  beforeAll(async () => {
+    fastify = Fastify();
+    await fastify.register(healthCheckRoute);
+  });
+
+  afterAll(async () => {
+    await fastify.close();
+  });
+
+  describe('GET /', () => {
+    it('should return health status', async () => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: '/',
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body).toHaveProperty('status');
+      expect(body).toHaveProperty('database');
+      expect(['healthy', 'unhealthy']).toContain(body.status);
+      expect(['connected', 'disconnected']).toContain(body.database);
+    });
+  });
+
+  describe('GET /api/healthcheck', () => {
+    it('should return health status with timestamp', async () => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: '/api/healthcheck',
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body).toHaveProperty('status');
+      expect(body).toHaveProperty('database');
+      expect(body).toHaveProperty('timestamp');
+      expect(['healthy', 'unhealthy']).toContain(body.status);
+      expect(['connected', 'disconnected']).toContain(body.database);
+      expect(new Date(body.timestamp)).toBeInstanceOf(Date);
+    });
+  });
+});
+```
+
+## File: types/index.ts
+```typescript
+import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';
+import type { users } from '../db/schema';
+import type { FastifyRequest, FastifyReply } from 'fastify';
+
+// Database types
+export type User = InferSelectModel<typeof users>;
+export type NewUser = InferInsertModel<typeof users>;
+
+// API Request/Response types
+export interface CreateUserRequest {
+  name: string;
+  email: string;
+}
+
+export interface UpdateUserRequest {
+  name?: string;
+  email?: string;
+  active?: boolean;
+}
+
+export interface UserResponse {
+  user: User;
+}
+
+export interface UsersListResponse {
+  users: User[];
+}
+
+export interface ErrorResponse {
+  error: string;
+  details?: unknown;
+}
+
+export interface HealthCheckResponse {
+  status: 'healthy' | 'unhealthy';
+  database: 'connected' | 'disconnected';
+  timestamp?: string;
+  error?: string;
+}
+
+// Route handler types
+export type RouteHandler<TParams = unknown, TBody = unknown, TQuery = unknown> = (
+  request: FastifyRequest<{
+    Params: TParams;
+    Body: TBody;
+    Querystring: TQuery;
+  }>,
+  reply: FastifyReply
+) => Promise<unknown>;
+
+// Auth types
+export interface AuthUser {
+  id: number;
+  email: string;
+  name: string;
+}
+
+export interface AuthRequest extends FastifyRequest {
+  user?: AuthUser;
+}
+
+// Middleware types
+export type Middleware = (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => Promise<void>;
+
+export type MiddlewareConfig = {
+  [pattern: string]: string[];
+};
+
+// Simple route handler (new convention)
+export type SimpleRouteHandler = (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => Promise<any>;
+```
+
+## File: utils/index.ts
 ```typescript
 /**
  * Utility functions
@@ -830,147 +1305,6 @@ export function wait(ms: number): Promise<void> {
 }
 ```
 
-## File: src/index.ts
-```typescript
-import '@dotenvx/dotenvx/config';
-import Fastify from 'fastify';
-import { db } from './db';
-import { users } from './db/schema';
-import { eq } from 'drizzle-orm';
-
-const fastify = Fastify({
-  logger: true,
-});
-
-const PORT = Number(process.env.PORT) || 3030;
-
-// Health check endpoints
-fastify.get('/', async () => {
-  try {
-    await db.execute('SELECT 1');
-    return { status: 'healthy', database: 'connected' };
-  } catch (error: any) {
-    return {
-      status: 'unhealthy',
-      database: 'disconnected',
-      error: error.message,
-    };
-  }
-});
-
-fastify.get('/api/healthcheck', async () => {
-  try {
-    await db.execute('SELECT 1');
-    return {
-      status: 'healthy',
-      database: 'connected',
-      timestamp: new Date().toISOString(),
-    };
-  } catch (error: any) {
-    return {
-      status: 'unhealthy',
-      database: 'disconnected',
-      timestamp: new Date().toISOString(),
-      error: error.message,
-    };
-  }
-});
-
-// Get all users
-fastify.get('/users', async () => {
-  const allUsers = await db.select().from(users);
-  return { users: allUsers };
-});
-
-// Get user by ID
-fastify.get<{ Params: { id: string } }>(
-  '/users/:id',
-  async (request, reply) => {
-    const { id } = request.params;
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, Number(id)));
-
-    if (user.length === 0) {
-      reply.code(404);
-      return { error: 'User not found' };
-    }
-
-    return { user: user[0] };
-  },
-);
-
-// Create user
-fastify.post<{ Body: { name: string; email: string } }>(
-  '/users',
-  async (request, reply) => {
-    const { name, email } = request.body;
-
-    const newUser = await db.insert(users).values({ name, email }).returning();
-
-    reply.code(201);
-    return { user: newUser[0] };
-  },
-);
-
-// Update user
-fastify.put<{
-  Params: { id: string };
-  Body: { name?: string; email?: string };
-}>('/users/:id', async (request, reply) => {
-  const { id } = request.params;
-  const { name, email } = request.body;
-
-  const updated = await db
-    .update(users)
-    .set({ name, email, updatedAt: new Date() })
-    .where(eq(users.id, Number(id)))
-    .returning();
-
-  if (updated.length === 0) {
-    reply.code(404);
-    return { error: 'User not found' };
-  }
-
-  return { user: updated[0] };
-});
-
-// Delete user
-fastify.delete<{ Params: { id: string } }>(
-  '/users/:id',
-  async (request, reply) => {
-    const { id } = request.params;
-
-    const deleted = await db
-      .delete(users)
-      .where(eq(users.id, Number(id)))
-      .returning();
-
-    if (deleted.length === 0) {
-      reply.code(404);
-      return { error: 'User not found' };
-    }
-
-    reply.code(204);
-    return;
-  },
-);
-
-// Start server
-async function start() {
-  try {
-    await fastify.listen({ port: PORT, host: '0.0.0.0' });
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-  } catch (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-}
-
-start();
-```
-
 ## File: .env.example
 ```
 # Database
@@ -978,7 +1312,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 
 # Application
 NODE_ENV=development
-PORT=3030
+PORT=3033
 ```
 
 ## File: .prettierrc
@@ -990,6 +1324,11 @@ PORT=3030
 }
 ```
 
+## File: config.ts
+```typescript
+export const config = {};
+```
+
 ## File: drizzle.config.ts
 ```typescript
 import { defineConfig } from 'drizzle-kit';
@@ -998,7 +1337,7 @@ console.log(`debug:process.env.DATABASE_URL`, process.env.DATABASE_URL);
 
 export default defineConfig({
   dialect: 'postgresql',
-  schema: './src/db/schema.ts',
+  schema: './db/schema.ts',
   out: './drizzle',
   dbCredentials: {
     url: process.env.DATABASE_URL!,
@@ -1006,6 +1345,111 @@ export default defineConfig({
   verbose: true,
   strict: true,
 });
+```
+
+## File: index.ts
+```typescript
+import '@dotenvx/dotenvx/config';
+import Fastify from 'fastify';
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
+import { readdirSync } from 'fs';
+import { join } from 'path';
+import { pathToFileURL } from 'url';
+
+const fastify = Fastify({
+  logger: true,
+});
+
+const PORT = Number(process.env.PORT) || 3033;
+
+async function loadMiddlewares() {
+  const middlewaresDir = join(import.meta.dirname || __dirname, 'middlewares');
+  const files = readdirSync(middlewaresDir);
+
+  for (const file of files) {
+    try {
+      const middlewarePath = join(middlewaresDir, file);
+      const middlewareUrl = pathToFileURL(middlewarePath).href;
+      const middlewareModule = await import(middlewareUrl);
+      const middlewareHandler = middlewareModule.default;
+
+      if (typeof middlewareHandler === 'function') {
+        await fastify.register(middlewareHandler);
+        fastify.log.info(`Registered middleware: ${file}`);
+      }
+    } catch (error) {
+      fastify.log.error({ error, file }, `Failed to load middleware ${file}`);
+    }
+  }
+}
+
+async function loadRoutes() {
+  const routesDir = join(import.meta.dirname || __dirname, 'routes');
+  const files = readdirSync(routesDir);
+
+  for (const file of files) {
+    try {
+      const routePath = join(routesDir, file);
+      const routeUrl = pathToFileURL(routePath).href;
+      const routeModule = await import(routeUrl);
+      const routeHandler = routeModule.default;
+
+      if (typeof routeHandler === 'function') {
+        await fastify.register(routeHandler);
+        fastify.log.info(`Registered route: ${file}`);
+      }
+    } catch (error) {
+      fastify.log.error({ error, file }, `Failed to load route ${file}`);
+    }
+  }
+}
+
+async function start() {
+  try {
+    // Register Swagger
+    await fastify.register(swagger, {
+      openapi: {
+        info: {
+          title: 'X App API',
+          description: 'API documentation for X App',
+          version: '1.0.0',
+        },
+        servers: [
+          {
+            url: `http://localhost:${PORT}`,
+            description: 'Development server',
+          },
+        ],
+        tags: [
+          { name: 'admin', description: 'Admin endpoints' },
+          { name: 'public', description: 'Public endpoints' },
+        ],
+      },
+    });
+
+    await fastify.register(swaggerUi, {
+      routePrefix: '/docs',
+      uiConfig: {
+        docExpansion: 'list',
+        deepLinking: true,
+      },
+    });
+
+    await loadMiddlewares();
+    await loadRoutes();
+    await fastify.listen({ port: PORT, host: '0.0.0.0' });
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+    console.log(
+      `📚 API Documentation available at http://localhost:${PORT}/docs`,
+    );
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+}
+
+start();
 ```
 
 ## File: nixpacks.toml
@@ -1031,8 +1475,8 @@ cmd = "npm run db:generate && npm run db:migrate && npm start"
   "type": "module",
   "description": "Simple Node.js app with Drizzle, Postgres, and Vitest",
   "scripts": {
-    "dev": "dotenvx run -- tsx watch src/index.ts",
-    "start": "dotenvx run -- tsx src/index.ts",
+    "dev": "dotenvx run -- tsx watch index.ts",
+    "start": "dotenvx run -- tsx index.ts",
     "build": "tsc",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -1047,6 +1491,8 @@ cmd = "npm run db:generate && npm run db:migrate && npm start"
   "license": "ISC",
   "dependencies": {
     "@dotenvx/dotenvx": "^1.51.1",
+    "@fastify/swagger": "^9.6.1",
+    "@fastify/swagger-ui": "^5.2.3",
     "drizzle-orm": "^0.44.7",
     "fastify": "^5.6.2",
     "postgres": "^3.4.7"
@@ -1104,55 +1550,19 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/**',
+        'drizzle/**',
+        '**/*.config.ts',
+        '**/*.spec.ts',
+        '**/*.fixture.ts',
+      ],
     },
+    outputFile: {
+      json: './test-results/results.json',
+      html: './test-results/results.html',
+    },
+    reporters: process.env.CI ? ['verbose', 'json', 'html'] : ['verbose'],
   },
 })
 ```
-````
-
-## File: tsconfig.json
-````json
-{
-  "include": ["**/*.ts", "**/*.tsx", "ultracite.config.js"],
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "moduleResolution": "bundler",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": false,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-    "strictNullChecks": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    }
-  }
-}
-````
-
-## File: vitest.config.ts
-````typescript
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  test: {
-    globals: true,
-    environment: 'node',
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-    },
-  },
-})
-````

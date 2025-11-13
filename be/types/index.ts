@@ -58,3 +58,19 @@ export interface AuthUser {
 export interface AuthRequest extends FastifyRequest {
   user?: AuthUser;
 }
+
+// Middleware types
+export type Middleware = (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => Promise<void>;
+
+export type MiddlewareConfig = {
+  [pattern: string]: string[];
+};
+
+// Simple route handler (new convention)
+export type SimpleRouteHandler = (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => Promise<any>;
