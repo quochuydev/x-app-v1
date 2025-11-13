@@ -21,6 +21,7 @@ Project board:
 
 ## Source structure
 
+```
 x-base-app/
 ├── be/
 │ ├── index.ts
@@ -56,6 +57,7 @@ x-base-app/
 │ │
 │ ├── types/ # Type definitions
 │ │ └── index.ts
+```
 
 ## Command
 
