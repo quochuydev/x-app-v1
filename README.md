@@ -24,36 +24,30 @@ Project board:
 ```
 x-base-app/
 ├── be/
-│ ├── index.ts
 │ ├── package.json
 │ ├── tsconfig.json
-│ ├── .env # Environment variables
+│ ├── .gitignore
+│ ├── .env
 │ ├── .env.example
-│ ├── config.ts
-│ ├── routes/ # All API routes and controllers
-│ │ ├── admin.users.ts
-│ │ └── admin.products.ts
 │ │
-│ ├── services/ # Business logic / services layer
-│ │ ├── admin.user.service.ts
-│ │ └── admin.product.service.ts
-│ │ └── public.user.service.ts
-│ │ └── public.product.service.ts
+│ ├── index.ts
+│ ├── config.ts
+│ │
+│ ├── routes/ # All API routes && middleware
+│ │ └── api.{area}.{resource}.{action}.ts
+│ │ ├── api.admin.auth.adapt.ts
+│ │
+│ ├── tests/
+│ │ ├── api.admin.auth.spec.ts
+│ │ ├── api.admin.auth.fixture.ts
+│ │
+│ ├── utils/ # Helper functions, constants, service
+│ │ ├── stripe.service.ts (example)
+│ │ └── logger.utils.ts
 │ │
 │ ├── db/ # Database models (Drizzle)
 │ │
-│ ├── drizzle/ # Database models (Drizzle)
-│ │
-│ ├── middlewares/
-│ │ ├── auth.ts
-│ │ ├── logger.ts
-│ │ └── errorHandler.ts
-│ │
-│ ├── utils/ # Helper functions, constants
-│ │ ├── validation.ts
-│ │ └── logger.ts
-│ │
-│ ├── tests/ # Unit & integration tests
+│ ├── drizzle/ # Database migrations (Drizzle)
 │ │
 │ ├── types/ # Type definitions
 │ │ └── index.ts

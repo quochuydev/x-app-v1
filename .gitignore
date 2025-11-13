@@ -3,3 +3,6 @@
 
 ignore.md
 node_modules
+
+# Test results
+test-results/
