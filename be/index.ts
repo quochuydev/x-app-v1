@@ -11,7 +11,7 @@ const fastify = Fastify({
   logger: true,
 });
 
-const PORT = Number(process.env.PORT) || 3033;
+const PORT = Number(process.env.PORT);
 
 async function loadMiddlewares() {
   const middlewaresDir = join(import.meta.dirname || __dirname, 'middlewares');
