@@ -5,6 +5,7 @@ import swaggerUi from '@fastify/swagger-ui';
 import { readdirSync } from 'fs';
 import { join } from 'path';
 import { pathToFileURL } from 'url';
+import { config } from './config';
 
 const fastify = Fastify({
   logger: true,
@@ -66,8 +67,12 @@ async function start() {
         },
         servers: [
           {
+            url: config.apiUrl,
+            description: 'Production server',
+          },
+          {
             url: `http://localhost:${PORT}`,
-            description: 'Development server',
+            description: 'Local server',
           },
         ],
         tags: [
