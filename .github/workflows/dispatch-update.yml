@@ -32,19 +32,3 @@ jobs:
           echo "🚀 Repository $REPO"
           echo "🚀 Branch $BRANCH"
           echo "🚀 Commit SHA $GITHUB_SHA"
-
-          ssh -o StrictHostKeyChecking=no $SSH_CONNECTION << EOF
-            set -e
-
-            echo "📦 Downloading latest update script..."
-            curl -o ~/update.sh https://raw.githubusercontent.com/quochuydev/x-app-v1/main/update.sh
-
-            echo "⚙️ Making update script executable..."
-            chmod +x ~/update.sh
-
-            echo "🚀 Running update with version info..."
-            export GITHUB_SHA="$GITHUB_SHA"
-            ./update.sh $BRANCH
-
-            echo "✅ Deployment complete"
-          EOF
