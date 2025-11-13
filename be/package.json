@@ -1,5 +1,5 @@
 {
-  "name": "x-app-v1",
+  "name": "x-base-app",
   "version": "1.0.0",
   "type": "module",
   "description": "Simple Node.js app with Drizzle, Postgres, and Vitest",

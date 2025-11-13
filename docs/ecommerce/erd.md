@@ -12,6 +12,7 @@ erDiagram
 		string role  "admin/user/customer"
 		datetime createdDate  ""
 		datetime updatedDate  ""
+		datetime deletedAt  ""
 	}
 	cartItem {
 		uuid id PK ""
@@ -24,6 +25,7 @@ erDiagram
 	}
 	cart {
 		uuid id PK ""
+		uuid userId FK ""
 		number amount  ""
 		datetime createdDate  ""
 		datetime updatedDate  ""
@@ -102,48 +104,6 @@ erDiagram
 		datetime createdDate  ""
 		string status  "processing / success / failed"
 	}
-	couponUser {
-		uuid id PK ""
-		uuid userId FK ""
-		uuid couponId FK ""
-		number usedCount  ""
-		datetime createdDate  ""
-	}
-	coupon {
-		uuid id PK ""
-		string code  ""
-		number usageLimit  ""
-		number usageLimitPerUSer  ""
-		number usedCount  ""
-		boolean active  ""
-		uuid promotionId  "optional"
-		datetime createdDate  ""
-	}
-	promotionApplication {
-		uuid id PK ""
-		uuid orderId FK ""
-		uuid couponId FK ""
-		uuid promotionId FK ""
-		number discountAmount  ""
-		datetime createdDate  ""
-	}
-	promotionCondition {
-		uuid id PK ""
-		uuid promotionId FK ""
-		datetime createdDate  ""
-		string conditionType  "minCartTotal, specificProducts, specificCategories, customerGroup, firstOrder"
-		json conditionValue  ""
-	}
-	promotion {
-		uuid id PK ""
-		string name  ""
-		datetime startDate  ""
-		datetime endDate  ""
-		boolean active  ""
-		string type  "percentage / fixedAmount / freeShipping"
-		boolean autoApply  ""
-		datetime createdDate  ""
-	}
 	blog {
 		uuid id PK ""
 		string title  ""
@@ -159,8 +119,6 @@ erDiagram
 	cart||--|{cartItem:"  "
 	product}|--||cartItem:"  "
 	product}|--|{file:"  "
-	promotion||--|{promotionCondition:"  "
-	coupon}|--|{promotionApplication:"  "
 	inventory}|--|{warehouse:"  "
 	product}|--|{inventory:"  "
 	order||--|{review:"  "
@@ -171,10 +129,6 @@ erDiagram
 	order}|--|{transaction:"  "
 	product}|--|{category:"  "
 	user||--|{refundRequest:"  "
-	promotion}|--|{coupon:"  "
-	order}|--|{promotionApplication:"  "
-	order}|--|{couponUser:"  "
-	coupon}|--|{couponUser:"  "
-	promotion}|--|{promotionApplication:"  "
 	blog}|--|{file:"  "
+	user||--|{cart:"  "
 ```
