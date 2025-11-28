@@ -1,8 +1,4 @@
-export type FieldType =
-  | 'CHECK_BOX'
-  | 'LABEL'
-  | 'TOGGLE_NUMBER'
-  | 'DATE_PICKER';
+export type FieldType = 'CHECK_BOX' | 'LABEL' | 'TOGGLE_NUMBER' | 'DATE_PICKER';
 
 export interface FieldRect {
   x1: number;

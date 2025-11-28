@@ -7,6 +7,7 @@ interface FormCheckboxProps {
   checked: boolean;
   rect: FieldRect;
   pageHeight: number;
+  scale: number;
   onChange: (name: string, checked: boolean) => void;
   disabled?: boolean;
 }
@@ -16,23 +17,23 @@ export function FormCheckbox({
   checked,
   rect,
   pageHeight,
+  scale,
   onChange,
   disabled,
 }: FormCheckboxProps) {
-  const width = rect.x2 - rect.x1;
-  const height = rect.y2 - rect.y1;
-  // Convert PDF coordinates (bottom-left origin) to CSS coordinates (top-left origin)
-  const cssTop = pageHeight - rect.y2;
+  const width = (rect.x2 - rect.x1) * scale;
+  const height = (rect.y2 - rect.y1) * scale;
+  const cssTop = (pageHeight - rect.y2) * scale;
 
   return (
     <div
       onClick={() => !disabled && onChange(name, !checked)}
       style={{
         position: 'absolute',
-        left: `${rect.x1}pt`,
-        top: `${cssTop}pt`,
-        width: `${width}pt`,
-        height: `${height}pt`,
+        left: `${rect.x1 * scale}px`,
+        top: `${cssTop}px`,
+        width: `${width}px`,
+        height: `${height}px`,
         cursor: disabled ? 'default' : 'pointer',
         pointerEvents: disabled ? 'none' : 'auto',
         zIndex: 20,

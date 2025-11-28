@@ -5,6 +5,7 @@ import { FormDefinition, FormData } from '../types/form';
 import { FormCheckbox } from './FormCheckbox';
 import { FormInput } from './FormInput';
 import { FormToggle } from './FormToggle';
+import { FormLabel } from './FormLabel';
 
 interface FormRendererProps {
   formDefinition: FormDefinition;
@@ -25,52 +26,39 @@ export function FormRenderer({ formDefinition, initialData, onPrint }: FormRende
 
   const page = formDefinition.formPages[0];
 
+  // Calculate scale factor to convert form coordinates to display pixels
+  // The form definition uses PDF points, we need to scale to a reasonable display size
+  const formWidth = page.width; // Original form width in PDF points (419.528)
+  const formHeight = page.height; // Original form height in PDF points (297.638)
+
+  // Target display width - use a percentage-based approach for responsiveness
+  // You can adjust maxWidth as needed (e.g., 800, 1000, 1200)
+  const maxDisplayWidth = 1200;
+  const scale = maxDisplayWidth / formWidth;
+
   return (
     <div className="flex flex-col gap-4">
-      <div
-        ref={containerRef}
-        className="relative bg-white shadow-2xl mx-auto"
-        style={{
-          width: `${page.width}pt`,
-          height: `${page.height}pt`,
-        }}
-      >
-        {/* SVG Background */}
+      <div ref={containerRef} className="bg-white">
         <div
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: `${page.width}pt`,
-            height: `${page.height}pt`,
-            pointerEvents: 'none',
+            position: 'relative',
+            pointerEvents: 'auto',
+            zIndex: 10,
+            maxWidth: maxDisplayWidth,
+            width: '100%',
+            height: formHeight * scale,
           }}
         >
           <img
             src="/Muster_16.svg"
             alt="Form Background"
-            style={{
-              width: '100%',
-              height: '100%',
-              display: 'block',
-            }}
+            style={{ width: '100%', height: '100%', display: 'block' }}
           />
-        </div>
 
-        {/* Interactive Fields Layer */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: `${page.width}pt`,
-            height: `${page.height}pt`,
-            pointerEvents: 'auto',
-            zIndex: 10,
-          }}
-        >
           {formDefinition.meta.fields.map((field) => {
             const fieldValue = formData[field.name];
+            const fieldHeight = field.rect.y2 - field.rect.y1;
+            const isMultiline = fieldHeight > 20;
 
             switch (field.type) {
               case 'CHECK_BOX':
@@ -81,6 +69,7 @@ export function FormRenderer({ formDefinition, initialData, onPrint }: FormRende
                     checked={Boolean(fieldValue)}
                     rect={field.rect}
                     pageHeight={page.height}
+                    scale={scale}
                     onChange={handleFieldChange}
                     disabled={field.isReadOnly}
                   />
@@ -94,22 +83,14 @@ export function FormRenderer({ formDefinition, initialData, onPrint }: FormRende
                     checked={Boolean(fieldValue)}
                     rect={field.rect}
                     pageHeight={page.height}
+                    scale={scale}
                     displayValue={field.displayValue || ''}
                     onChange={handleFieldChange}
                     disabled={field.isReadOnly}
                   />
                 );
 
-              case 'LABEL':
               case 'DATE_PICKER':
-                // Determine if field should be multiline based on field height
-                const fieldHeight = field.rect.y2 - field.rect.y1;
-                const isMultiline = fieldHeight > 20; // Fields taller than 20pt are multiline
-
-                // Determine text alignment based on field position
-                // Fields on the right side of the form (x > 300) are right-aligned
-                const textAlign = field.rect.x1 > 300 ? 'right' : 'left';
-
                 return (
                   <FormInput
                     key={field.name}
@@ -117,10 +98,22 @@ export function FormRenderer({ formDefinition, initialData, onPrint }: FormRende
                     value={String(fieldValue || '')}
                     rect={field.rect}
                     pageHeight={page.height}
+                    scale={scale}
                     onChange={handleFieldChange}
                     disabled={field.isReadOnly}
                     multiline={isMultiline}
-                    textAlign={textAlign}
+                  />
+                );
+
+              case 'LABEL':
+                return (
+                  <FormLabel
+                    key={field.name}
+                    name={field.name}
+                    value={String(fieldValue || '')}
+                    rect={field.rect}
+                    pageHeight={page.height}
+                    scale={scale}
                   />
                 );
 

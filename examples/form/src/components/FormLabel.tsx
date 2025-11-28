@@ -2,27 +2,15 @@
 
 import { FieldRect } from '../types/form';
 
-interface FormInputProps {
+interface FormLabelProps {
   name: string;
   value: string;
   rect: FieldRect;
   pageHeight: number;
   scale: number;
-  onChange: (name: string, value: string) => void;
-  disabled?: boolean;
-  multiline?: boolean;
 }
 
-export function FormInput({
-  name,
-  value,
-  rect,
-  pageHeight,
-  scale,
-  onChange,
-  disabled,
-  multiline = false,
-}: FormInputProps) {
+export function FormLabel({ name, value, rect, pageHeight, scale }: FormLabelProps) {
   const width = (rect.x2 - rect.x1) * scale;
   const height = (rect.y2 - rect.y1) * scale;
   const cssTop = (pageHeight - rect.y2) * scale;
@@ -61,7 +49,7 @@ export function FormInput({
     fontSize: baseFontSize,
     padding: 0,
     lineHeight: 1,
-    fontFamily: '"Courier New"',
+    fontFamily: 'Courier New',
     overflow: 'hidden',
     fontStyle: 'normal',
     fontWeight: 'normal',
@@ -73,29 +61,20 @@ export function FormInput({
     appearance: 'none' as const,
     zIndex: 20,
     textAlign: textAlign,
+    whiteSpace: 'pre-wrap',
   };
 
-  if (multiline) {
-    return (
-      <textarea
-        value={value}
-        onChange={(e) => onChange(name, e.target.value)}
-        disabled={disabled}
-        style={baseStyle}
-        spellCheck={false}
-      />
-    );
-  }
-
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={(e) => onChange(name, e.target.value)}
-      disabled={disabled}
+    <div
+      data-testid-name={name}
+      data-testid-x1={rect.x1}
+      data-testid-y1={rect.y1}
+      data-testid-x2={rect.x2}
+      data-testid-y2={rect.y2}
       style={baseStyle}
       spellCheck={false}
-      autoComplete="off"
-    />
+    >
+      {value}
+    </div>
   );
 }

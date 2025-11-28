@@ -7,6 +7,7 @@ interface FormToggleProps {
   checked: boolean;
   rect: FieldRect;
   pageHeight: number;
+  scale: number;
   displayValue: string;
   onChange: (name: string, checked: boolean) => void;
   disabled?: boolean;
@@ -17,28 +18,28 @@ export function FormToggle({
   checked,
   rect,
   pageHeight,
+  scale,
   displayValue,
   onChange,
   disabled,
 }: FormToggleProps) {
-  const width = rect.x2 - rect.x1;
-  const height = rect.y2 - rect.y1;
+  const width = (rect.x2 - rect.x1) * scale;
+  const height = (rect.y2 - rect.y1) * scale;
   // Convert PDF coordinates (bottom-left origin) to CSS coordinates (top-left origin)
-  const cssTop = pageHeight - rect.y2;
+  const cssTop = (pageHeight - rect.y2) * scale;
 
   return (
     <div
       style={{
         position: 'absolute',
-        left: `${rect.x1}pt`,
-        top: `${cssTop}pt`,
-        width: `${width}pt`,
-        height: `${height}pt`,
+        left: `${rect.x1 * scale}px`,
+        top: `${cssTop}px`,
+        width: `${width}px`,
+        height: `${height}px`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         cursor: disabled ? 'default' : 'pointer',
-        border: '1.5pt solid #dc2626',
         background: 'transparent',
         pointerEvents: disabled ? 'none' : 'auto',
         zIndex: 20,
@@ -49,7 +50,7 @@ export function FormToggle({
       {checked && (
         <span
           style={{
-            fontSize: '11pt',
+            fontSize: `${11 * scale}px`,
             fontWeight: 'bold',
             color: '#000',
           }}
