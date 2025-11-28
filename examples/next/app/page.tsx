@@ -45,7 +45,8 @@ export default function Home() {
             Modern Next.js Application
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Production-ready boilerplate with TypeScript, React Query, Zustand, and comprehensive examples
+            Production-ready boilerplate with TypeScript, React Query, Zustand, and comprehensive
+            examples
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Button variant="primary" size="lg" asChild>
@@ -93,9 +94,7 @@ export default function Home() {
           <Card className="bg-blue-50">
             <CardContent className="flex flex-col items-center justify-between gap-6 p-12 md:flex-row">
               <div className="flex-1">
-                <h2 className="text-3xl font-bold text-gray-900">
-                  Ready to get started?
-                </h2>
+                <h2 className="text-3xl font-bold text-gray-900">Ready to get started?</h2>
                 <p className="mt-4 text-lg text-gray-600">
                   Explore our examples and see how to build production-ready applications.
                 </p>

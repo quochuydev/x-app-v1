@@ -4,16 +4,16 @@
   "type": "module",
   "description": "Simple Node.js app with Drizzle, Postgres, and Vitest",
   "scripts": {
-    "dev": "dotenvx run -- tsx watch index.ts",
-    "start": "dotenvx run -- tsx index.ts",
+    "dev": "pnpm exec dotenvx run -- tsx watch index.ts",
+    "start": "pnpm exec dotenvx run -- tsx index.ts",
     "build": "tsc",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "db:generate": "dotenvx run -- drizzle-kit generate",
-    "db:migrate": "dotenvx run -- drizzle-kit migrate",
-    "db:push": "dotenvx run -- drizzle-kit push",
-    "db:studio": "dotenvx run -- drizzle-kit studio",
-    "db:drop": "dotenvx run -- drizzle-kit drop"
+    "db:generate": "pnpm exec dotenvx run -- drizzle-kit generate",
+    "db:migrate": "pnpm exec dotenvx run -- drizzle-kit migrate",
+    "db:push": "pnpm exec dotenvx run -- drizzle-kit push",
+    "db:studio": "pnpm exec dotenvx run -- drizzle-kit studio",
+    "db:drop": "pnpm exec dotenvx run -- drizzle-kit drop"
   },
   "keywords": [],
   "author": "",

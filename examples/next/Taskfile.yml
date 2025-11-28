@@ -1,0 +1,33 @@
+version: "3"
+
+tasks:
+  dev:
+    desc: Start Next.js development server
+    cmd: "pnpm run dev"
+
+  build:
+    desc: Build Next.js application for production
+    cmd: "pnpm run build"
+
+  start:
+    desc: Start Next.js production server
+    cmd: "pnpm run start"
+
+  lint:
+    desc: Run ESLint
+    cmd: "pnpm run lint"
+
+  install:
+    desc: Install dependencies
+    cmd: "pnpm install"
+
+  clean:
+    desc: Clean build artifacts and node_modules
+    cmds:
+      - rm -rf node_modules
+      - rm -rf .next
+      - rm -rf .turbo
+
+  default:
+    desc: Show available tasks
+    cmd: task --list

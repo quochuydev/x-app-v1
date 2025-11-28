@@ -1,8 +1,65 @@
+# Environment variables
 .env
 .env*.local
+*.env
 
-ignore.md
+# Dependencies
 node_modules
+.pnp
+.pnp.*
+
+# Build outputs
+dist
+build
+out
+.next
+.turbo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+*.sublime-*
+
+# Certificates and keys
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+
+# Secrets and credentials
+*secret*
+*credential*
+*password*
+.secrets
 
 # Test results
 test-results/
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Temporary files
+ignore.md
+tmp/
+temp/

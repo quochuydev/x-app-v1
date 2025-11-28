@@ -1,87 +1,33 @@
 version: "3"
 
-vars:
-  DOTENVX: dotenvx run --
+# Root Taskfile - delegates to example-specific Taskfiles
+# Navigate to examples/node or examples/next and run `task` there
 
 tasks:
-  dev:
-    desc: Start development server with auto-reload
-    dir: be
-    cmd: "pnpm run dev"
+  dev:node:
+    desc: Start Node.js example development server
+    dir: examples/node
+    cmd: task dev
 
-  start:
-    desc: Run the application
-    dir: be
-    cmd: "pnpm run start"
+  dev:next:
+    desc: Start Next.js example development server
+    dir: examples/next
+    cmd: task dev
 
-  build:
-    desc: Build TypeScript
-    dir: be
-    cmd: "tsc"
-
-  test:
-    desc: Run tests
-    dir: be
-    cmd: "vitest"
-
-  test:ui:
-    desc: Run tests with UI
-    dir: be
-    cmd: "vitest --ui"
-
-  test:watch:
-    desc: Run tests in watch mode
-    dir: be
-    cmd: "vitest --watch"
-
-  db:generate:
-    desc: Generate Drizzle migrations from schema
-    dir: be
-    cmd: "pnpm run db:generate"
-
-  db:migrate:
-    desc: Run database migrations
-    dir: be
-    cmd: "pnpm run db:migrate"
-
-  db:push:
-    desc: Push schema changes directly to database (dev only)
-    dir: be
-    cmd: "pnpm run db:push"
-
-  db:studio:
-    desc: Launch Drizzle Studio
-    dir: be
-    cmd: "pnpm run db:studio"
-
-  db:drop:
-    desc: Drop database tables
-    cmd: "pnpm run db:drop"
-    prompt: This will drop all tables. Are you sure?
-
-  install:
-    desc: Install dependencies
-    dir: be
-    cmd: "pnpm install"
-
-  clean:
-    desc: Clean build artifacts and node_modules
-    dir: be
-    cmds:
-      - rm -rf node_modules
-      - rm -rf dist
-      - rm -rf .turbo
-
-  lint:
-    desc: Lint code
-    dir: be
-    cmd: echo "Add your linter here (eslint, biome, etc.)"
-
-  format:
-    desc: Format code
-    dir: be
-    cmd: echo "Add your formatter here (prettier, biome, etc.)"
+  dev:form:
+    desc: Start Form example development server
+    dir: examples/form
+    cmd: task dev
 
   default:
-    desc: Show available tasks
-    cmd: task --list
+    desc: Show available examples
+    cmds:
+      - echo "Available examples:"
+      - echo "  - examples/node    (cd examples/node && task --list)"
+      - echo "  - examples/next    (cd examples/next && task --list)"
+      - echo "  - examples/form    (cd examples/form && task --list)"
+      - echo ""
+      - echo "Quick start:"
+      - echo "  - task dev:node    (start Node.js dev server)"
+      - echo "  - task dev:next    (start Next.js dev server)"
+      - echo "  - task dev:form    (start Form example dev server)"
