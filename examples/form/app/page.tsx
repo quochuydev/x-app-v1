@@ -1,65 +1,166 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { FormRenderer } from '../src/components/FormRenderer';
+import { FormDefinition, FormData } from '../src/types/form';
+import { qzTrayPrinter } from '../src/utils/qzTrayPrint';
 
 export default function Home() {
+  const [formDefinition, setFormDefinition] = useState<FormDefinition | null>(null);
+  const [formData, setFormData] = useState<FormData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [printers, setPrinters] = useState<string[]>([]);
+  const [selectedPrinter, setSelectedPrinter] = useState<string>('');
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  useEffect(() => {
+    loadFormData();
+    loadPrinters();
+  }, []);
+
+  const loadFormData = async () => {
+    try {
+      setLoading(true);
+      const [defResponse, dataResponse] = await Promise.all([
+        fetch('/Muster_16.json'),
+        fetch('/example-data.json'),
+      ]);
+
+      if (!defResponse.ok || !dataResponse.ok) {
+        throw new Error('Failed to load form data');
+      }
+
+      const definition = await defResponse.json();
+      const data = await dataResponse.json();
+
+      setFormDefinition(definition);
+      setFormData(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load form data');
+      console.error('Error loading form data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadPrinters = async () => {
+    try {
+      await qzTrayPrinter.connect();
+      const printerList = await qzTrayPrinter.getPrinters();
+      const printerNames = printerList.map((p) => p.name);
+      setPrinters(printerNames);
+
+      const defaultPrinter = await qzTrayPrinter.getDefaultPrinter();
+      if (defaultPrinter) {
+        setSelectedPrinter(defaultPrinter);
+      }
+    } catch (err) {
+      console.error('Failed to load printers:', err);
+      // Don't set error state, printing will still work with browser print
+    }
+  };
+
+  const handlePrint = async () => {
+    if (!formDefinition) return;
+
+    setIsPrinting(true);
+    try {
+      if (qzTrayPrinter.isQZTrayConnected() && selectedPrinter) {
+        // Print via QZ Tray
+        await qzTrayPrinter.printPDF('/Muster_16.pdf', selectedPrinter, {
+          copies: 1,
+          orientation: 'landscape',
+        });
+        alert('Print job sent successfully via QZ Tray!');
+      } else {
+        // Fallback to browser print
+        window.print();
+      }
+    } catch (err) {
+      console.error('Print failed:', err);
+      alert(`Print failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setIsPrinting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading form...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+          <h2 className="text-red-800 font-semibold text-lg mb-2">Error Loading Form</h2>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!formDefinition || !formData) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <p className="text-gray-600">No form data available</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header with Printer Selection */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Muster 16 - Prescription Form</h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Patient: {formData.label_patient_fullname || 'N/A'} | DOB:{' '}
+                {formData.label_date_of_birth || 'N/A'}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+              {printers.length > 0 && (
+                <select
+                  value={selectedPrinter}
+                  onChange={(e) => setSelectedPrinter(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Printer</option>
+                  {printers.map((printer) => (
+                    <option key={printer} value={printer}>
+                      {printer}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <button
+                onClick={handlePrint}
+                disabled={isPrinting}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+              >
+                {isPrinting ? 'Printing...' : 'Print Form'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Form Renderer */}
+        <FormRenderer
+          formDefinition={formDefinition}
+          initialData={formData}
+          onPrint={handlePrint}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }

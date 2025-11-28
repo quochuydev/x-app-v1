@@ -1,0 +1,474 @@
+{
+  "formName": "Muster_16.pdf",
+  "meta": {
+    "fields": [
+      {
+        "name": "checkbox_gebuhrfrei",
+        "description": "gebuhrfrei",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 8.37071,
+          "y1": 258.677,
+          "x2": 22.9417,
+          "y2": 273.843
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "label_insurance_name",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 30.9714,
+          "y1": 259.122,
+          "x2": 221.442,
+          "y2": 269.615
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "toggle_6_bvg",
+        "description": "bvg",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 257.751,
+          "y1": 255.058,
+          "x2": 272.134,
+          "y2": 271.595
+        },
+        "type": "TOGGLE_NUMBER",
+        "displayValue": "6"
+      },
+      {
+        "name": "toggle_7_hilfsmittel",
+        "description": "hilfsmittel",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 272.383,
+          "y1": 255.101,
+          "x2": 286.569,
+          "y2": 272.06
+        },
+        "type": "TOGGLE_NUMBER",
+        "displayValue": "7"
+      },
+      {
+        "name": "toggle_9_bedarf",
+        "description": "bedarf",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 300.702,
+          "y1": 255.358,
+          "x2": 314.692,
+          "y2": 272.025
+        },
+        "type": "TOGGLE_NUMBER",
+        "displayValue": "9"
+      },
+      {
+        "name": "toggle_8_impfstoff",
+        "description": "impfstoff",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 286.666,
+          "y1": 255.224,
+          "x2": 300.753,
+          "y2": 271.988
+        },
+        "type": "TOGGLE_NUMBER",
+        "displayValue": "8"
+      },
+      {
+        "name": "checkbox_gebpfl",
+        "description": "gebpfl",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 8.60635,
+          "y1": 241.03,
+          "x2": 23.1774,
+          "y2": 256.196
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "checkbox_noctu",
+        "description": "noctu",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 8.60666,
+          "y1": 222.207,
+          "x2": 23.1777,
+          "y2": 237.373
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "label_patientInfo_line2",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 30.9193,
+          "y1": 222.555,
+          "x2": 186.264,
+          "y2": 233.355
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_patientInfo_line3",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 30.9727,
+          "y1": 210.267,
+          "x2": 250.404,
+          "y2": 221.067
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "checkbox_sonstige",
+        "description": "sonstige",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 8.37177,
+          "y1": 198.729,
+          "x2": 22.9428,
+          "y2": 213.895
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "label_patientInfo_line1",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 31.083,
+          "y1": 236.921,
+          "x2": 250.513,
+          "y2": 247.721
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_patientInfo_line4",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 30.9121,
+          "y1": 199.074,
+          "x2": 199.922,
+          "y2": 208.84
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_ik_number",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 31.0236,
+          "y1": 176.349,
+          "x2": 104.482,
+          "y2": 187.149
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "checkbox_unfall",
+        "description": "unfall",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 8.3721,
+          "y1": 174.207,
+          "x2": 22.9431,
+          "y2": 189.373
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "label_bsnr",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 31.0236,
+          "y1": 152.32,
+          "x2": 104.126,
+          "y2": 165.084
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "checkbox_arbeitsunfall",
+        "description": "arbeitsunfall",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 8.60773,
+          "y1": 150.442,
+          "x2": 23.1787,
+          "y2": 165.609
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "checkbox_autIdem1",
+        "description": "autIdem1",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 7.90256,
+          "y1": 114.207,
+          "x2": 22.4736,
+          "y2": 129.373
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "checkbox_autIdem2",
+        "description": "autIdem2",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 8.3707,
+          "y1": 90.2097,
+          "x2": 22.9417,
+          "y2": 105.376
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "checkbox_autIdem3",
+        "description": "autIdem3",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 8.13753,
+          "y1": 66.2082,
+          "x2": 22.7085,
+          "y2": 81.3744
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "label_unfalltag",
+        "description": "Unfalltag",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 9.81839,
+          "y1": 10.0373,
+          "x2": 64.7784,
+          "y2": 31.2773
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_unfallbetriebNummer",
+        "description": "Unfallbetrieb oder Arbeitgebernummer",
+        "isReadOnly": false,
+        "rect": {
+          "x1": 65.9354,
+          "y1": 9.87053,
+          "x2": 200.096,
+          "y2": 31.1105
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_date_of_birth",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 198.261,
+          "y1": 221.246,
+          "x2": 249.689,
+          "y2": 232.565
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_insurance_number",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 106.751,
+          "y1": 176.35,
+          "x2": 196.587,
+          "y2": 187.15
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_insurance_status",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 199.675,
+          "y1": 176.35,
+          "x2": 251.06,
+          "y2": 187.15
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_lanr",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 105.861,
+          "y1": 152.226,
+          "x2": 182.88,
+          "y2": 164.99
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "date_prescribe",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 185.59,
+          "y1": 152.247,
+          "x2": 250.861,
+          "y2": 165.011
+        },
+        "type": "DATE_PICKER"
+      },
+      {
+        "name": "label_wop",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 222.643,
+          "y1": 259.001,
+          "x2": 250.024,
+          "y2": 270.081
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_insurance_end_date",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 202.635,
+          "y1": 199.396,
+          "x2": 250.38,
+          "y2": 208.675
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_doctor_stamp",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 325.826,
+          "y1": 63.415,
+          "x2": 414.035,
+          "y2": 139.887
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_medication",
+        "description": "medication",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 26.8737,
+          "y1": 65.3891,
+          "x2": 322.174,
+          "y2": 133.822
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_medication2",
+        "description": "medication",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 27.4618,
+          "y1": 87.2728,
+          "x2": 322.763,
+          "y2": 110.957
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_medication3",
+        "description": "medication",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 27.3756,
+          "y1": 66.1685,
+          "x2": 322.676,
+          "y2": 87.1704
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_medication1",
+        "description": "medication",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 27.4715,
+          "y1": 110.444,
+          "x2": 322.773,
+          "y2": 133.322
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_medication4",
+        "description": "medication",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 27.348,
+          "y1": 102.559,
+          "x2": 322.649,
+          "y2": 136.077
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_medication5",
+        "description": "medication",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 27.7791,
+          "y1": 66.3168,
+          "x2": 323.08,
+          "y2": 100.282
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "checkbox_begr",
+        "description": "bedarf",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 320.337,
+          "y1": 255.193,
+          "x2": 334.327,
+          "y2": 271.86
+        },
+        "type": "CHECK_BOX"
+      },
+      {
+        "name": "label_fax_number",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 135.854,
+          "y1": 141.295,
+          "x2": 241.373,
+          "y2": 149.805
+        },
+        "type": "LABEL"
+      },
+      {
+        "name": "label_tel_number",
+        "isReadOnly": true,
+        "rect": {
+          "x1": 244.617,
+          "y1": 141.247,
+          "x2": 353.031,
+          "y2": 149.757
+        },
+        "type": "LABEL"
+      }
+    ]
+  },
+  "formPages": [
+    {
+      "width": 419.528,
+      "height": 297.638,
+      "view": {
+        "x1": 0.0,
+        "y1": 0.0,
+        "x2": 419.528,
+        "y2": 297.638
+      }
+    }
+  ]
+}
